@@ -50,7 +50,9 @@ function(core, material){
         "uniform sampler2D frequencies;",
         "varying vec2 v_texcoord;",
         "void main(){",
-            "gl_FragColor = texture2D(frequencies, v_texcoord);",
+            "float freq = texture2D(frequencies, v_texcoord).x;",
+            "vec3 color = vec3(freq > v_texcoord.y) * (v_texcoord.y / freq);",
+            "gl_FragColor = vec4(color, 1.);",
         "}"
     ].join("\n");
 
@@ -85,6 +87,8 @@ function(core, material){
     }
 
     function render(){
+        gl.viewport(0, 0, canvas.width, canvas.height);
+
         window.requestAnimationFrame(render);
         analyser.smoothingTimeConstant = 0.1;
         analyser.getByteFrequencyData(freq_data);
@@ -103,15 +107,16 @@ function(core, material){
         canvas.height = canvas.clientHeight;
     }
     window.addEventListener("resize", resize, false);
-    resize();
 
     initAudio();
     initGL();
-    loadAudioBuffer("lib/oknk-player/demo/test.mp3", function(buffer){
+    loadAudioBuffer("test.mp3", function(buffer){
         source.buffer = buffer;
         source.loop = false;
         source.noteOn(0); // Play
         window.requestAnimationFrame(render);
     });
+
+    resize();
 
 });
