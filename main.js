@@ -72,7 +72,7 @@ function(core, material, event, selector ){
             var selected = selector.get_selection(code_text.id);
 
             // if selection is a number, adjust value in selection via mousewheel
-            if (!isNaN (selected.text-0)) {
+            if (!isNaN (selected.text-0) && selected.text != '') {
                 e.preventDefault();
                 e.stopPropagation();
                 var orig = code_text.value;
