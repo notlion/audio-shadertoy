@@ -76,6 +76,22 @@ function(core, material, event){
         }, false);
     }
 
+    var mouse_move_enabled = false;
+    var mouse_pos = new core.Vec2(0, 0);
+
+    function onMouseMove(e){
+        mouse_pos.set(e.clientX / canvas.clientWidth, e.clientY / canvas.clientHeight);
+    }
+    function setMouseMoveEnabled(enabled){
+        if(enabled != mouse_move_enabled){
+            mouse_move_enabled = enabled;
+            if(enabled)
+                document.addEventListener("mousemove", onMouseMove);
+            else
+                document.removeEventListener("mousemove", onMouseMove);
+        }
+    }
+
 
     // AUDIO //
 
@@ -139,7 +155,8 @@ function(core, material, event){
 
     // GFX //
 
-    var canvas = document.getElementById("canvas");
+    var canvas = document.getElementById("canvas")
+      , canvas_pixel_scale = 2;
     var gl, program, freq_texture, plane;
 
     var shader_src_vert = [
@@ -179,12 +196,20 @@ function(core, material, event){
                         analyser.fftSize = value * 2;
                         initFrequencyData();
                     }
+                },
+                "pixel_scale": function(value){
+                    if(Math.floor(value) == value){
+                        canvas_pixel_scale = value;
+                        resize();
+                    }
                 }
             });
 
             program.compile(shader_src_vert, shader_src_frag);
             program.link();
             program.assignLocations(plane);
+
+            setMouseMoveEnabled(!!program.uniforms.u_mouse);
 
             code_text.classList.remove("error");
 
@@ -222,14 +247,15 @@ function(core, material, event){
 
         program.use({
             u_frequencies: 0,
-            u_aspect: canvas.width / canvas.height
+            u_aspect: canvas.width / canvas.height,
+            u_time: (Date.now() - start_time) / 1000
         });
         plane.draw();
     }
 
     function resize(){
-        canvas.width = Math.floor(canvas.clientWidth / 2);
-        canvas.height = Math.floor(canvas.clientHeight / 2);
+        canvas.width = Math.floor(canvas.clientWidth / canvas_pixel_scale);
+        canvas.height = Math.floor(canvas.clientHeight / canvas_pixel_scale);
     }
     window.addEventListener("resize", resize, false);
 
@@ -238,6 +264,8 @@ function(core, material, event){
     initAudio();
     resize();
     tryCompile();
+
+    var start_time = Date.now();
 
     window.requestAnimationFrame(render);
 
