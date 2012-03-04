@@ -80,7 +80,7 @@ function(core, material, event, selector ){
                 var orig = code_text.value;
                 var front = orig.substr(0, selected.start);
                 var end = orig.substr(selected.end, orig.length);
-                var newValue;
+                var newValue = null;
                 if ( (selected.text+"").split('.').length == 1 ) { // if is int
                     newValue = Math.round( parseFloat(selected.text) + wheelData );
                 }
@@ -90,8 +90,11 @@ function(core, material, event, selector ){
                     newValue = parseFloat(parseFloat(selected.text) + wheelData).toFixed( precisionLength );
                 }
 
-                code_text.value = front + newValue + end;
-                selector.set_selection(code_text.id, selected.start, selected.start + (newValue+"").length );
+                if (newValue !== null) {
+                    code_text.value = front + newValue + end;
+                    selector.set_selection(code_text.id, selected.start, selected.start + (newValue+"").length );
+                    tryCompile();
+                }
                 
                 return false;
             }
