@@ -4,15 +4,17 @@ require.config({
 require([
     "embr/core",
     "embr/material",
-    "event"
+    "event",
+    "selector"
 ],
-function(core, material, event){
+function(core, material, event, selector ){
 
     // UI //
 
     var code_text = document.getElementById("code-text");
 
-    function initUI(){
+    function initUI() {
+
         var code = document.getElementById("code")
           , code_toggle = document.getElementById("code-toggle")
           , code_open = false;
@@ -61,6 +63,29 @@ function(core, material, event){
         }, false);
         code_text.addEventListener("keypress", function(e){
             e.stopPropagation();
+        }, false);
+        code_text.addEventListener("mousewheel", function(e) {
+
+            
+            
+            var sel = selector.get_selection(code_text.id);
+            // if selection is a number, adjust value in selection
+            if (!isNaN (sel.text-0)) {
+                var wheelData = e.detail ? e.detail * -1 : e.wheelDelta / 40;
+                var orig_code = code_text.value;
+                var value = sel.text;
+                var newValue = parseFloat(value) + wheelData;
+                var front = orig_code.substr(0, sel.start);
+                var end   = orig_code.substr(sel.end, orig_code.length);
+                var new_code = front + newValue + end;
+                code_text.value = new_code;
+                selector.set_selection(code_text.id, sel.start, sel.start + (newValue+"").length );
+                e.preventDefault();
+                e.stopPropagation();
+                tryCompile();
+                return false;
+            }
+
         }, false);
 
         // Drag and drop mp3
@@ -215,7 +240,7 @@ function(core, material, event){
     initUI();
     initAudio();
     initGL();
-    loadAudioBufferUrl("test.mp3", playAudioBuffer);
+    //loadAudioBufferUrl("test.mp3", playAudioBuffer);
 
     resize();
 
