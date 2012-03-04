@@ -62,6 +62,17 @@ function(core, material, event){
         code_text.addEventListener("keypress", function(e){
             e.stopPropagation();
         }, false);
+
+        // Drag and drop mp3
+        document.addEventListener("dragover", function(e){
+            e.stopPropagation();
+            e.preventDefault();
+        }, false);
+        document.addEventListener("drop", function(e){
+            e.stopPropagation();
+            e.preventDefault();
+            loadAudioBufferFile(e.dataTransfer.files[0], playAudioBuffer);
+        }, false);
     }
 
 
@@ -69,14 +80,31 @@ function(core, material, event){
 
     var context, source, analyser, freq_data;
 
-    function loadAudioBuffer(url, callback){
+    function safeCreateAudioBuffer(buffer, callback){
+        try{
+            var audio_buffer = context.createBuffer(buffer, true);
+            callback(audio_buffer);
+        }
+        catch(err){
+            console.log(err);
+        }
+    }
+
+    function loadAudioBufferUrl(url, callback){
         var req = new XMLHttpRequest();
         req.open("GET", url, true);
         req.responseType = "arraybuffer";
         req.onload = function(){
-            callback(context.createBuffer(req.response, true));
+            safeCreateAudioBuffer(req.response, callback);
         };
         req.send();
+    }
+    function loadAudioBufferFile(file, callback){
+        var reader = new FileReader();
+        reader.onload = function(){
+            safeCreateAudioBuffer(reader.result, callback);
+        };
+        reader.readAsArrayBuffer(file);
     }
 
     function initAudio(){
@@ -90,6 +118,12 @@ function(core, material, event){
         analyser.connect(context.destination);
 
         freq_data = new Uint8Array(analyser.frequencyBinCount);
+    }
+
+    function playAudioBuffer(buffer){
+        source.buffer = buffer;
+        source.loop = false;
+        source.noteOn(0); // Play
     }
 
 
@@ -181,13 +215,10 @@ function(core, material, event){
     initUI();
     initAudio();
     initGL();
-    loadAudioBuffer("test.mp3", function(buffer){
-        source.buffer = buffer;
-        source.loop = false;
-        source.noteOn(0); // Play
-        window.requestAnimationFrame(render);
-    });
+    loadAudioBufferUrl("test.mp3", playAudioBuffer);
 
     resize();
+
+    window.requestAnimationFrame(render);
 
 });
