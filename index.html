@@ -19,10 +19,9 @@ if(!window.requestAnimationFrame){
     })();
 }
 
-function init(){
+window.addEventListener("load", function(){
     require([ "main" ]);
-}
-window.addEventListener("load", init);
+});
 
 </script>
 </head>
@@ -30,8 +29,14 @@ window.addEventListener("load", init);
     <canvas id="canvas"></canvas>
     <div id="code" class="shut" style="visibility:hidden">
 <textarea id="code-text" spellcheck="false">
+#define smoothing .75
+#define num_bands 256
+
 uniform sampler2D u_frequencies;
+uniform float u_aspect;
+
 varying vec2 v_texcoord;
+
 void main(){
   float freq = texture2D(u_frequencies, v_texcoord).x;
   vec3 color = vec3(freq > v_texcoord.y) * (v_texcoord.y / freq);
