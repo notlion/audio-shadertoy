@@ -13,8 +13,7 @@ function(core, material, event, selector ){
 
     var code_text = document.getElementById("code-text");
 
-    function initUI() {
-
+    function initUI(){
         var code = document.getElementById("code")
           , code_toggle = document.getElementById("code-toggle")
           , code_open = false;
@@ -162,7 +161,6 @@ function(core, material, event, selector ){
     }
 
     function initAudio(){
-
         context = new webkitAudioContext();
 
         source = context.createBufferSource();
