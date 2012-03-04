@@ -115,7 +115,7 @@ function(core, material, event, selector ){
     var mouse_pos = new core.Vec2(0, 0);
 
     function onMouseMove(e){
-        mouse_pos.set(e.clientX / canvas.clientWidth, e.clientY / canvas.clientHeight);
+        mouse_pos.set(e.clientX / canvas.clientWidth, 1 - (e.clientY / canvas.clientHeight));
     }
     function setMouseMoveEnabled(enabled){
         if(enabled != mouse_move_enabled){
