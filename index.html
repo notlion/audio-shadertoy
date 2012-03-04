@@ -28,5 +28,22 @@ window.addEventListener("load", init);
 </head>
 <body>
     <canvas id="canvas"></canvas>
+    <div id="code" class="shut" style="visibility:hidden">
+<textarea id="code-text" spellcheck="false">
+uniform sampler2D u_frequencies;
+varying vec2 v_texcoord;
+void main(){
+  float freq = texture2D(u_frequencies, v_texcoord).x;
+  vec3 color = vec3(freq > v_texcoord.y) * (v_texcoord.y / freq);
+  gl_FragColor = vec4(color, 1.);
+}
+</textarea>
+    </div>
+    <svg id="code-toggle" title="Toggle Shader Source" class="shut" width="30" height="30" version="1.2" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(15,15)">
+            <circle cx="0" cy="0" r="13"/>
+            <path d="M -7,0 L 7,0 M 0,-7 L 0,7"/>
+        </g>
+    </svg>
 </body>
 </html>

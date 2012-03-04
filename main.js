@@ -3,9 +3,69 @@ require.config({
 });
 require([
     "embr/core",
-    "embr/material"
+    "embr/material",
+    "event"
 ],
-function(core, material){
+function(core, material, event){
+
+    // UI //
+
+    var code_text = document.getElementById("code-text");
+
+    function initUI(){
+        var code = document.getElementById("code")
+          , code_toggle = document.getElementById("code-toggle")
+          , code_open = false;
+
+        function setCodeOpen(open){
+            code_open = open;
+            code_toggle.setAttribute("class", code_open ? "open" : "shut");
+            if(code_open){
+                code.style.visibility = "visible";
+                code.classList.remove("shut");
+            }
+            else{
+                event.addTransitionEndListener(code, function(e){
+                    code.style.visibility = "hidden";
+                }, true);
+                code.classList.add("shut");
+            }
+        }
+        code_toggle.addEventListener("click", function(e){
+            setCodeOpen(!code_open);
+        }, false);
+
+        // Compile as you type
+        code_text.addEventListener("keydown", function(e){
+            e.stopPropagation();
+            if(e.keyCode == 9){ // tab
+                e.preventDefault();
+
+                var start = code_text.selectionStart;
+                var end = code_text.selectionEnd;
+
+                code_text.value = code_text.value.substring(0, start) + "  " + code_text.value.substring(end, code_text.value.length);
+                code_text.selectionStart = code_text.selectionEnd = start + 2;
+                code_text.focus();
+            }
+        }, false);
+        code_text.addEventListener("keyup", function(e){
+            e.stopPropagation();
+            if(e.keyCode == 37 || // left
+               e.keyCode == 38 || // up
+               e.keyCode == 39 || // right
+               e.keyCode == 40)   // down
+                return;
+
+            tryCompile();
+        }, false);
+        code_text.addEventListener("keypress", function(e){
+            e.stopPropagation();
+        }, false);
+    }
+
+
+    // AUDIO //
 
     var context, source, analyser, freq_data;
 
@@ -33,6 +93,8 @@ function(core, material){
     }
 
 
+    // GFX //
+
     var canvas = document.getElementById("canvas");
     var gl, program, freq_texture, plane;
 
@@ -56,6 +118,22 @@ function(core, material){
         "}"
     ].join("\n");
 
+    function tryCompile(){
+        try{
+            var shader_src_frag = code_text.value.trim();
+
+            program.compile(shader_src_vert, shader_src_frag);
+            program.link();
+            code_text.classList.remove("error");
+
+            console.log("Compile Successful!");
+        }
+        catch(err){
+            code_text.classList.add("error");
+            console.error("Error compiling shader: " + err);
+        }
+    }
+
     function initGL(){
         try{
             // gl = core.util.glWrapContextWithErrorChecks(canvas.getContext("experimental-webgl"));
@@ -66,14 +144,7 @@ function(core, material){
         }
 
         program = new core.Program(gl);
-        try{
-            program.compile(shader_src_vert, shader_src_frag);
-            program.link();
-            console.log("Compile Successful!");
-        }
-        catch(err){
-            console.error("Error compiling shader: " + err);
-        }
+        tryCompile();
 
         plane = core.Vbo.createPlane(gl, -1, -1, 1, 1);
         program.assignLocations(plane);
@@ -107,6 +178,7 @@ function(core, material){
     }
     window.addEventListener("resize", resize, false);
 
+    initUI();
     initAudio();
     initGL();
     loadAudioBuffer("test.mp3", function(buffer){
