@@ -51,6 +51,7 @@ function(core, material, event){
         }, false);
         code_text.addEventListener("keyup", function(e){
             e.stopPropagation();
+
             if(e.keyCode == 37 || // left
                e.keyCode == 38 || // up
                e.keyCode == 39 || // right
@@ -113,17 +114,26 @@ function(core, material, event){
         source = context.createBufferSource();
         analyser = context.createAnalyser();
         analyser.fftSize = 512;
+        analyser.smoothingTimeConstant = 0.5;
 
         source.connect(analyser);
         analyser.connect(context.destination);
 
-        freq_data = new Uint8Array(analyser.frequencyBinCount);
+        initFrequencyData();
     }
 
     function playAudioBuffer(buffer){
         source.buffer = buffer;
-        source.loop = false;
+        source.loop = true;
         source.noteOn(0); // Play
+    }
+
+    function initFrequencyData(){
+        freq_data = new Uint8Array(analyser.frequencyBinCount);
+        freq_texture.setData(analyser.frequencyBinCount, 1, freq_data, {
+            format: gl.LUMINANCE,
+            formati: gl.LUMINANCE
+        });
     }
 
 
@@ -142,19 +152,35 @@ function(core, material, event){
         "}"
     ].join("\n");
 
-    var shader_src_frag = [
-        "uniform sampler2D u_frequencies;",
-        "varying vec2 v_texcoord;",
-        "void main(){",
-            "float freq = texture2D(u_frequencies, v_texcoord).x;",
-            "vec3 color = vec3(freq > v_texcoord.y) * (v_texcoord.y / freq);",
-            "gl_FragColor = vec4(color, 1.);",
-        "}"
-    ].join("\n");
+    var shader_outlet_re = /^\s*#define\s+([A-Za-z]+[\w_]*)\s+([\d\.\d]+)/gm;
+
+    function parseShaderOutlets(src, callbacks){
+        var match, i, name, value;
+        while(match = shader_outlet_re.exec(src)){
+            for(i = 1; i < match.length; i += 2){
+                name = match[i].toLowerCase();
+                value = +match[i + 1];
+                if(!isNaN(value) && callbacks[name])
+                    callbacks[name](value);
+            }
+        }
+    }
 
     function tryCompile(){
         try{
             var shader_src_frag = code_text.value.trim();
+
+            parseShaderOutlets(shader_src_frag, {
+                "smoothing": function(value){
+                    analyser.smoothingTimeConstant = core.math.clamp(value, 0, 1);
+                },
+                "num_bands": function(value){
+                    if(core.math.isPow2(value)){
+                        analyser.fftSize = value * 2;
+                        initFrequencyData();
+                    }
+                }
+            });
 
             program.compile(shader_src_vert, shader_src_frag);
             program.link();
@@ -184,39 +210,33 @@ function(core, material, event){
         program.assignLocations(plane);
 
         freq_texture = new core.Texture(gl);
-        freq_texture.setData(analyser.frequencyBinCount, 1, freq_data, {
-            format: gl.LUMINANCE,
-            formati: gl.LUMINANCE
-        });
     }
 
     function render(){
         gl.viewport(0, 0, canvas.width, canvas.height);
 
         window.requestAnimationFrame(render);
-        analyser.smoothingTimeConstant = 0.1;
         analyser.getByteFrequencyData(freq_data);
 
         freq_texture.bind();
         freq_texture.updateData(freq_data);
 
         program.use({
-            u_frequencies: 0
+            u_frequencies: 0,
+            u_aspect: canvas.width / canvas.height
         });
         plane.draw();
     }
 
     function resize(){
-        canvas.width = canvas.clientWidth;
-        canvas.height = canvas.clientHeight;
+        canvas.width = Math.floor(canvas.clientWidth / 2);
+        canvas.height = Math.floor(canvas.clientHeight / 2);
     }
     window.addEventListener("resize", resize, false);
 
     initUI();
-    initAudio();
     initGL();
-    loadAudioBufferUrl("test.mp3", playAudioBuffer);
-
+    initAudio();
     resize();
 
     window.requestAnimationFrame(render);
