@@ -47,10 +47,10 @@ function(core, material){
     ].join("\n");
 
     var shader_src_frag = [
-        "uniform sampler2D frequencies;",
+        "uniform sampler2D u_frequencies;",
         "varying vec2 v_texcoord;",
         "void main(){",
-            "float freq = texture2D(frequencies, v_texcoord).x;",
+            "float freq = texture2D(u_frequencies, v_texcoord).x;",
             "vec3 color = vec3(freq > v_texcoord.y) * (v_texcoord.y / freq);",
             "gl_FragColor = vec4(color, 1.);",
         "}"
@@ -58,9 +58,8 @@ function(core, material){
 
     function initGL(){
         try{
-            gl = core.util.glWrapContextWithErrorChecks(
-                canvas.getContext("experimental-webgl")
-            );
+            // gl = core.util.glWrapContextWithErrorChecks(canvas.getContext("experimental-webgl"));
+            gl = canvas.getContext("experimental-webgl");
         }
         catch(err){
             console.error(err);
@@ -97,7 +96,7 @@ function(core, material){
         freq_texture.updateData(freq_data);
 
         program.use({
-            frequencies: 0
+            u_frequencies: 0
         });
         plane.draw();
     }
