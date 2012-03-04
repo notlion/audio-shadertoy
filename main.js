@@ -184,6 +184,8 @@ function(core, material, event){
 
             program.compile(shader_src_vert, shader_src_frag);
             program.link();
+            program.assignLocations(plane);
+
             code_text.classList.remove("error");
 
             console.log("Compile Successful!");
@@ -203,12 +205,9 @@ function(core, material, event){
             console.error(err);
         }
 
-        program = new core.Program(gl);
-        tryCompile();
-
         plane = core.Vbo.createPlane(gl, -1, -1, 1, 1);
-        program.assignLocations(plane);
 
+        program = new core.Program(gl);
         freq_texture = new core.Texture(gl);
     }
 
@@ -238,6 +237,7 @@ function(core, material, event){
     initGL();
     initAudio();
     resize();
+    tryCompile();
 
     window.requestAnimationFrame(render);
 

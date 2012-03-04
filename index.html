@@ -29,6 +29,9 @@ window.addEventListener("load", function(){
     <canvas id="canvas"></canvas>
     <div id="code" class="shut" style="visibility:hidden">
 <textarea id="code-text" spellcheck="false">
+#define smoothing .75
+#define num_bands 256
+
 uniform sampler2D u_frequencies;
 uniform float u_aspect;
 
