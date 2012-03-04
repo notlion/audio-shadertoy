@@ -65,7 +65,7 @@ function(core, material, event, selector ){
             e.stopPropagation();
         }, false);
 
-        // Magic Selector
+        // Magic Scroll Selector
         code_text.addEventListener("mousewheel", function(e){
             var wheelData = e.detail ? e.detail * -1 : e.wheelDelta / 40;
             var selected = selector.getSelection(code_text.id);
