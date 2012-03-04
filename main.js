@@ -73,8 +73,10 @@ function(core, material, event, selector ){
 
             // if selection is a number, adjust value in selection via mousewheel
             if (!isNaN (selected.text-0) && selected.text != '') {
+                
                 e.preventDefault();
                 e.stopPropagation();
+
                 var orig = code_text.value;
                 var front = orig.substr(0, selected.start);
                 var end = orig.substr(selected.end, orig.length);
@@ -86,13 +88,11 @@ function(core, material, event, selector ){
                     var fvar = (selected.text+"").split('.');
                     var precisionLength = (fvar[1] + '').length;
                     newValue = parseFloat(parseFloat(selected.text) + wheelData).toFixed( precisionLength );
-                    console.log(newValue, precisionLength);
                 }
-                var new_code_text = front + newValue + end;
-                // replace all code
-                code_text.value = new_code_text;
-                // select update text
+
+                code_text.value = front + newValue + end;
                 selector.set_selection(code_text.id, selected.start, selected.start + (newValue+"").length );
+                
                 return false;
             }
 
