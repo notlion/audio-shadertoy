@@ -31,9 +31,10 @@ window.addEventListener("load", function(){
 <textarea id="code-text" spellcheck="false">
 #define smoothing .75
 #define num_bands 256
+#define pixel_scale 2
 
 uniform sampler2D u_frequencies;
-uniform float u_aspect;
+uniform float u_aspect, u_time;
 
 varying vec2 v_texcoord;
 
