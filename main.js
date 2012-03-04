@@ -283,6 +283,7 @@ function(core, material, event, selector ){
         program.use({
             u_frequencies: 0,
             u_aspect: canvas.width / canvas.height,
+            u_mouse: mouse_pos,
             u_time: (Date.now() - start_time) / 1000
         });
         plane.draw();
