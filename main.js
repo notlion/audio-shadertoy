@@ -66,23 +66,32 @@ function(core, material, event, selector ){
         }, false);
         code_text.addEventListener("mousewheel", function(e) {
 
-            
-            
-            var sel = selector.get_selection(code_text.id);
-            // if selection is a number, adjust value in selection
-            if (!isNaN (sel.text-0)) {
-                var wheelData = e.detail ? e.detail * -1 : e.wheelDelta / 40;
-                var orig_code = code_text.value;
-                var value = sel.text;
-                var newValue = parseFloat(value) + wheelData;
-                var front = orig_code.substr(0, sel.start);
-                var end   = orig_code.substr(sel.end, orig_code.length);
-                var new_code = front + newValue + end;
-                code_text.value = new_code;
-                selector.set_selection(code_text.id, sel.start, sel.start + (newValue+"").length );
+            // magic selector
+            var wheelData = e.detail ? e.detail * -1 : e.wheelDelta / 40;
+            var selected = selector.get_selection(code_text.id);
+
+            // if selection is a number, adjust value in selection via mousewheel
+            if (!isNaN (selected.text-0)) {
                 e.preventDefault();
                 e.stopPropagation();
-                tryCompile();
+                var orig = code_text.value;
+                var front = orig.substr(0, selected.start);
+                var end = orig.substr(selected.end, orig.length);
+                var newValue;
+                if ( (selected.text+"").split('.').length == 1 ) { // if is int
+                    newValue = Math.round( parseFloat(selected.text) + wheelData );
+                }
+                else if ( (selected.text+"").split('.').length == 2 ) { // it's a float
+                    var fvar = (selected.text+"").split('.');
+                    var precisionLength = (fvar[1] + '').length;
+                    newValue = parseFloat(parseFloat(selected.text) + wheelData).toFixed( precisionLength );
+                    console.log(newValue, precisionLength);
+                }
+                var new_code_text = front + newValue + end;
+                // replace all code
+                code_text.value = new_code_text;
+                // select update text
+                selector.set_selection(code_text.id, selected.start, selected.start + (newValue+"").length );
                 return false;
             }
 
@@ -133,6 +142,7 @@ function(core, material, event, selector ){
     }
 
     function initAudio(){
+
         context = new webkitAudioContext();
 
         source = context.createBufferSource();

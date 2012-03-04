@@ -3,6 +3,7 @@ define(function(){
 
     "use strict";
 
+
 	function get_selection(the_id)
 	{
 	    var e = document.getElementById(the_id);

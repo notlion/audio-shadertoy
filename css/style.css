@@ -73,6 +73,18 @@ body {
   #code-text.error {
     color: #f00; }
 
+#code-text::selection {
+  background: #0cc;
+  color: #fff; }
+
+#code-text::-moz-selection {
+  background: #0cc;
+  color: #fff; }
+
+#code-text::-webkit-selection {
+  background: #0cc;
+  color: #fff; }
+
 #code-toggle {
   position: absolute;
   left: 12px;
