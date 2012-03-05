@@ -7,7 +7,7 @@ require([
     "event",
     "selector"
 ],
-function(core, material, event, selector ){
+function(core, material, event, selector){
 
     // UI //
 
