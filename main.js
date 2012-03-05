@@ -67,13 +67,11 @@ function(core, material, event, selector ){
 
         // Magic Scroll Selector
         code_text.addEventListener("mousewheel", function(e){
-
             selector.scrollNumber(code_text, e.wheelDelta / 40, function() {
                 tryCompile();
                 e.preventDefault();
                 e.stopPropagation();
             });
-
         }, false);
 
         // Drag and drop mp3
