@@ -179,7 +179,7 @@ function(core, material, event, selector){
         "}"
     ].join("\n");
 
-    var shader_outlet_re = /^\s*#define\s+([A-Za-z]+[\w_]*)\s+([\d\.\d]+)/gm;
+    var shader_outlet_re = /^[ \t]*#define[ \t]+([\w_]*)[ \t]+([\d\.\d]+)/gm;
 
     function parseShaderOutlets(src, callbacks){
         var match, i, name, value;
