@@ -67,36 +67,11 @@ function(core, material, event, selector ){
 
         // Magic Scroll Selector
         code_text.addEventListener("mousewheel", function(e){
-            var wheelData = e.detail ? e.detail * -1 : e.wheelDelta / 40;
-            var selected = selector.getSelection(code_text.id);
-
-            // if selection is a number, adjust value in selection via mousewheel
-            if(!isNaN(selected.text - 0) && selected.text != ""){
-                e.preventDefault();
+            selector.scrollNumber(code_text, e.wheelDelta / 40, function() {
                 e.stopPropagation();
-
-                var orig = code_text.value;
-                var front = orig.substr(0, selected.start);
-                var end = orig.substr(selected.end, orig.length);
-                var newValue = null;
-
-                if((selected.text + "").split('.').length == 1){ // if is int
-                    newValue = Math.round( parseFloat(selected.text) + wheelData );
-                }
-                else if((selected.text + "").split(".").length == 2){ // it's a float
-                    var fvar = (selected.text+"").split(".");
-                    var precisionLength = (fvar[1] + "").length;
-                    newValue = parseFloat(parseFloat(selected.text) + wheelData).toFixed( precisionLength );
-                }
-
-                if(newValue !== null){
-                    code_text.value = front + newValue + end;
-                    selector.setSelection(code_text.id, selected.start, selected.start + (newValue + "").length );
-                    tryCompile();
-                }
-
-                return false;
-            }
+                e.preventDefault();
+                tryCompile();
+            });
         }, false);
 
         // Drag and drop mp3
