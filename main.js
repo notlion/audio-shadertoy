@@ -65,9 +65,9 @@ function(core, material, event, selector ){
             e.stopPropagation();
         }, false);
 
-        // Magic Scroll Selector
+        // Magic Number Dial / Scroll
         code_text.addEventListener("mousewheel", function(e){
-            selector.scrollNumber(code_text, e.wheelDelta / 40, function() {
+            selector.scrollNumber(code_text, e.wheelDelta / 40, function(){
                 e.stopPropagation();
                 e.preventDefault();
                 tryCompile();
