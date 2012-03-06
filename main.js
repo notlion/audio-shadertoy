@@ -301,7 +301,6 @@ function(core, material, event, params, selector){
     params.loadUrlHash({
         "fs": function(hex){
             params.lzmaDecompress(hex, function(src){
-                console.log(src);
                 code_text.value = src;
                 tryCompile();
             });
