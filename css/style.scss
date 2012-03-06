@@ -21,12 +21,10 @@ body {
 #code {
     position: absolute;
     left: 30px; right: 50%; top: 30px; bottom: 30px;
-    padding: 10px;
+    padding: 20px 10px 10px 10px;
     border-radius: 5px;
     opacity: 1;
-    @include transition-property(background-color, opacity);
-    @include transition-duration(0.2s);
-    @include transition-timing-function(ease-in);
+    @include transition((background-color, opacity), 0.2s, ease-in);
     &:hover {
         @include transition-duration(0.1s);
         @include transition-timing-function(ease-out);
@@ -55,38 +53,49 @@ body {
     &.error {
         color: #f00;
     }
+    &::selection {
+        background: #0cc;
+        color: #fff;
+    }
+    &::-moz-selection {
+        background: #0cc;
+        color:#fff;
+    }
+    &::-webkit-selection {
+        background: #0cc;
+        color:#fff;
+    }
 }
-#code-text::selection {
-  background: #0cc;
-  color: #fff;  }
-#code-text::-moz-selection {
-  background: #0cc;
-  color:#fff; }
-#code-text::-webkit-selection {
-  background: #0cc;
-  color:#fff; }
 
-#code-toggle {
+#code-toggle, #code-save {
     position: absolute;
-    left: 12px; top: 12px;
-    stroke: #fff; fill: #012;
+    stroke: #fff;
     stroke-width: 2px;
     cursor: pointer;
-    -webkit-transition-property: -webkit-transform;
-    -moz-transition-property: -moz-transform;
-    -ms-transition-property: -ms-transform;
-    -o-transition-property: -o-transform;
-    transition-property: transform;
-    @include transition-timing-function(ease-out);
-    @include transition-duration(0.2s);
-    &:hover {
-        fill: #239;
-    }
+}
+#code-toggle {
+    left: 12px;
+    top: 12px;
+    fill: #012;
+    @include transition((-webkit-transform, -moz-transform, -ms-transform, -o-transform, transform), 0.2s, ease-out);
     &.open {
         @include transform(rotate(45deg));
         fill: #000;
     }
     &.shut {
         @include transform(rotate(0deg));
+    }
+    &:hover {
+        fill: #239;
+    }
+}
+#code-save {
+    left: 46px;
+    top: 12px;
+    fill: #000;
+    opacity: 0;
+    @include transition(opacity, 0.2s, ease-out);
+    &:hover {
+        fill: #282;
     }
 }

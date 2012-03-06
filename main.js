@@ -5,9 +5,10 @@ require([
     "embr/core",
     "embr/material",
     "event",
+    "params",
     "selector"
 ],
-function(core, material, event, selector){
+function(core, material, event, params, selector){
 
     // UI //
 
@@ -16,13 +17,16 @@ function(core, material, event, selector){
     function initUI(){
         var code = document.getElementById("code")
           , code_toggle = document.getElementById("code-toggle")
+          , code_save = document.getElementById("code-save")
           , code_open = false;
 
         function setCodeOpen(open){
             code_open = open;
-            code_toggle.setAttribute("class", code_open ? "open" : "shut");
-            if(code_open){
+            code_toggle.setAttribute("class", open ? "open" : "shut");
+            if(open){
                 code.style.visibility = "visible";
+                code_save.style.display = "block";
+                code_save.style.opacity = "1";
                 code.classList.remove("shut");
             }
             else{
@@ -30,11 +34,24 @@ function(core, material, event, selector){
                     code.style.visibility = "hidden";
                 }, true);
                 code.classList.add("shut");
+                event.addTransitionEndListener(code_save, function(e){
+                    code_save.style.display = "none";
+                }, true);
+                code_save.style.opacity = "0";
             }
         }
         code_toggle.addEventListener("click", function(e){
             setCodeOpen(!code_open);
         }, false);
+
+        function saveCode(){
+            params.lzmaCompress(code_text.value.trim(), 1, function(src_compressed){
+                params.saveUrlHash({
+                    "fs": src_compressed
+                });
+            });
+        }
+        code_save.addEventListener("click", saveCode, false);
 
         // Compile as you type
         code_text.addEventListener("keydown", function(e){
@@ -280,6 +297,16 @@ function(core, material, event, selector){
     tryCompile();
 
     var start_time = Date.now();
+
+    params.loadUrlHash({
+        "fs": function(hex){
+            params.lzmaDecompress(hex, function(src){
+                console.log(src);
+                code_text.value = src;
+                tryCompile();
+            });
+        }
+    });
 
     window.requestAnimationFrame(render);
 
