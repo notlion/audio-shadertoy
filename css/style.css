@@ -98,11 +98,11 @@ body {
   left: 12px;
   top: 12px;
   fill: #012;
-  -webkit-transition-property: -webkit-transform, -moz-transform, -ms-transform, -o-transform, transform;
-  -moz-transition-property: -webkit-transform, -moz-transform, -ms-transform, -o-transform, transform;
-  -ms-transition-property: -webkit-transform, -moz-transform, -ms-transform, -o-transform, transform;
-  -o-transition-property: -webkit-transform, -moz-transform, -ms-transform, -o-transform, transform;
-  transition-property: -webkit-transform, -moz-transform, -ms-transform, -o-transform, transform;
+  -webkit-transition-property: -webkit-transform;
+  -moz-transition-property: -moz-transform;
+  -ms-transition-property: -ms-transform;
+  -o-transition-property: -o-transform;
+  transition-property: transform;
   -webkit-transition-duration: 0.2s;
   -moz-transition-duration: 0.2s;
   -ms-transition-duration: 0.2s;
@@ -112,12 +112,7 @@ body {
   -moz-transition-timing-function: ease-out;
   -ms-transition-timing-function: ease-out;
   -o-transition-timing-function: ease-out;
-  transition-timing-function: ease-out;
-  -webkit-transition-delay: 0;
-  -moz-transition-delay: 0;
-  -ms-transition-delay: 0;
-  -o-transition-delay: 0;
-  transition-delay: 0; }
+  transition-timing-function: ease-out; }
   #code-toggle.open {
     -webkit-transform: rotate(45deg);
     -moz-transform: rotate(45deg);
