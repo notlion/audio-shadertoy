@@ -84,6 +84,9 @@ function(core, material, event, selector){
             e.preventDefault();
             loadAudioBufferFile(e.dataTransfer.files[0], playAudioBuffer);
         }, false);
+
+        // TODO: Set this via permalink
+        setCodeOpen(true);
     }
 
     var mouse_move_enabled = false;
