@@ -77,7 +77,13 @@ body {
     left: 12px;
     top: 12px;
     fill: #012;
-    @include transition((-webkit-transform, -moz-transform, -ms-transform, -o-transform, transform), 0.2s, ease-out);
+    -webkit-transition-property: -webkit-transform;
+    -moz-transition-property: -moz-transform;
+    -ms-transition-property: -ms-transform;
+    -o-transition-property: -o-transform;
+    transition-property: transform;
+    @include transition-duration(0.2s);
+    @include transition-timing-function(ease-out);
     &.open {
         @include transform(rotate(45deg));
         fill: #000;
