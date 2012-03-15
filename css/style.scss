@@ -24,6 +24,7 @@ body {
     padding: 20px 10px 10px 10px;
     border-radius: 5px;
     opacity: 1;
+    z-index:0;
     @include transition((background-color, opacity), 0.2s, ease-in);
     &:hover {
         @include transition-duration(0.1s);
@@ -34,6 +35,11 @@ body {
     &.shut {
         opacity: 0;
     }
+}
+#code.popped {
+    left:0; right:0; top:0; bottom:0; 
+    background-color: rgba(24, 28, 22, 0.8);
+    @include box-shadow(inset rgba(0, 0, 0, 0.5) 0px 0px 6px);
 }
 
 #code-text {
@@ -67,7 +73,8 @@ body {
     }
 }
 
-#code-toggle, #code-save {
+#code-toggle, #code-save, #code-popout {
+    z-index:10;
     position: absolute;
     stroke: #fff;
     stroke-width: 2px;
@@ -95,7 +102,7 @@ body {
         fill: #239;
     }
 }
-#code-save {
+#code-save, #code-popout {
     left: 46px;
     top: 12px;
     fill: #000;
@@ -103,5 +110,11 @@ body {
     @include transition(opacity, 0.2s, ease-out);
     &:hover {
         fill: #282;
+    }
+}
+#code-popout {
+    left: 80px;
+    &:hover {
+        fill: #888;
     }
 }

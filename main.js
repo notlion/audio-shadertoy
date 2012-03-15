@@ -13,12 +13,15 @@ function(core, material, event, params, selector){
     // UI //
 
     var code_text = document.getElementById("code-text");
+    var code_window = null;
 
     function initUI(){
         var code = document.getElementById("code")
           , code_toggle = document.getElementById("code-toggle")
           , code_save = document.getElementById("code-save")
-          , code_open = false;
+          , code_popout = document.getElementById("code-popout")
+          , code_open = false
+          , code_popped = false;
 
         function setCodeOpen(open){
             code_open = open;
@@ -27,6 +30,8 @@ function(core, material, event, params, selector){
                 code.style.visibility = "visible";
                 code_save.style.display = "block";
                 code_save.style.opacity = "1";
+                code_popout.style.display = "block";
+                code_popout.style.opacity = "1";                
                 code.classList.remove("shut");
             }
             else{
@@ -36,8 +41,10 @@ function(core, material, event, params, selector){
                 code.classList.add("shut");
                 event.addTransitionEndListener(code_save, function(e){
                     code_save.style.display = "none";
+                    code_popout.style.display = "none";
                 }, true);
                 code_save.style.opacity = "0";
+                code_popout.style.opacity = "0";
             }
         }
         code_toggle.addEventListener("click", function(e){
@@ -53,43 +60,79 @@ function(core, material, event, params, selector){
         }
         code_save.addEventListener("click", saveCode, false);
 
-        // Compile as you type
-        code_text.addEventListener("keydown", function(e){
-            e.stopPropagation();
-            if(e.keyCode == 9){ // tab
-                e.preventDefault();
-
-                var start = code_text.selectionStart;
-                var end = code_text.selectionEnd;
-
-                code_text.value = code_text.value.substring(0, start) + "  " + code_text.value.substring(end, code_text.value.length);
-                code_text.selectionStart = code_text.selectionEnd = start + 2;
-                code_text.focus();
+        function setCodePoppedOut(pop){
+            code_popped = pop;
+            var popped_code_text = null;
+            if (pop) {
+                code_window = window.open("pop.html", "code_window", "width=500,height=500,scrollbars=yes ,menubar=no,location=no,left=0,top=0");
+                code_window.addEventListener("load", function(){
+                    popped_code_text = code_window.document.getElementById("code-text");
+                    popped_code_text.value = code_text.value;
+                    addCodeEventListeners(popped_code_text);
+                });
+                code_window.addEventListener('beforeunload', function(e) {
+                    code_text.value = popped_code_text.value;
+                    setCodePoppedOut(false);
+                });
+                code_save.style.opacity = "0";
+                code_toggle.style.opacity = "0";
+                code_popout.style.opacity = "0";
+                document.body.removeChild(code);
             }
-        }, false);
-        code_text.addEventListener("keyup", function(e){
-            e.stopPropagation();
-
-            if(e.keyCode == 37 || // left
-               e.keyCode == 38 || // up
-               e.keyCode == 39 || // right
-               e.keyCode == 40)   // down
-                return;
-
-            tryCompile();
-        }, false);
-        code_text.addEventListener("keypress", function(e){
-            e.stopPropagation();
+            else{
+                code_window = false;
+                code_save.style.opacity = "1";
+                code_toggle.style.opacity = "1";
+                code_popout.style.opacity = "1";
+                document.body.appendChild(code);
+            }
+        }
+        code_popout.addEventListener("click", function(e) {
+            setCodePoppedOut(!code_popped);
         }, false);
 
-        // Magic Number Dial / Scroll
-        code_text.addEventListener("mousewheel", function(e){
-            selector.scrollNumber(code_text, e.wheelDelta / 40, function(){
+        
+        function addCodeEventListeners(code_text) {
+            // Compile as you type
+            code_text.addEventListener("keydown", function(e){
                 e.stopPropagation();
-                e.preventDefault();
-                tryCompile();
-            });
-        }, false);
+                if(e.keyCode == 9){ // tab
+                    e.preventDefault();
+
+                    var start = code_text.selectionStart;
+                    var end = code_text.selectionEnd;
+
+                    code_text.value = code_text.value.substring(0, start) + "  " + code_text.value.substring(end, code_text.value.length);
+                    code_text.selectionStart = code_text.selectionEnd = start + 2;
+                    code_text.focus();
+                }
+            }, false);
+            code_text.addEventListener("keyup", function(e){
+                e.stopPropagation();
+
+                if(e.keyCode == 37 || // left
+                   e.keyCode == 38 || // up
+                   e.keyCode == 39 || // right
+                   e.keyCode == 40)   // down
+                    return;
+
+                tryCompile(code_text);
+            }, false);
+            code_text.addEventListener("keypress", function(e){
+                e.stopPropagation();
+            }, false);
+
+            // Magic Number Dial / Scroll
+            code_text.addEventListener("mousewheel", function(e){
+                selector.scrollNumber(code_text, e.wheelDelta / 40, function(){
+                    e.stopPropagation();
+                    e.preventDefault();
+                    tryCompile(code_text);
+                });
+            }, false);
+        }
+        addCodeEventListeners(code_text);
+
 
         // Drag and drop mp3
         document.addEventListener("dragover", function(e){
@@ -104,6 +147,7 @@ function(core, material, event, params, selector){
 
         // TODO: Set this via permalink
         setCodeOpen(true);
+        setCodePoppedOut(false);
     }
 
     var mouse_move_enabled = false;
@@ -213,7 +257,7 @@ function(core, material, event, params, selector){
         }
     }
 
-    function tryCompile(){
+    function tryCompile(code_text){
         try{
             var shader_src_frag = code_text.value.trim();
 
@@ -294,7 +338,7 @@ function(core, material, event, params, selector){
     initGL();
     initAudio();
     resize();
-    tryCompile();
+    tryCompile(code_text);
 
     var start_time = Date.now();
 
@@ -302,7 +346,7 @@ function(core, material, event, params, selector){
         "fs": function(hex){
             params.lzmaDecompress(hex, function(src){
                 code_text.value = src;
-                tryCompile();
+                tryCompile(code_text);
             });
         }
     });
