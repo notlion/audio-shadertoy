@@ -88,6 +88,7 @@ body {
     stroke: #fff;
     stroke-width: 2px;
     cursor: pointer;
+    @include transition(opacity, 0.2s, ease-out);
 }
 #code-toggle {
     left: 12px; top: 12px;
@@ -114,7 +115,6 @@ body {
     left: 46px; top: 12px;
     fill: #000;
     opacity: 0;
-    @include transition(opacity, 0.2s, ease-out);
     &:hover {
         fill: #282;
     }

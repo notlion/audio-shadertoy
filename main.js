@@ -20,31 +20,37 @@ function(core, material, event, params, selector){
           , code_save = document.getElementById("code-save")
           , code_popout = document.getElementById("code-popout")
           , code_window = null
+          , popped_code_text = null
           , code_open = false
           , code_popped = false;
 
         function setCodeOpen(open){
-            code_open = open;
-            code_toggle.setAttribute("class", open ? "open" : "shut");
-            if(open){
-                code.style.visibility = "visible";
-                code_save.style.display = "block";
-                code_save.style.opacity = "1";
-                code_popout.style.display = "block";
-                code_popout.style.opacity = "1";
-                code.classList.remove("shut");
-            }
-            else{
-                event.addTransitionEndListener(code, function(e){
-                    code.style.visibility = "hidden";
-                }, true);
-                code.classList.add("shut");
-                event.addTransitionEndListener(code_save, function(e){
-                    code_save.style.display = "none";
-                    code_popout.style.display = "none";
-                }, true);
-                code_save.style.opacity = "0";
-                code_popout.style.opacity = "0";
+            if(open !== code_open){
+                code_open = open;
+                code_toggle.setAttribute("class", open ? "open" : "shut");
+                if(open){
+                    code.style.visibility = "visible";
+                    code_save.style.display = "block";
+                    code_save.style.opacity = "1";
+                    code_popout.style.display = "block";
+                    code_popout.style.opacity = "1";
+                    code.classList.remove("shut");
+                    setCodePoppedOut(false);
+                }
+                else{
+                    event.addTransitionEndListener(code, function(e){
+                        code.style.visibility = "hidden";
+                    }, true);
+                    code.classList.add("shut");
+                    event.addTransitionEndListener(code_save, function(e){
+                        code_save.style.display = "none";
+                    }, true);
+                    code_save.style.opacity = "0";
+                    event.addTransitionEndListener(code_popout, function(e){
+                        code_popout.style.display = "none";
+                    }, true);
+                    code_popout.style.opacity = "0";
+                }
             }
         }
         code_toggle.addEventListener("click", function(e){
@@ -60,36 +66,35 @@ function(core, material, event, params, selector){
         }
         code_save.addEventListener("click", saveCode, false);
 
-        function setCodePoppedOut(pop){
-            code_popped = pop;
-            var popped_code_text = null;
-            if (pop) {
-                code_window = window.open("pop.html", "code-window", "width=700,height=500,scrollbars=yes,menubar=no,location=no,left=50,top=50");
-                code_window.addEventListener("load", function(){
-                    popped_code_text = code_window.document.getElementById("code-text");
-                    popped_code_text.value = code_text.value;
-                    addCodeEventListeners(popped_code_text);
-                });
-                code_window.addEventListener('beforeunload', function(e){
-                    code_text.value = popped_code_text.value;
-                    setCodePoppedOut(false);
-                });
-                code_save.style.opacity = "0";
-                code_toggle.style.opacity = "0";
-                code_popout.style.opacity = "0";
-                document.body.removeChild(code);
-            }
-            else{
-                code_window = false;
-                code_save.style.opacity = "1";
-                code_toggle.style.opacity = "1";
-                code_popout.style.opacity = "1";
-                document.body.appendChild(code);
+        function setCodePoppedOut(popped){
+            if(popped !== code_popped){
+                code_popped = popped;
+                if(popped){ // Pop
+                    code_window = window.open("pop.html", "code-window", "width=700,height=500,scrollbars=yes,menubar=no,location=no,left=50,top=50");
+                    code_window.addEventListener("load", onCodeWindowLoad);
+                    code_window.addEventListener("beforeunload", onCodeWindowUnload);
+                }
+                else{ // Unpop
+                    if(code_window){
+                        code_window.close();
+                        code_window = null;
+                    }
+                }
+                setCodeOpen(!popped);
             }
         }
         code_popout.addEventListener("click", function(e){
             setCodePoppedOut(!code_popped);
         }, false);
+        function onCodeWindowLoad(){
+            popped_code_text = code_window.document.getElementById("code-text");
+            popped_code_text.value = code_text.value;
+            addCodeEventListeners(popped_code_text);
+        }
+        function onCodeWindowUnload(){
+            code_text.value = popped_code_text.value;
+            setCodePoppedOut(false);
+        }
 
         function addCodeEventListeners(textarea){
             // Compile as you type
