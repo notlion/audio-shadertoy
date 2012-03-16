@@ -8,6 +8,8 @@ body {
   margin: 0;
   height: 100%;
   overflow: hidden; }
+  body.popped {
+    background-color: #0c0e0b; }
 
 #canvas {
   width: 100%;
@@ -67,9 +69,18 @@ body {
     right: 0;
     top: 0;
     bottom: 0;
-    padding: 20px; }
+    padding: 0; }
     #code.popped:hover {
       background-color: transparent; }
+    #code.popped #code-text {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      padding: 20px;
+      width: auto;
+      height: auto; }
 
 #code-text {
   margin: 0;

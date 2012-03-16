@@ -31,7 +31,7 @@ function(core, material, event, params, selector){
                 code_save.style.display = "block";
                 code_save.style.opacity = "1";
                 code_popout.style.display = "block";
-                code_popout.style.opacity = "1";                
+                code_popout.style.opacity = "1";
                 code.classList.remove("shut");
             }
             else{
@@ -64,7 +64,7 @@ function(core, material, event, params, selector){
             code_popped = pop;
             var popped_code_text = null;
             if (pop) {
-                code_window = window.open("pop.html", "code_window", "width=500,height=500,scrollbars=yes ,menubar=no,location=no,left=0,top=0");
+                code_window = window.open("pop.html", "code-window", "width=700,height=500,scrollbars=yes,menubar=no,location=no,left=50,top=50");
                 code_window.addEventListener("load", function(){
                     popped_code_text = code_window.document.getElementById("code-text");
                     popped_code_text.value = code_text.value;
@@ -91,23 +91,22 @@ function(core, material, event, params, selector){
             setCodePoppedOut(!code_popped);
         }, false);
 
-        
-        function addCodeEventListeners(code_text) {
+        function addCodeEventListeners(textarea) {
             // Compile as you type
-            code_text.addEventListener("keydown", function(e){
+            textarea.addEventListener("keydown", function(e){
                 e.stopPropagation();
                 if(e.keyCode == 9){ // tab
                     e.preventDefault();
 
-                    var start = code_text.selectionStart;
-                    var end = code_text.selectionEnd;
+                    var start = textarea.selectionStart;
+                    var end = textarea.selectionEnd;
 
-                    code_text.value = code_text.value.substring(0, start) + "  " + code_text.value.substring(end, code_text.value.length);
-                    code_text.selectionStart = code_text.selectionEnd = start + 2;
-                    code_text.focus();
+                    textarea.value = textarea.value.substring(0, start) + "  " + textarea.value.substring(end, textarea.value.length);
+                    textarea.selectionStart = textarea.selectionEnd = start + 2;
+                    textarea.focus();
                 }
             }, false);
-            code_text.addEventListener("keyup", function(e){
+            textarea.addEventListener("keyup", function(e){
                 e.stopPropagation();
 
                 if(e.keyCode == 37 || // left
@@ -116,23 +115,22 @@ function(core, material, event, params, selector){
                    e.keyCode == 40)   // down
                     return;
 
-                tryCompile(code_text);
+                tryCompile(textarea);
             }, false);
-            code_text.addEventListener("keypress", function(e){
+            textarea.addEventListener("keypress", function(e){
                 e.stopPropagation();
             }, false);
 
             // Magic Number Dial / Scroll
-            code_text.addEventListener("mousewheel", function(e){
-                selector.scrollNumber(code_text, e.wheelDelta / 40, function(){
+            textarea.addEventListener("mousewheel", function(e){
+                selector.scrollNumber(textarea, e.wheelDelta / 40, function(){
                     e.stopPropagation();
                     e.preventDefault();
-                    tryCompile(code_text);
+                    tryCompile(textarea);
                 });
             }, false);
         }
         addCodeEventListeners(code_text);
-
 
         // Drag and drop mp3
         document.addEventListener("dragover", function(e){
@@ -149,6 +147,9 @@ function(core, material, event, params, selector){
         setCodeOpen(true);
         setCodePoppedOut(false);
     }
+
+
+    // MOUSE //
 
     var mouse_move_enabled = false;
     var mouse_pos = new core.Vec2(0, 0);
@@ -257,9 +258,9 @@ function(core, material, event, params, selector){
         }
     }
 
-    function tryCompile(code_text){
+    function tryCompile(textarea){
         try{
-            var shader_src_frag = code_text.value.trim();
+            var shader_src_frag = textarea.value.trim();
 
             parseShaderOutlets(shader_src_frag, {
                 "smoothing": function(value){
@@ -285,12 +286,12 @@ function(core, material, event, params, selector){
 
             setMouseMoveEnabled(!!program.uniforms.u_mouse);
 
-            code_text.classList.remove("error");
+            textarea.classList.remove("error");
 
             console.log("Compile Successful!");
         }
         catch(err){
-            code_text.classList.add("error");
+            textarea.classList.add("error");
             console.error("Error compiling shader: " + err);
         }
     }
