@@ -13,13 +13,13 @@ function(core, material, event, params, selector){
     // UI //
 
     var code_text = document.getElementById("code-text");
-    var code_window = null;
 
     function initUI(){
         var code = document.getElementById("code")
           , code_toggle = document.getElementById("code-toggle")
           , code_save = document.getElementById("code-save")
           , code_popout = document.getElementById("code-popout")
+          , code_window = null
           , code_open = false
           , code_popped = false;
 
