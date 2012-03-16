@@ -22,6 +22,7 @@ body {
   padding: 20px 10px 10px 10px;
   border-radius: 5px;
   opacity: 1;
+  z-index: 0;
   -webkit-transition-property: background-color, opacity;
   -moz-transition-property: background-color, opacity;
   -ms-transition-property: background-color, opacity;
@@ -62,6 +63,18 @@ body {
   #code.shut {
     opacity: 0; }
 
+#code.popped {
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: rgba(24, 28, 22, 0.8);
+  -webkit-box-shadow: inset rgba(0, 0, 0, 0.5) 0px 0px 6px;
+  -moz-box-shadow: inset rgba(0, 0, 0, 0.5) 0px 0px 6px;
+  -ms-box-shadow: inset rgba(0, 0, 0, 0.5) 0px 0px 6px;
+  -o-box-shadow: inset rgba(0, 0, 0, 0.5) 0px 0px 6px;
+  box-shadow: inset rgba(0, 0, 0, 0.5) 0px 0px 6px; }
+
 #code-text {
   margin: 0;
   border: 0;
@@ -88,7 +101,8 @@ body {
     background: #0cc;
     color: #fff; }
 
-#code-toggle, #code-save {
+#code-toggle, #code-save, #code-popout {
+  z-index: 10;
   position: absolute;
   stroke: #fff;
   stroke-width: 2px;
@@ -129,7 +143,7 @@ body {
   #code-toggle:hover {
     fill: #239; }
 
-#code-save {
+#code-save, #code-popout {
   left: 46px;
   top: 12px;
   fill: #000;
@@ -154,5 +168,10 @@ body {
   -ms-transition-delay: 0;
   -o-transition-delay: 0;
   transition-delay: 0; }
-  #code-save:hover {
+  #code-save:hover, #code-popout:hover {
     fill: #282; }
+
+#code-popout {
+  left: 80px; }
+  #code-popout:hover {
+    fill: #888; }
