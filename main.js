@@ -6,13 +6,15 @@ require([
     "embr/material",
     "event",
     "params",
-    "selector"
+    "selector",
+    "demo"
 ],
-function(core, material, event, params, selector){
+function(core, material, event, params, selector, demo){
 
     // UI //
 
-    var code_text = document.getElementById("code-text");
+    var code_text = document.getElementById("code-text")
+      , popped_code_text = null;
 
     function initUI(){
         var code = document.getElementById("code")
@@ -20,7 +22,6 @@ function(core, material, event, params, selector){
           , code_save = document.getElementById("code-save")
           , code_popout = document.getElementById("code-popout")
           , code_window = null
-          , popped_code_text = null
           , code_open = false
           , code_popped = false;
 
@@ -78,6 +79,7 @@ function(core, material, event, params, selector){
                     if(code_window){
                         code_window.close();
                         code_window = null;
+                        popped_code_text = null;
                     }
                 }
                 setCodeOpen(!popped);
@@ -89,10 +91,12 @@ function(core, material, event, params, selector){
         function onCodeWindowLoad(){
             popped_code_text = code_window.document.getElementById("code-text");
             popped_code_text.value = code_text.value;
+            code_toggle.style.display = "none";
             addCodeEventListeners(popped_code_text);
         }
         function onCodeWindowUnload(){
             code_text.value = popped_code_text.value;
+            code_toggle.style.display = "block";
             setCodePoppedOut(false);
         }
 
@@ -195,6 +199,11 @@ function(core, material, event, params, selector){
         loadAudioBufferFile(playlist[playlist_pos], playAudioBuffer);
     }
     function playlistNext(){
+        params.lzmaDecompress(demo.random(), function(src){
+            var textarea = popped_code_text || code_text;
+            textarea.value = src;
+            tryCompile(textarea);
+        });
         playlist_pos = (playlist_pos + 1) % playlist.length;
     }
 
