@@ -62,18 +62,14 @@ body {
     background-color: rgba(24, 28, 22, 0.8); }
   #code.shut {
     opacity: 0; }
-
-#code.popped {
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  background-color: rgba(24, 28, 22, 0.8);
-  -webkit-box-shadow: inset rgba(0, 0, 0, 0.5) 0px 0px 6px;
-  -moz-box-shadow: inset rgba(0, 0, 0, 0.5) 0px 0px 6px;
-  -ms-box-shadow: inset rgba(0, 0, 0, 0.5) 0px 0px 6px;
-  -o-box-shadow: inset rgba(0, 0, 0, 0.5) 0px 0px 6px;
-  box-shadow: inset rgba(0, 0, 0, 0.5) 0px 0px 6px; }
+  #code.popped {
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    padding: 20px; }
+    #code.popped:hover {
+      background-color: transparent; }
 
 #code-text {
   margin: 0;
