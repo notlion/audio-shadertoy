@@ -18,26 +18,39 @@ function(core, material, event, params, selector){
         var code = document.getElementById("code")
           , code_toggle = document.getElementById("code-toggle")
           , code_save = document.getElementById("code-save")
-          , code_open = false;
+          , code_popout = document.getElementById("code-popout")
+          , code_window = null
+          , popped_code_text = null
+          , code_open = false
+          , code_popped = false;
 
         function setCodeOpen(open){
-            code_open = open;
-            code_toggle.setAttribute("class", open ? "open" : "shut");
-            if(open){
-                code.style.visibility = "visible";
-                code_save.style.display = "block";
-                code_save.style.opacity = "1";
-                code.classList.remove("shut");
-            }
-            else{
-                event.addTransitionEndListener(code, function(e){
-                    code.style.visibility = "hidden";
-                }, true);
-                code.classList.add("shut");
-                event.addTransitionEndListener(code_save, function(e){
-                    code_save.style.display = "none";
-                }, true);
-                code_save.style.opacity = "0";
+            if(open !== code_open){
+                code_open = open;
+                code_toggle.setAttribute("class", open ? "open" : "shut");
+                if(open){
+                    code.style.visibility = "visible";
+                    code_save.style.display = "block";
+                    code_save.style.opacity = "1";
+                    code_popout.style.display = "block";
+                    code_popout.style.opacity = "1";
+                    code.classList.remove("shut");
+                    setCodePoppedOut(false);
+                }
+                else{
+                    event.addTransitionEndListener(code, function(e){
+                        code.style.visibility = "hidden";
+                    }, true);
+                    code.classList.add("shut");
+                    event.addTransitionEndListener(code_save, function(e){
+                        code_save.style.display = "none";
+                    }, true);
+                    code_save.style.opacity = "0";
+                    event.addTransitionEndListener(code_popout, function(e){
+                        code_popout.style.display = "none";
+                    }, true);
+                    code_popout.style.opacity = "0";
+                }
             }
         }
         code_toggle.addEventListener("click", function(e){
@@ -53,45 +66,79 @@ function(core, material, event, params, selector){
         }
         code_save.addEventListener("click", saveCode, false);
 
-        // Compile as you type
-        code_text.addEventListener("keydown", function(e){
-            e.stopPropagation();
-            if(e.keyCode == 9){ // tab
-                e.preventDefault();
-
-                var start = code_text.selectionStart;
-                var end = code_text.selectionEnd;
-
-                code_text.value = code_text.value.substring(0, start) + "  " + code_text.value.substring(end, code_text.value.length);
-                code_text.selectionStart = code_text.selectionEnd = start + 2;
-                code_text.focus();
+        function setCodePoppedOut(popped){
+            if(popped !== code_popped){
+                code_popped = popped;
+                if(popped){ // Pop
+                    code_window = window.open("pop.html", "code-window", "width=700,height=500,scrollbars=yes,menubar=no,location=no,left=50,top=50");
+                    code_window.addEventListener("load", onCodeWindowLoad);
+                    code_window.addEventListener("beforeunload", onCodeWindowUnload);
+                }
+                else{ // Unpop
+                    if(code_window){
+                        code_window.close();
+                        code_window = null;
+                    }
+                }
+                setCodeOpen(!popped);
             }
+        }
+        code_popout.addEventListener("click", function(e){
+            setCodePoppedOut(!code_popped);
         }, false);
-        code_text.addEventListener("keyup", function(e){
-            e.stopPropagation();
+        function onCodeWindowLoad(){
+            popped_code_text = code_window.document.getElementById("code-text");
+            popped_code_text.value = code_text.value;
+            addCodeEventListeners(popped_code_text);
+        }
+        function onCodeWindowUnload(){
+            code_text.value = popped_code_text.value;
+            setCodePoppedOut(false);
+        }
 
-            if(e.keyCode == 37 || // left
-               e.keyCode == 38 || // up
-               e.keyCode == 39 || // right
-               e.keyCode == 40)   // down
-                return;
-
-            tryCompile();
-        }, false);
-        code_text.addEventListener("keypress", function(e){
-            e.stopPropagation();
-        }, false);
-
-        // Magic Number Dial / Scroll
-        code_text.addEventListener("mousewheel", function(e){
-            selector.scrollNumber(code_text, e.wheelDelta / 40, function(){
+        function addCodeEventListeners(textarea){
+            // Compile as you type
+            textarea.addEventListener("keydown", function(e){
                 e.stopPropagation();
-                e.preventDefault();
-                tryCompile();
-            });
-        }, false);
+                if(e.keyCode == 9){ // tab
+                    e.preventDefault();
 
-        // Drag and drop mp3
+                    var start = textarea.selectionStart;
+                    var end = textarea.selectionEnd;
+
+                    textarea.value = textarea.value.substring(0, start) + "  " + textarea.value.substring(end, textarea.value.length);
+                    textarea.selectionStart = textarea.selectionEnd = start + 2;
+                    textarea.focus();
+                }
+            }, false);
+            textarea.addEventListener("keyup", function(e){
+                e.stopPropagation();
+
+                if(e.keyCode == 37 || // left
+                   e.keyCode == 38 || // up
+                   e.keyCode == 39 || // right
+                   e.keyCode == 40)   // down
+                    return;
+
+                tryCompile(textarea);
+            }, false);
+            textarea.addEventListener("keypress", function(e){
+                e.stopPropagation();
+            }, false);
+
+            // Magic Number Dial / Scroll
+            textarea.addEventListener("mousewheel", function(e){
+                selector.scrollNumber(textarea, e.wheelDelta / 40, function(){
+                    e.stopPropagation();
+                    e.preventDefault();
+                    tryCompile(textarea);
+                });
+            }, false);
+        }
+        addCodeEventListeners(code_text);
+
+        // DRAG AND DROP //
+
         document.addEventListener("dragover", function(e){
             e.stopPropagation();
             e.preventDefault();
@@ -99,12 +146,20 @@ function(core, material, event, params, selector){
         document.addEventListener("drop", function(e){
             e.stopPropagation();
             e.preventDefault();
-            loadAudioBufferFile(e.dataTransfer.files[0], playAudioBuffer);
+            clearPlaylist();
+            for(var i = 0; i < e.dataTransfer.files.length; ++i){
+                playlistEnqueueFile(e.dataTransfer.files[i]);
+            }
+            playlistPlay();
         }, false);
 
         // TODO: Set this via permalink
         setCodeOpen(true);
+        setCodePoppedOut(false);
     }
+
+
+    // MOUSE //
 
     var mouse_move_enabled = false;
     var mouse_pos = new core.Vec2(0, 0);
@@ -123,18 +178,36 @@ function(core, material, event, params, selector){
     }
 
 
+    // PLAYLIST //
+
+    var playlist, playlist_pos;
+
+    function clearPlaylist(){
+        playlist = [];
+        playlist_pos = 0;
+    }
+    function playlistEnqueueFile(file){
+        if(!playlist)
+            clearPlaylist();
+        playlist.push(file);
+    }
+    function playlistPlay(){
+        loadAudioBufferFile(playlist[playlist_pos], playAudioBuffer);
+    }
+    function playlistNext(){
+        playlist_pos = (playlist_pos + 1) % playlist.length;
+    }
+
+
     // AUDIO //
 
-    var context, source, analyser, freq_data;
+    var context, source, analyser, freq_data, buffer_complete_cb;
 
     function safeCreateAudioBuffer(buffer, callback){
-        try{
-            var audio_buffer = context.createBuffer(buffer, true);
-            callback(audio_buffer);
-        }
-        catch(err){
-            console.log(err);
-        }
+        context.decodeAudioData(buffer, callback, onCreateAudioBufferError);
+    }
+    function onCreateAudioBufferError(err){
+        console.error(err);
     }
 
     function loadAudioBufferUrl(url, callback){
@@ -157,21 +230,33 @@ function(core, material, event, params, selector){
     function initAudio(){
         context = new webkitAudioContext();
 
-        source = context.createBufferSource();
         analyser = context.createAnalyser();
         analyser.fftSize = 512;
         analyser.smoothingTimeConstant = 0.5;
-
-        source.connect(analyser);
         analyser.connect(context.destination);
 
         initFrequencyData();
     }
 
     function playAudioBuffer(buffer){
+        if(source)
+            source.noteOff(0);
+
+        source = context.createBufferSource();
+        source.connect(analyser);
         source.buffer = buffer;
-        source.loop = true;
+        source.loop = false;
         source.noteOn(0); // Play
+
+        // Janky timeout yes, but apparently it's the only way for now
+        window.clearTimeout(buffer_complete_cb);
+        buffer_complete_cb = window.setTimeout(onAudioBufferComplete, buffer.duration * 1000);
+    }
+
+    function onAudioBufferComplete(){
+        buffer_complete_cb = null;
+        playlistNext();
+        playlistPlay();
     }
 
     function initFrequencyData(){
@@ -213,9 +298,9 @@ function(core, material, event, params, selector){
         }
     }
 
-    function tryCompile(){
+    function tryCompile(textarea){
         try{
-            var shader_src_frag = code_text.value.trim();
+            var shader_src_frag = textarea.value.trim();
 
             parseShaderOutlets(shader_src_frag, {
                 "smoothing": function(value){
@@ -241,12 +326,12 @@ function(core, material, event, params, selector){
 
             setMouseMoveEnabled(!!program.uniforms.u_mouse);
 
-            code_text.classList.remove("error");
+            textarea.classList.remove("error");
 
             console.log("Compile Successful!");
         }
         catch(err){
-            code_text.classList.add("error");
+            textarea.classList.add("error");
             console.error("Error compiling shader: " + err);
         }
     }
@@ -294,7 +379,7 @@ function(core, material, event, params, selector){
     initGL();
     initAudio();
     resize();
-    tryCompile();
+    tryCompile(code_text);
 
     var start_time = Date.now();
 
@@ -302,7 +387,7 @@ function(core, material, event, params, selector){
         "fs": function(hex){
             params.lzmaDecompress(hex, function(src){
                 code_text.value = src;
-                tryCompile();
+                tryCompile(code_text);
             });
         }
     });

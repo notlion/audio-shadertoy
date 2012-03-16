@@ -8,6 +8,8 @@ body {
   margin: 0;
   height: 100%;
   overflow: hidden; }
+  body.popped {
+    background-color: #131612; }
 
 #canvas {
   width: 100%;
@@ -61,6 +63,23 @@ body {
     background-color: rgba(24, 28, 22, 0.8); }
   #code.shut {
     opacity: 0; }
+  #code.popped {
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    padding: 0; }
+    #code.popped:hover {
+      background-color: transparent; }
+    #code.popped #code-text {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      padding: 30px;
+      width: auto;
+      height: auto; }
 
 #code-text {
   margin: 0;
@@ -88,11 +107,31 @@ body {
     background: #0cc;
     color: #fff; }
 
-#code-toggle, #code-save {
+#code-toggle, #code-save, #code-popout {
   position: absolute;
   stroke: #fff;
   stroke-width: 2px;
-  cursor: pointer; }
+  cursor: pointer;
+  -webkit-transition-property: opacity;
+  -moz-transition-property: opacity;
+  -ms-transition-property: opacity;
+  -o-transition-property: opacity;
+  transition-property: opacity;
+  -webkit-transition-duration: 0.2s;
+  -moz-transition-duration: 0.2s;
+  -ms-transition-duration: 0.2s;
+  -o-transition-duration: 0.2s;
+  transition-duration: 0.2s;
+  -webkit-transition-timing-function: ease-out;
+  -moz-transition-timing-function: ease-out;
+  -ms-transition-timing-function: ease-out;
+  -o-transition-timing-function: ease-out;
+  transition-timing-function: ease-out;
+  -webkit-transition-delay: 0;
+  -moz-transition-delay: 0;
+  -ms-transition-delay: 0;
+  -o-transition-delay: 0;
+  transition-delay: 0; }
 
 #code-toggle {
   left: 12px;
@@ -129,30 +168,15 @@ body {
   #code-toggle:hover {
     fill: #239; }
 
-#code-save {
+#code-save, #code-popout {
   left: 46px;
   top: 12px;
   fill: #000;
-  opacity: 0;
-  -webkit-transition-property: opacity;
-  -moz-transition-property: opacity;
-  -ms-transition-property: opacity;
-  -o-transition-property: opacity;
-  transition-property: opacity;
-  -webkit-transition-duration: 0.2s;
-  -moz-transition-duration: 0.2s;
-  -ms-transition-duration: 0.2s;
-  -o-transition-duration: 0.2s;
-  transition-duration: 0.2s;
-  -webkit-transition-timing-function: ease-out;
-  -moz-transition-timing-function: ease-out;
-  -ms-transition-timing-function: ease-out;
-  -o-transition-timing-function: ease-out;
-  transition-timing-function: ease-out;
-  -webkit-transition-delay: 0;
-  -moz-transition-delay: 0;
-  -ms-transition-delay: 0;
-  -o-transition-delay: 0;
-  transition-delay: 0; }
-  #code-save:hover {
+  opacity: 0; }
+  #code-save:hover, #code-popout:hover {
     fill: #282; }
+
+#code-popout {
+  left: 80px; }
+  #code-popout:hover {
+    fill: #888; }
