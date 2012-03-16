@@ -70,7 +70,7 @@ function(core, material, event, params, selector){
                     popped_code_text.value = code_text.value;
                     addCodeEventListeners(popped_code_text);
                 });
-                code_window.addEventListener('beforeunload', function(e) {
+                code_window.addEventListener('beforeunload', function(e){
                     code_text.value = popped_code_text.value;
                     setCodePoppedOut(false);
                 });
@@ -87,11 +87,11 @@ function(core, material, event, params, selector){
                 document.body.appendChild(code);
             }
         }
-        code_popout.addEventListener("click", function(e) {
+        code_popout.addEventListener("click", function(e){
             setCodePoppedOut(!code_popped);
         }, false);
 
-        function addCodeEventListeners(textarea) {
+        function addCodeEventListeners(textarea){
             // Compile as you type
             textarea.addEventListener("keydown", function(e){
                 e.stopPropagation();
@@ -132,7 +132,8 @@ function(core, material, event, params, selector){
         }
         addCodeEventListeners(code_text);
 
-        // Drag and drop mp3
+        // DRAG AND DROP //
+
         document.addEventListener("dragover", function(e){
             e.stopPropagation();
             e.preventDefault();
@@ -140,7 +141,11 @@ function(core, material, event, params, selector){
         document.addEventListener("drop", function(e){
             e.stopPropagation();
             e.preventDefault();
-            loadAudioBufferFile(e.dataTransfer.files[0], playAudioBuffer);
+            clearPlaylist();
+            for(var i = 0; i < e.dataTransfer.files.length; ++i){
+                playlistEnqueueFile(e.dataTransfer.files[i]);
+            }
+            playlistPlay();
         }, false);
 
         // TODO: Set this via permalink
@@ -168,18 +173,36 @@ function(core, material, event, params, selector){
     }
 
 
+    // PLAYLIST //
+
+    var playlist, playlist_pos;
+
+    function clearPlaylist(){
+        playlist = [];
+        playlist_pos = 0;
+    }
+    function playlistEnqueueFile(file){
+        if(!playlist)
+            clearPlaylist();
+        playlist.push(file);
+    }
+    function playlistPlay(){
+        loadAudioBufferFile(playlist[playlist_pos], playAudioBuffer);
+    }
+    function playlistNext(){
+        playlist_pos = (playlist_pos + 1) % playlist.length;
+    }
+
+
     // AUDIO //
 
-    var context, source, analyser, freq_data;
+    var context, source, analyser, freq_data, buffer_complete_cb;
 
     function safeCreateAudioBuffer(buffer, callback){
-        try{
-            var audio_buffer = context.createBuffer(buffer, true);
-            callback(audio_buffer);
-        }
-        catch(err){
-            console.log(err);
-        }
+        context.decodeAudioData(buffer, callback, onCreateAudioBufferError);
+    }
+    function onCreateAudioBufferError(err){
+        console.error(err);
     }
 
     function loadAudioBufferUrl(url, callback){
@@ -202,21 +225,33 @@ function(core, material, event, params, selector){
     function initAudio(){
         context = new webkitAudioContext();
 
-        source = context.createBufferSource();
         analyser = context.createAnalyser();
         analyser.fftSize = 512;
         analyser.smoothingTimeConstant = 0.5;
-
-        source.connect(analyser);
         analyser.connect(context.destination);
 
         initFrequencyData();
     }
 
     function playAudioBuffer(buffer){
+        if(source)
+            source.noteOff(0);
+
+        source = context.createBufferSource();
+        source.connect(analyser);
         source.buffer = buffer;
-        source.loop = true;
+        source.loop = false;
         source.noteOn(0); // Play
+
+        // Janky timeout yes, but apparently it's the only way for now
+        window.clearTimeout(buffer_complete_cb);
+        buffer_complete_cb = window.setTimeout(onAudioBufferComplete, buffer.duration * 1000);
+    }
+
+    function onAudioBufferComplete(){
+        buffer_complete_cb = null;
+        playlistNext();
+        playlistPlay();
     }
 
     function initFrequencyData(){
