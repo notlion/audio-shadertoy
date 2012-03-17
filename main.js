@@ -1,6 +1,6 @@
 require.config({
-    paths: { 
-        "embr" : "lib/embr/src", 
+    paths: {
+        "embr" : "lib/embr/src",
         "dat" : "lib/dat-gui/src/dat",
         "text" : "lib/embr/src/lib/text"
     }
@@ -22,7 +22,7 @@ function(core, material, datgui, event, params, selector, demo){
       , popped_code_text = null
       , code_window = null;
 
-     var gui = null;
+    var gui = null;
 
     function initUI(){
         var code = document.getElementById("code")
@@ -209,14 +209,22 @@ function(core, material, datgui, event, params, selector, demo){
         loadAudioBufferFile(playlist[playlist_pos], playAudioBuffer);
     }
     function playlistNext(){
+        loadNextDemoShader();
+        playlist_pos = (playlist_pos + 1) % playlist.length;
+    }
+
+    function loadNextDemoShader(){
         params.lzmaDecompress(demo.random(), function(src){
             var textarea = popped_code_text || code_text;
             textarea.value = src;
             tryCompile(textarea);
             createGuiFromTextArea(textarea);
         });
-        playlist_pos = (playlist_pos + 1) % playlist.length;
     }
+    document.addEventListener("keydown", function(e){
+        if(e.keyCode == 39)
+            loadNextDemoShader();
+    });
 
 
     // AUDIO //
@@ -338,7 +346,7 @@ function(core, material, datgui, event, params, selector, demo){
         matches.forEach(function(m, i) {
             var val = parseFloat(m.value);
             var obj = { value : parseFloat(m.value) };
-            var slider = gui.add(obj, 'value', val - (val+10), val + (val+10)); 
+            var slider = gui.add(obj, 'value', val - (val+10), val + (val+10));
             slider.onChange(function(v){
                 selector.setSelection(textarea, m.index, m.index + m.value.length);
                 m.value = selector.changeFloatNumber(textarea, v);
