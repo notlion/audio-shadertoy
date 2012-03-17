@@ -134,7 +134,7 @@ function(core, material, datgui, event, params, selector, demo){
                     return;
 
                 tryCompile(textarea);
-                createGuiFromTextArea(code_text);
+                createGuiFromTextArea(textarea);
             }, false);
             textarea.addEventListener("keypress", function(e){
                 e.stopPropagation();
@@ -352,7 +352,9 @@ function(core, material, datgui, event, params, selector, demo){
                 m.value = selector.changeFloatNumber(textarea, v);
                 tryCompile(textarea);
             });
-            slider.onFinishChange(function(v){});
+            slider.onFinishChange(function(v){
+               createGuiFromTextArea(textarea); 
+            });
         });
     }
 
