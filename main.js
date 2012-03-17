@@ -1,27 +1,34 @@
 require.config({
-    paths: { "embr": "lib/embr/src" }
+    paths: { 
+        "embr" : "lib/embr/src", 
+        "dat" : "lib/dat-gui/src/dat",
+        "text" : "lib/embr/src/lib/text"
+    }
 });
 require([
     "embr/core",
     "embr/material",
+    "dat/gui/GUI",
     "event",
     "params",
     "selector",
     "demo"
 ],
-function(core, material, event, params, selector, demo){
+function(core, material, datgui, event, params, selector, demo){
 
     // UI //
 
     var code_text = document.getElementById("code-text")
-      , popped_code_text = null;
+      , popped_code_text = null
+      , code_window = null;
+
+     var gui = null;
 
     function initUI(){
         var code = document.getElementById("code")
           , code_toggle = document.getElementById("code-toggle")
           , code_save = document.getElementById("code-save")
           , code_popout = document.getElementById("code-popout")
-          , code_window = null
           , code_open = false
           , code_popped = false;
 
@@ -80,6 +87,7 @@ function(core, material, event, params, selector, demo){
                         code_window.close();
                         code_window = null;
                         popped_code_text = null;
+                        createGuiFromTextArea(code_text);
                     }
                 }
                 setCodeOpen(!popped);
@@ -92,6 +100,7 @@ function(core, material, event, params, selector, demo){
             popped_code_text = code_window.document.getElementById("code-text");
             popped_code_text.value = code_text.value;
             code_toggle.style.display = "none";
+            createGuiFromTextArea(popped_code_text);
             addCodeEventListeners(popped_code_text);
         }
         function onCodeWindowUnload(){
@@ -125,6 +134,7 @@ function(core, material, event, params, selector, demo){
                     return;
 
                 tryCompile(textarea);
+                createGuiFromTextArea(code_text);
             }, false);
             textarea.addEventListener("keypress", function(e){
                 e.stopPropagation();
@@ -203,6 +213,7 @@ function(core, material, event, params, selector, demo){
             var textarea = popped_code_text || code_text;
             textarea.value = src;
             tryCompile(textarea);
+            createGuiFromTextArea(textarea);
         });
         playlist_pos = (playlist_pos + 1) % playlist.length;
     }
@@ -307,6 +318,36 @@ function(core, material, event, params, selector, demo){
         }
     }
 
+    function createGuiFromTextArea(textarea) {
+
+        var code_text = textarea.value;
+
+        if (gui) gui.destroy();
+        gui = code_window ? code_window.gui() : new datgui();
+
+        // match all floats
+        var re = /\d*\.\d+|\d+\.\d*/g, m, matches = [];
+        while((m = re.exec(code_text)) !== null){
+            matches.push({
+                 value : m[0],
+                 index : m.index
+            });
+        }
+
+        // assign float values to sliders
+        matches.forEach(function(m, i) {
+            var val = parseFloat(m.value);
+            var obj = { value : parseFloat(m.value) };
+            var slider = gui.add(obj, 'value', val - (val+10), val + (val+10)); 
+            slider.onChange(function(v){
+                selector.setSelection(textarea, m.index, m.index + m.value.length);
+                m.value = selector.changeFloatNumber(textarea, v);
+                tryCompile(textarea);
+            });
+            slider.onFinishChange(function(v){});
+        });
+    }
+
     function tryCompile(textarea){
         try{
             var shader_src_frag = textarea.value.trim();
@@ -389,6 +430,7 @@ function(core, material, event, params, selector, demo){
     initAudio();
     resize();
     tryCompile(code_text);
+    createGuiFromTextArea(code_text);
 
     var start_time = Date.now();
 
@@ -397,6 +439,7 @@ function(core, material, event, params, selector, demo){
             params.lzmaDecompress(hex, function(src){
                 code_text.value = src;
                 tryCompile(code_text);
+                createGuiFromTextArea(code_text);
             });
         }
     });

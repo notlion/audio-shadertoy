@@ -25,6 +25,24 @@ define(function(){
         }
     }
 
+    function changeFloatNumber(textarea, newValue){
+        var selected = getSelection(textarea);
+        if(!isNaN(selected.text) && selected.text !== ""){
+
+            // TODO : make this generic
+
+            // split on the period to get the precisionLength
+            var parts = selected.text.split('.');
+
+            // make sure precisionLength is at least 1
+            var precisionLength = Math.max(parts[1].length, 1);
+
+            newValue = newValue.toFixed(precisionLength);
+            var rep = replaceSelection(textarea, newValue);
+            return setSelection(textarea, rep.start, rep.start + rep.length);
+        }
+    } 
+
     function getSelection(textarea){
         var len = textarea.selectionEnd - textarea.selectionStart;
         return {
@@ -58,8 +76,9 @@ define(function(){
 
     return {
         scrollNumber: scrollNumber,
+        changeFloatNumber: changeFloatNumber,
         getSelection: getSelection,
         replaceSelection: replaceSelection,
-        setSelection: setSelection,
+        setSelection: setSelection
     };
 });
