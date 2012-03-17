@@ -134,7 +134,7 @@ function(core, material, datgui, event, params, selector, demo){
                     return;
 
                 tryCompile(textarea);
-                createGuiFromTextArea(code_text);
+                createGuiFromTextArea(textarea);
             }, false);
             textarea.addEventListener("keypress", function(e){
                 e.stopPropagation();
