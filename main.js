@@ -204,10 +204,11 @@ function(core, material, event, params, selector){
     var context, source, analyser, freq_data, buffer_complete_cb;
 
     function safeCreateAudioBuffer(buffer, callback){
-        context.decodeAudioData(buffer, callback, onCreateAudioBufferError);
+        if(context)
+            context.decodeAudioData(buffer, callback, onCreateAudioBufferError);
     }
-    function onCreateAudioBufferError(err){
-        console.error(err);
+    function onCreateAudioBufferError(){
+        console.error("Error decoding audio buffer");
     }
 
     function loadAudioBufferUrl(url, callback){
@@ -228,14 +229,16 @@ function(core, material, event, params, selector){
     }
 
     function initAudio(){
-        context = new webkitAudioContext();
+        if(window.webkitAudioContext){
+            context = new webkitAudioContext();
 
-        analyser = context.createAnalyser();
-        analyser.fftSize = 512;
-        analyser.smoothingTimeConstant = 0.5;
-        analyser.connect(context.destination);
+            analyser = context.createAnalyser();
+            analyser.fftSize = 512;
+            analyser.smoothingTimeConstant = 0.5;
+            analyser.connect(context.destination);
 
-        initFrequencyData();
+            initFrequencyData();
+        }
     }
 
     function playAudioBuffer(buffer){
@@ -304,10 +307,11 @@ function(core, material, event, params, selector){
 
             parseShaderOutlets(shader_src_frag, {
                 "smoothing": function(value){
-                    analyser.smoothingTimeConstant = core.math.clamp(value, 0, 1);
+                    if(analyser)
+                        analyser.smoothingTimeConstant = core.math.clamp(value, 0, 1);
                 },
                 "num_bands": function(value){
-                    if(core.math.isPow2(value)){
+                    if(analyser && core.math.isPow2(value)){
                         analyser.fftSize = value * 2;
                         initFrequencyData();
                     }
@@ -355,10 +359,12 @@ function(core, material, event, params, selector){
         gl.viewport(0, 0, canvas.width, canvas.height);
 
         window.requestAnimationFrame(render);
-        analyser.getByteFrequencyData(freq_data);
 
-        freq_texture.bind();
-        freq_texture.updateData(freq_data);
+        if(analyser){
+            analyser.getByteFrequencyData(freq_data);
+            freq_texture.bind();
+            freq_texture.updateData(freq_data);
+        }
 
         program.use({
             u_frequencies: 0,
