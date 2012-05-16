@@ -4,30 +4,31 @@
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
 <link href="css/style.css" media="all" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="lib/embr/src/lib/require.js"></script>
+<script type="text/javascript" src="http://connect.soundcloud.com/sdk.js"></script>
 <script type="text/javascript">
 
 // Animation Frame Shim
 if(!window.requestAnimationFrame){
-    window.requestAnimationFrame = (function(){
-        return window.webkitRequestAnimationFrame ||
-               window.mozRequestAnimationFrame    ||
-               window.oRequestAnimationFrame      ||
-               window.msRequestAnimationFrame     ||
-               function(callback, element){
-                   window.setTimeout(callback, 1000 / 60);
-               };
-    })();
+  window.requestAnimationFrame = (function(){
+    return window.webkitRequestAnimationFrame ||
+           window.mozRequestAnimationFrame    ||
+           window.oRequestAnimationFrame      ||
+           window.msRequestAnimationFrame     ||
+           function(callback, element){
+               window.setTimeout(callback, 1000 / 60);
+           };
+  })();
 }
 
 window.addEventListener("load", function(){
-    require([ "main" ]);
+  require([ "main" ]);
 });
 
 </script>
 </head>
 <body>
-    <canvas id="canvas"></canvas>
-    <div id="code" class="shut" style="visibility:hidden">
+  <canvas id="canvas"></canvas>
+  <div id="code" class="shut" style="visibility:hidden">
 <textarea id="code-text" spellcheck="false">
 // Audio ShaderToy
 // Drag a .mp3 .m4a or .ogg file into your browser!
@@ -47,23 +48,23 @@ void main(){
   gl_FragColor = vec4(color, 1.);
 }
 </textarea>
-    </div>
-    <svg id="code-toggle" title="Toggle Shader Source" class="shut" width="30" height="30" version="1.2" xmlns="http://www.w3.org/2000/svg">
-        <g transform="translate(15,15)">
-            <circle cx="0" cy="0" r="13"/>
-            <path d="M -7,0 L 7,0 M 0,-7 L 0,7"/>
-        </g>
-    </svg>
-    <svg id="code-save" title="Save Shader Source" class="hidden" width="30" height="30" version="1.2" xmlns="http://www.w3.org/2000/svg">
-        <g transform="translate(15,15)rotate(45)">
-            <circle cx="0" cy="0" r="13"/>
-            <path d="M -7,0 L 0,-7 L 7,0 M 0,-7 L 0,7"/>
-        </g>
-    </svg>
-    <svg id="code-popout" title="Popout Code in New Window" class="hidden" width="30" height="30" version="1.2" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="15" cy="15" r="13"/>
-        <rect x="13" y="9" width="8" height="8" />
-        <rect x="9" y="13" width="8" height="8" />
-    </svg>    
+  </div>
+  <svg id="code-toggle" title="Toggle Shader Source" class="shut" width="30" height="30" version="1.2" xmlns="http://www.w3.org/2000/svg">
+    <g transform="translate(15,15)">
+      <circle cx="0" cy="0" r="13"/>
+      <path d="M -7,0 L 7,0 M 0,-7 L 0,7"/>
+    </g>
+  </svg>
+  <svg id="code-save" title="Save Shader Source" class="hidden" width="30" height="30" version="1.2" xmlns="http://www.w3.org/2000/svg">
+    <g transform="translate(15,15)rotate(45)">
+      <circle cx="0" cy="0" r="13"/>
+      <path d="M -7,0 L 0,-7 L 7,0 M 0,-7 L 0,7"/>
+    </g>
+  </svg>
+  <svg id="code-popout" title="Popout Code in New Window" class="hidden" width="30" height="30" version="1.2" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="15" cy="15" r="13"/>
+    <rect x="13" y="9" width="8" height="8" />
+    <rect x="9" y="13" width="8" height="8" />
+  </svg>
 </body>
 </html>
