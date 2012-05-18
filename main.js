@@ -205,17 +205,19 @@ function(core, material, event, params, selector){
 
   // AUDIO //
 
+  var eq_data_left, eq_data_right;
+
   function initAudio(){
     initSoundCloud();
     initFrequencyData(256);
   }
 
   function initFrequencyData(num_bands){
-    freq_data = new Uint8Array(num_bands);
-    freq_texture.setData(num_bands, 1, freq_data, {
-      format: gl.LUMINANCE,
-      formati: gl.LUMINANCE
-    });
+    var fmt = { format: gl.LUMINANCE, formati: gl.LUMINANCE };
+    eq_data_left = new Uint8Array(num_bands);
+    eq_data_right = new Uint8Array(num_bands);
+    eq_texture_left.setData(num_bands, 1, eq_data_left, fmt);
+    eq_texture_right.setData(num_bands, 1, eq_data_right, fmt);
   }
 
 
@@ -270,15 +272,16 @@ function(core, material, event, params, selector){
 
   var canvas = document.getElementById("canvas")
     , canvas_pixel_scale = 2;
-  var gl, program, freq_texture, plane;
+  var gl, program, plane
+    , eq_texture_left, eq_texture_right;
 
   var shader_src_vert = [
-    "attribute vec3 position;",
-    "attribute vec2 texcoord;",
-    "varying vec2 v_texcoord;",
+    "attribute vec3 a_position;",
+    "attribute vec2 a_texcoord;",
+    "varying vec2 texcoord;",
     "void main(){",
-      "v_texcoord = texcoord;",
-      "gl_Position = vec4(position, 1.);",
+      "texcoord = a_texcoord;",
+      "gl_Position = vec4(a_position, 1.);",
     "}"
   ].join("\n");
 
@@ -345,10 +348,16 @@ function(core, material, event, params, selector){
       console.error(err);
     }
 
-    plane = core.Vbo.createPlane(gl, -1, -1, 1, 1);
+    var positions = [ -1, -1, 0, -1, 1, 0, 1, -1, 0, 1, 1, 0 ];
+    var texcoords = [ 0, 0, 0, 1, 1, 0, 1, 1 ];
+    plane = new core.Vbo(gl, gl.TRIANGLE_STRIP, gl.STATIC_DRAW, {
+      a_position: { data: positions, size: 3 },
+      a_texcoord: { data: texcoords, size: 2 }
+    });
 
     program = new core.Program(gl);
-    freq_texture = new core.Texture(gl);
+    eq_texture_left = new core.Texture(gl);
+    eq_texture_right = new core.Texture(gl);
   }
 
   function render(){
@@ -357,20 +366,25 @@ function(core, material, event, params, selector){
     window.requestAnimationFrame(render);
 
     if(sm_playing_sound){
-      var i, amp;
+      var i, amp_l, amp_r;
       for(var i = 0; i < 256; ++i) {
-        amp = sm_playing_sound.eqData.left[i] * 255;
-        freq_data[i] = freq_data[i] + (amp - freq_data[i]) * eq_mix;
+        amp_l = sm_playing_sound.eqData.left[i] * 255;
+        amp_r = sm_playing_sound.eqData.right[i] * 255;
+        eq_data_left[i] = core.math.lerp(eq_data_left[i], amp_l, eq_mix);
+        eq_data_right[i] = core.math.lerp(eq_data_right[i], amp_r, eq_mix);
       }
-      freq_texture.bind();
-      freq_texture.updateData(freq_data);
+      eq_texture_left.bind(0);
+      eq_texture_left.updateData(eq_data_left);
+      eq_texture_right.bind(1);
+      eq_texture_right.updateData(eq_data_right);
     }
 
     program.use({
-      u_frequencies: 0,
-      u_aspect: canvas.width / canvas.height,
-      u_mouse: mouse_pos,
-      u_time: (Date.now() - start_time) / 1000
+      amp_left: 0,
+      amp_right: 1,
+      aspect: canvas.width / canvas.height,
+      mouse: mouse_pos,
+      time: (Date.now() - start_time) / 1000
     });
     plane.draw();
   }

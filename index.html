@@ -37,14 +37,18 @@ window.addEventListener("load", function(){
 #define smoothing .75
 #define pixel_scale 2
 
-uniform sampler2D u_frequencies;
-uniform float u_aspect, u_time;
+uniform sampler2D amp_left, amp_right;
+uniform float aspect, time;
 
-varying vec2 v_texcoord;
+varying vec2 texcoord;
 
 void main(){
-  float freq = texture2D(u_frequencies, v_texcoord).x;
-  vec3 color = vec3(freq > v_texcoord.y) * (v_texcoord.y / freq);
+  float amp_l = texture2D(amp_left, texcoord).x;
+  float amp_r = texture2D(amp_right, texcoord).x;
+  float y = texcoord.y;
+  vec3 color = vec3(
+    float(amp_l > y) * (y / amp_l), 0., float(amp_r > y) * (y / amp_r)
+  );
   gl_FragColor = vec4(color, 1.);
 }
 </textarea>
