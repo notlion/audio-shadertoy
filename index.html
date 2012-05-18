@@ -3,9 +3,9 @@
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
 <link href="css/style.css" media="all" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="lib/embr/src/lib/require.js"></script>
-<script type="text/javascript" src="http://connect.soundcloud.com/sdk.js"></script>
-<script type="text/javascript">
+<script src="lib/embr/src/lib/require.js"></script>
+<script src="http://connect.soundcloud.com/sdk.js"></script>
+<script>
 
 // Animation Frame Shim
 if(!window.requestAnimationFrame){
@@ -33,8 +33,8 @@ window.addEventListener("load", function(){
 // Audio ShaderToy
 // Drag a .mp3 .m4a or .ogg file into your browser!
 
+#define track http://soundcloud.com/alexwiklund/wiklund-six-hours
 #define smoothing .75
-#define num_bands 256
 #define pixel_scale 2
 
 uniform sampler2D u_frequencies;

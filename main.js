@@ -6,7 +6,8 @@ require([
   "embr/material",
   "event",
   "params",
-  "selector"
+  "selector",
+  "lib/soundmanager/soundmanager2-nodebug"
 ],
 function(core, material, event, params, selector){
 
@@ -70,7 +71,8 @@ function(core, material, event, params, selector){
       if(popped !== code_popped){
         code_popped = popped;
         if(popped){ // Pop
-          var opts = "width=700,height=500,scrollbars=yes,menubar=no,location=no,left=50,top=50";
+          var opts = "width=700,height=500,left=50,top=50," +
+                     "scrollbars=yes,menubar=no,location=no";
           code_window = window.open("pop.html", "code-window", opts);
           code_window.addEventListener("load", onCodeWindowLoad);
           code_window.addEventListener("beforeunload", onCodeWindowUnload);
@@ -107,7 +109,8 @@ function(core, material, event, params, selector){
           var start = textarea.selectionStart;
           var end = textarea.selectionEnd;
 
-          textarea.value = textarea.value.substring(0, start) + "  " + textarea.value.substring(end, textarea.value.length);
+          textarea.value = textarea.value.substring(0, start) + "  " +
+                           textarea.value.substring(end, textarea.value.length);
           textarea.selectionStart = textarea.selectionEnd = start + 2;
           textarea.focus();
         }
@@ -115,10 +118,8 @@ function(core, material, event, params, selector){
       textarea.addEventListener("keyup", function(e){
         e.stopPropagation();
 
-        if(e.keyCode == 37 || // left
-           e.keyCode == 38 || // up
-           e.keyCode == 39 || // right
-           e.keyCode == 40)   // down
+        if((e.keyCode >= 16 && e.keyCode <= 45) ||
+           (e.keyCode >= 91 && e.keyCode <= 93))
           return;
 
         tryCompile(textarea);
@@ -166,7 +167,9 @@ function(core, material, event, params, selector){
   var mouse_pos = new core.Vec2(0, 0);
 
   function onMouseMove(e){
-    mouse_pos.set(e.clientX / canvas.clientWidth, 1 - (e.clientY / canvas.clientHeight));
+    mouse_pos.set(
+      e.clientX / canvas.clientWidth, 1 - (e.clientY / canvas.clientHeight)
+    );
   }
   function setMouseMoveEnabled(enabled){
     if(enabled != mouse_move_enabled){
@@ -202,77 +205,64 @@ function(core, material, event, params, selector){
 
   // AUDIO //
 
-  var context, source, analyser, freq_data, buffer_complete_cb;
-
-  function safeCreateAudioBuffer(buffer, callback){
-    if(context)
-      context.decodeAudioData(buffer, callback, onCreateAudioBufferError);
-  }
-  function onCreateAudioBufferError(){
-    console.error("Error decoding audio buffer");
-  }
-
-  function loadAudioBufferUrl(url, callback){
-    var req = new XMLHttpRequest();
-    req.open("GET", url, true);
-    req.responseType = "arraybuffer";
-    req.onload = function(){
-      safeCreateAudioBuffer(req.response, callback);
-    };
-    req.send();
-  }
-  function loadAudioBufferFile(file, callback){
-    var reader = new FileReader();
-    reader.onload = function(){
-      safeCreateAudioBuffer(reader.result, callback);
-    };
-    reader.readAsArrayBuffer(file);
-  }
-
   function initAudio(){
-    if(window.webkitAudioContext){
-      context = new webkitAudioContext();
-
-      analyser = context.createAnalyser();
-      analyser.fftSize = 512;
-      analyser.smoothingTimeConstant = 0.5;
-      analyser.connect(context.destination);
-
-      initFrequencyData();
-    }
+    initSoundCloud();
+    initFrequencyData(256);
   }
 
-  function playAudioBuffer(buffer){
-    if(source)
-      source.noteOff(0);
-
-    source = context.createBufferSource();
-    source.connect(analyser);
-    source.buffer = buffer;
-    source.loop = false;
-    source.noteOn(0); // Play
-
-    // Janky timeout yes, but apparently it's the only way for now
-    window.clearTimeout(buffer_complete_cb);
-    buffer_complete_cb = window.setTimeout(onAudioBufferComplete, buffer.duration * 1000);
-  }
-
-  function onAudioBufferComplete(){
-    buffer_complete_cb = null;
-    playlistNext();
-    playlistPlay();
-  }
-
-  function initFrequencyData(){
-    freq_data = new Uint8Array(analyser.frequencyBinCount);
-    freq_texture.setData(analyser.frequencyBinCount, 1, freq_data, {
+  function initFrequencyData(num_bands){
+    freq_data = new Uint8Array(num_bands);
+    freq_texture.setData(num_bands, 1, freq_data, {
       format: gl.LUMINANCE,
       formati: gl.LUMINANCE
     });
   }
 
+
+  // SOUNDCLOUD //
+
+  var sc_url_prefix = "http://soundcloud.com/"
+    , sc_last_url_loaded, sc_last_url_played;
+
+  var sm_playing_sound = null;
+  var sm_options = {
+    useEQData: true,
+    autoPlay: true,
+    multiShot: false
+  };
+
+  var eq_mix = 0.25;
+
   function initSoundCloud(){
+    soundManager.url = "lib/soundmanager/";
+    soundManager.flashVersion = 9;
+    soundManager.useHighPerformance = true;
     SC.initialize({ client_id: "0edc2b5846f860f3aa21148493e30a8f" });
+  }
+
+  function loadSoundCloudTrack(url){
+    if(url == sc_last_url_loaded || url == sc_last_url_played)
+      return;
+    sc_last_url_loaded = url;
+    SC.post("/resolve.json", { url: url }, function(res, err){
+      if(err) {
+        console.error("Could not find track: %s", err.message);
+      }
+      else {
+        playSoundCloudTrack(res.uri);
+        sc_last_url_played = url;
+      }
+    });
+  }
+
+  function onSoundCloudStreamReady(sound){
+    if(sm_playing_sound)
+      sm_playing_sound.stop();
+    sm_playing_sound = sound;
+  }
+
+  function playSoundCloudTrack(uri){
+    SC.stream(uri, sm_options, onSoundCloudStreamReady);
   }
 
 
@@ -292,16 +282,17 @@ function(core, material, event, params, selector){
     "}"
   ].join("\n");
 
-  var shader_outlet_re = /^[ \t]*#define[ \t]+([\w_]*)[ \t]+([\d\.\d]+)/gm;
+  var shader_outlet_re = /^[ \t]*#define[ \t]+([\w_]*)[ \t]+(\S+)/gm;
 
   function parseShaderOutlets(src, callbacks){
     var match, i, name, value;
     while(match = shader_outlet_re.exec(src)){
       for(i = 1; i < match.length; i += 2){
         name = match[i].toLowerCase();
-        value = +match[i + 1];
-        if(!isNaN(value) && callbacks[name])
+        if(callbacks[name]){
+          value = match[i + 1];
           callbacks[name](value);
+        }
       }
     }
   }
@@ -312,20 +303,20 @@ function(core, material, event, params, selector){
 
       parseShaderOutlets(shader_src_frag, {
         "smoothing": function(value){
-          if(analyser)
-            analyser.smoothingTimeConstant = core.math.clamp(value, 0, 1);
-        },
-        "num_bands": function(value){
-          if(analyser && core.math.isPow2(value)){
-            analyser.fftSize = value * 2;
-            initFrequencyData();
-          }
+          value = 1 - value;
+          if(!isNaN(value))
+            eq_mix = core.math.clamp(value, 0, 1);
         },
         "pixel_scale": function(value){
-          if(Math.floor(value) == value){
+          value = Math.floor(+value);
+          if(!isNaN(value)){
             canvas_pixel_scale = value;
             resize();
           }
+        },
+        "track": function(value){
+          if(value.slice(0, sc_url_prefix.length) == sc_url_prefix)
+            loadSoundCloudTrack(value);
         }
       });
 
@@ -347,8 +338,8 @@ function(core, material, event, params, selector){
 
   function initGL(){
     try{
-      // gl = core.util.glWrapContextWithErrorChecks(canvas.getContext("experimental-webgl"));
       gl = canvas.getContext("experimental-webgl");
+      // gl = core.util.glWrapContextWithErrorChecks(gl);
     }
     catch(err){
       console.error(err);
@@ -365,8 +356,12 @@ function(core, material, event, params, selector){
 
     window.requestAnimationFrame(render);
 
-    if(analyser){
-      analyser.getByteFrequencyData(freq_data);
+    if(sm_playing_sound){
+      var i, amp;
+      for(var i = 0; i < 256; ++i) {
+        amp = sm_playing_sound.eqData.left[i] * 255;
+        freq_data[i] = freq_data[i] + (amp - freq_data[i]) * eq_mix;
+      }
       freq_texture.bind();
       freq_texture.updateData(freq_data);
     }
@@ -389,7 +384,6 @@ function(core, material, event, params, selector){
   initUI();
   initGL();
   initAudio();
-  initSoundCloud();
   resize();
   tryCompile(code_text);
 
