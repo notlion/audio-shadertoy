@@ -259,7 +259,7 @@ function(core, material, event, params, selector){
       if(err) {
         console.error("Could not find track: %s", err.message);
       }
-      else {
+      else if(url == sc_last_url_loaded) {
         playSoundCloudTrack(res.uri);
         sc_last_url_played = url;
       }

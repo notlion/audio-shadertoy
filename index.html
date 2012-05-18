@@ -44,11 +44,12 @@ varying vec2 texcoord;
 
 void main(){
   float amp_l = texture2D(amp_left, texcoord).x;
-  float amp_r = texture2D(amp_right, texcoord).x;
+  float amp_r = texture2D(amp_right, vec2(1., 0.) - texcoord).x;
   float y = texcoord.y;
-  vec3 color = vec3(
-    float(amp_l > y) * (y / amp_l), 0., float(amp_r > y) * (y / amp_r)
-  );
+  vec3 color = vec3(0.);
+  color.r = float(amp_l > y) * (y / amp_l);
+  color.b = float(amp_r > y) * (y / amp_r);
+  color.g = (color.r + color.b) * .5;
   gl_FragColor = vec4(color, 1.);
 }
 </textarea>
