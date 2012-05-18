@@ -182,6 +182,15 @@ function(core, material, event, params, selector){
   }
 
 
+  // TIME //
+
+  var start_time;
+
+  function initTime(){
+    start_time = Date.now();
+  }
+
+
   // PLAYLIST //
 
   var playlist, playlist_pos;
@@ -261,6 +270,7 @@ function(core, material, event, params, selector){
     if(sm_playing_sound)
       sm_playing_sound.stop();
     sm_playing_sound = sound;
+    initTime();
   }
 
   function playSoundCloudTrack(uri){
@@ -400,8 +410,7 @@ function(core, material, event, params, selector){
   initAudio();
   resize();
   tryCompile(code_text);
-
-  var start_time = Date.now();
+  initTime();
 
   params.loadUrlHash({
     "fs": function(hex){
