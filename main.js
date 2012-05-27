@@ -127,6 +127,11 @@ function(core, material, event, params, selector){
       textarea.addEventListener("keypress", function(e){
         e.stopPropagation();
       }, false);
+      textarea.addEventListener("paste", function(e){
+        setTimeout(function(){
+          tryCompile(textarea);
+        }, 0);
+      }, false);
 
       // Magic Number Dial / Scroll
       textarea.addEventListener("mousewheel", function(e){
@@ -138,22 +143,6 @@ function(core, material, event, params, selector){
       }, false);
     }
     addCodeEventListeners(code_text);
-
-    // DRAG AND DROP //
-
-    document.addEventListener("dragover", function(e){
-      e.stopPropagation();
-      e.preventDefault();
-    }, false);
-    document.addEventListener("drop", function(e){
-      e.stopPropagation();
-      e.preventDefault();
-      clearPlaylist();
-      for(var i = 0; i < e.dataTransfer.files.length; ++i){
-        playlistEnqueueFile(e.dataTransfer.files[i]);
-      }
-      playlistPlay();
-    }, false);
 
     // TODO: Set this via permalink
     setCodeOpen(true);
@@ -188,27 +177,6 @@ function(core, material, event, params, selector){
 
   function initTime(){
     start_time = Date.now();
-  }
-
-
-  // PLAYLIST //
-
-  var playlist, playlist_pos;
-
-  function clearPlaylist(){
-    playlist = [];
-    playlist_pos = 0;
-  }
-  function playlistEnqueueFile(file){
-    if(!playlist)
-      clearPlaylist();
-    playlist.push(file);
-  }
-  function playlistPlay(){
-    loadAudioBufferFile(playlist[playlist_pos], playAudioBuffer);
-  }
-  function playlistNext(){
-    playlist_pos = (playlist_pos + 1) % playlist.length;
   }
 
 
@@ -375,6 +343,8 @@ function(core, material, event, params, selector){
 
     window.requestAnimationFrame(render);
 
+    var progress = 0;
+
     if(sm_playing_sound){
       var i, amp_l, amp_r;
       for(var i = 0; i < 256; ++i) {
@@ -387,6 +357,7 @@ function(core, material, event, params, selector){
       eq_texture_left.updateData(eq_data_left);
       eq_texture_right.bind(1);
       eq_texture_right.updateData(eq_data_right);
+      progress = sm_playing_sound.position / sm_playing_sound.durationEstimate;
     }
 
     program.use({
@@ -394,7 +365,8 @@ function(core, material, event, params, selector){
       amp_right: 1,
       aspect: canvas.width / canvas.height,
       mouse: mouse_pos,
-      time: (Date.now() - start_time) / 1000
+      time: (Date.now() - start_time) / 1000,
+      progress: progress
     });
     plane.draw();
   }
