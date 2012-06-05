@@ -7,6 +7,7 @@ error_reporting(0);
 include('config.php');
 
 $data = array();
+$short_url = 'SHORT_URL';
 
 if (isset($_POST['auth_token']) && 
     isset($_SESSION['auth_token']) && 
@@ -29,5 +30,5 @@ try {
     exit;
 }
 
-echo json_encode(array('result'=>'success'));
+echo json_encode(array('short_url'=>$short_url));
 exit;
