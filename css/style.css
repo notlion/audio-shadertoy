@@ -97,15 +97,6 @@ body {
   text-shadow: #000 0px 1px 3px; }
   #code-text.error {
     color: #f00; }
-  #code-text::selection {
-    background: #0cc;
-    color: #fff; }
-  #code-text::-moz-selection {
-    background: #0cc;
-    color: #fff; }
-  #code-text::-webkit-selection {
-    background: #0cc;
-    color: #fff; }
 
 #code-toggle, #code-save, #code-popout {
   position: absolute;
@@ -180,3 +171,41 @@ body {
   left: 80px; }
   #code-popout:hover {
     fill: #888; }
+
+#save-dialog {
+  position: absolute;
+  left: 46px;
+  top: 26px;
+  background-color: #77f;
+  padding: 16px;
+  border-radius: 5px;
+  -webkit-box-shadow: inset rgba(0, 0, 0, 0.5) 0px 0px 6px;
+  -moz-box-shadow: inset rgba(0, 0, 0, 0.5) 0px 0px 6px;
+  -ms-box-shadow: inset rgba(0, 0, 0, 0.5) 0px 0px 6px;
+  -o-box-shadow: inset rgba(0, 0, 0, 0.5) 0px 0px 6px;
+  box-shadow: inset rgba(0, 0, 0, 0.5) 0px 0px 6px; }
+  #save-dialog > * {
+    float: left; }
+
+#save-dialog, .dialog-textfield {
+  font-family: Sans-serif;
+  font-size: 16px; }
+
+.dialog-textfield {
+  padding: 5px;
+  margin: 0;
+  border: 0;
+  border-radius: 2px;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.25); }
+
+.dialog-button {
+  font-weight: bold;
+  padding: 5px;
+  margin-left: 10px;
+  border-radius: 2px;
+  color: #000;
+  background-color: rgba(255, 255, 255, 0.5); }
+  .dialog-button:hover {
+    background-color: rgba(255, 255, 255, 0.75);
+    cursor: hand; }
