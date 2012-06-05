@@ -20,6 +20,7 @@ function(core, material, event, params, selector){
       , code_toggle = document.getElementById("code-toggle")
       , code_save = document.getElementById("code-save")
       , code_popout = document.getElementById("code-popout")
+      , save_dialog_link = document.getElementById("save-dialog-link")
       , code_window = null
       , popped_code_text = null
       , code_open = false
@@ -63,11 +64,10 @@ function(core, material, event, params, selector){
         params.saveUrlHash({
           "fs": src_compressed
         });
+        save_dialog_link.value = window.location;
       });
     }
     code_save.addEventListener("click", saveCode, false);
-
-
 
     function setCodePoppedOut(popped){
       if(popped !== code_popped){
@@ -154,10 +154,10 @@ function(core, material, event, params, selector){
 
   // SAVE //
 
-  var code_save_button = document.getElementById("save-shader")
+  var code_dialog_save = document.getElementById("button-save")
     , auth_token;
 
-  function saveShaderToDB(){
+  function postCode(){
     // get lzma compressed
     params.lzmaCompress(code_text.value.trim(), 1, function(src_compressed){
       var shader_obj = {
@@ -167,16 +167,13 @@ function(core, material, event, params, selector){
         "image" : canvas.toDataURL()
       }
       $.post("/s", shader_obj, function(res){
-        code_save_db.value = "Saved!";
+        code_dialog_save.value = "Saved!";
       });
     });
   }
 
   function initSave(){
-    $.get("s/token.php", function(data){
-      auth_token = data.token;
-    }, "json");
-    code_save_button.addEventListener("click", saveShaderToDB, false);
+    code_dialog_save.addEventListener("click", postCode, false);
   }
 
 

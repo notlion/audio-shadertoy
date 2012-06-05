@@ -123,7 +123,6 @@ body {
     float: left;
   }
   &>input {
-    padding: 0 8px 0 8px;
     margin: 0;
     border: 0;
     border-radius: 2px;
@@ -132,6 +131,7 @@ body {
   }
 }
 .dialog-textfield {
+  padding: 0 0 0 8px;
   font-size: 16px;
   color: #fff;
   background-color: rgba(0, 0, 0, 0.25);
@@ -139,11 +139,12 @@ body {
 .dialog-button {
   font-size: 14px;
   font-weight: bold;
+  padding: 0 8px 0 8px;
   margin-left: 8px !important;
   color: #000;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.75);
   cursor: pointer;
   &:hover {
-    background-color: rgba(255, 255, 255, 0.75);
+    background-color: #fff;
   }
 }
