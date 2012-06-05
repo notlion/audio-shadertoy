@@ -118,32 +118,32 @@ body {
   background-color: #77f;
   padding: 16px;
   border-radius: 5px;
-  @include box-shadow(inset rgba(0, 0, 0, 0.5) 0px 0px 6px);
+  @include box-shadow(inset rgba(0, 0, 0, 0.25) 0px 0px 6px, rgba(0, 0, 0, 0.5) 0px 2px 12px);
   &>* {
     float: left;
   }
-}
-#save-dialog, .dialog-textfield {
-  font-family: Sans-serif;
-  font-size: 16px;
+  &>input {
+    padding: 0 8px 0 8px;
+    margin: 0;
+    border: 0;
+    border-radius: 2px;
+    height: 28px;
+    font-family: Sans-serif;
+  }
 }
 .dialog-textfield {
-  padding: 5px;
-  margin: 0;
-  border: 0;
-  border-radius: 2px;
+  font-size: 16px;
   color: #fff;
   background-color: rgba(0, 0, 0, 0.25);
 }
 .dialog-button {
+  font-size: 14px;
   font-weight: bold;
-  padding: 5px;
-  margin-left: 10px;
-  border-radius: 2px;
+  margin-left: 8px !important;
   color: #000;
   background-color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
   &:hover {
     background-color: rgba(255, 255, 255, 0.75);
-    cursor: hand;
   }
 }

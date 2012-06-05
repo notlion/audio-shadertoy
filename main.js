@@ -67,6 +67,8 @@ function(core, material, event, params, selector){
     }
     code_save.addEventListener("click", saveCode, false);
 
+
+
     function setCodePoppedOut(popped){
       if(popped !== code_popped){
         code_popped = popped;
@@ -147,6 +149,34 @@ function(core, material, event, params, selector){
     // TODO: Set this via permalink
     setCodeOpen(true);
     setCodePoppedOut(false);
+  }
+
+
+  // SAVE //
+
+  var code_save_button = document.getElementById("save-shader")
+    , auth_token;
+
+  function saveShaderToDB(){
+    // get lzma compressed
+    params.lzmaCompress(code_text.value.trim(), 1, function(src_compressed){
+      var shader_obj = {
+        "auth_token" : auth_token,
+        "code" : code_text.value.trim(),
+        "code_lzma" : src_compressed,
+        "image" : canvas.toDataURL()
+      }
+      $.post("/s", shader_obj, function(res){
+        code_save_db.value = "Saved!";
+      });
+    });
+  }
+
+  function initSave(){
+    $.get("s/token.php", function(data){
+      auth_token = data.token;
+    }, "json");
+    code_save_button.addEventListener("click", saveShaderToDB, false);
   }
 
 
@@ -377,6 +407,7 @@ function(core, material, event, params, selector){
   }
   window.addEventListener("resize", resize, false);
 
+  initSave();
   initUI();
   initGL();
   initAudio();
