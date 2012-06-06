@@ -154,21 +154,34 @@ function(core, material, event, params, selector){
 
   // SAVE //
 
-  var code_dialog_save = document.getElementById("button-save")
-    , auth_token;
+  var code_dialog_save = document.getElementById("button-save");
 
   function postCode(){
+
     // get lzma compressed
     params.lzmaCompress(code_text.value.trim(), 1, function(src_compressed){
+
       var shader_obj = {
-        "auth_token" : auth_token,
         "code" : code_text.value.trim(),
         "code_lzma" : src_compressed,
         "image" : canvas.toDataURL()
       }
-      $.post("/s", shader_obj, function(res){
-        code_dialog_save.value = "Saved!";
+
+      // post shader to DB
+      $.ajax({
+          type: 'POST',
+          url: "http://api.audioshader.net/save",
+          crossDomain: true,
+          data: shader_obj,
+          dataType: 'json',
+          success: function(responseData, textStatus, jqXHR) {
+            console.log(responseData.short_url); // short url
+          },
+          error: function (responseData, textStatus, errorThrown) {
+            console.log('POST failed.');
+          }
       });
+
     });
   }
 
@@ -417,6 +430,21 @@ function(core, material, event, params, selector){
       params.lzmaDecompress(hex, function(src){
         code_text.value = src;
         tryCompile(code_text);
+      });
+    },
+    "s": function(short_id){
+      $.ajax({
+          type: 'GET',
+          url: "http://api.audioshader.net/short/" + short_id,
+          crossDomain: true,
+          dataType: 'json',
+          success: function(responseData, textStatus, jqXHR) {
+            code_text.value = responseData.code;
+            tryCompile(code_text);
+          },
+          error: function (responseData, textStatus, errorThrown) {
+            console.log('fail.');
+          }
       });
     }
   });
