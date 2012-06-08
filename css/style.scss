@@ -129,7 +129,7 @@ body {
   border-radius: 5px;
   @include box-shadow(inset rgba(0, 0, 0, 0.25) 0px 0px 6px, rgba(0, 0, 0, 0.5) 0px 2px 12px);
   &.shut {
-    display: none;
+    visibility: hidden;
   }
   &>* {
     float: left;

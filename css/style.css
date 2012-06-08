@@ -197,7 +197,7 @@ body {
   -o-box-shadow: inset rgba(0, 0, 0, 0.25) 0px 0px 6px, rgba(0, 0, 0, 0.5) 0px 2px 12px;
   box-shadow: inset rgba(0, 0, 0, 0.25) 0px 0px 6px, rgba(0, 0, 0, 0.5) 0px 2px 12px; }
   #save-dialog.shut {
-    display: none; }
+    visibility: hidden; }
   #save-dialog > * {
     float: left; }
   #save-dialog > input {
