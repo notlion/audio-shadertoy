@@ -5,7 +5,7 @@
 <link href="css/style.css" media="all" rel="stylesheet" type="text/css"/>
 <script src="lib/embr/src/lib/require.js"></script>
 <script src="http://connect.soundcloud.com/sdk.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script src="lib/jquery.js"></script>
 <script>
 
 // Animation Frame Shim
@@ -28,12 +28,12 @@ window.addEventListener("load", function(){
 </script>
 </head>
 <body>
-  <canvas id="canvas"></canvas>
+  <canvas id="gl-canvas"></canvas>
   <div id="code" class="shut" style="visibility:hidden">
 <textarea id="code-text" spellcheck="false">
 // Audio ShaderToy
 
-#define track http://soundcloud.com/funckarma/psar-dymag-mix
+// #define track http://soundcloud.com/funckarma/psar-dymag-mix
 #define smoothing .75
 #define pixel_scale 2
 
@@ -79,9 +79,10 @@ void main(){
     <rect x="13" y="9" width="8" height="8" />
     <rect x="9" y="13" width="8" height="8" />
   </svg>
+  <div id="save-scrim" class="shut"></div>
   <div id="save-dialog">
     <input id="save-dialog-link" class="dialog-textfield" type="text" size="36" autocomplete="off" spellcheck="false" readonly="readonly">
-    <input id="button-save" class="dialog-button" type="button" value="Share">
+    <input id="save-dialog-save" class="dialog-button" type="button" value="Share">
   </div>
 </body>
 </html>

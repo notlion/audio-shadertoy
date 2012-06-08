@@ -13,14 +13,18 @@ function(core, material, event, params, selector){
 
   // UI //
 
-  var code_text = document.getElementById("code-text");
+  var code_text = document.getElementById("code-text")
+    , save_dialog = document.getElementById("save-dialog")
+    , save_dialog_link = document.getElementById("save-dialog-link")
+    , save_dialog_save = document.getElementById("save-dialog-save")
+    , canvas_thumbed = false
+    , canvas_thumb_size = 256;
 
   function initUI(){
     var code = document.getElementById("code")
       , code_toggle = document.getElementById("code-toggle")
       , code_save = document.getElementById("code-save")
       , code_popout = document.getElementById("code-popout")
-      , save_dialog_link = document.getElementById("save-dialog-link")
       , code_window = null
       , popped_code_text = null
       , code_open = false
@@ -65,6 +69,8 @@ function(core, material, event, params, selector){
           "fs": src_compressed
         });
         save_dialog_link.value = window.location;
+        canvas_thumbed = true;
+        layoutUI(true);
       });
     }
     code_save.addEventListener("click", saveCode, false);
@@ -151,6 +157,40 @@ function(core, material, event, params, selector){
     setCodePoppedOut(false);
   }
 
+  function updateCanvasRes(){
+    canvas.width = Math.floor(canvas.clientWidth / canvas_pixel_scale);
+    canvas.height = Math.floor(canvas.clientHeight / canvas_pixel_scale);
+  }
+
+  function layoutUI(animate){
+    var canvas_sel = $(canvas)
+      , canvas_off = canvas_sel.offset()
+      , canvas_props
+      , save_dialog_sel = $(save_dialog)
+      , dur = animate ? 250 : 0, ease = "swing", padding = 32;
+
+    if(canvas_thumbed) {
+      canvas_props = {
+        left: (window.innerWidth - canvas_thumb_size) / 2,
+        top: (window.innerHeight - canvas_thumb_size) / 2,
+        width: canvas_thumb_size + "px",
+        height: canvas_thumb_size + "px"
+      };
+    }
+    else {
+      canvas_props = {
+        left: 0, top: 0, width: "100%", height: "100%"
+      };
+    }
+
+    canvas_sel.animate(canvas_props, dur, ease, updateCanvasRes);
+
+    save_dialog_sel.animate({
+      left: (window.innerWidth - save_dialog.offsetWidth) / 2,
+      top: canvas_props.top - (save_dialog.offsetHeight + padding)
+    }, dur, ease);
+  }
+
 
   // SAVE //
 
@@ -175,18 +215,18 @@ function(core, material, event, params, selector){
           },
           dataType: 'json',
           success: function(responseData, textStatus, jqXHR) {
-            window.location = '#s=' + responseData.short_url;
+              window.location = '#s=' + responseData.short_url;
+              save_dialog_link.value = window.location;
           },
           error: function (responseData, textStatus, errorThrown) {
             console.log('POST failed.');
           }
       });
-
     });
   }
 
   function initSave(){
-    code_dialog_save.addEventListener("click", postCode, false);
+    save_dialog_save.addEventListener("click", postCode, false);
   }
 
 
@@ -295,7 +335,7 @@ function(core, material, event, params, selector){
 
   // GFX //
 
-  var canvas = document.getElementById("canvas")
+  var canvas = document.getElementById("gl-canvas")
     , canvas_pixel_scale = 2;
   var gl, program, plane
     , eq_texture_left, eq_texture_right;
@@ -339,7 +379,7 @@ function(core, material, event, params, selector){
           value = Math.floor(+value);
           if(!isNaN(value)){
             canvas_pixel_scale = value;
-            resize();
+            updateCanvasRes();
           }
         },
         "track": function(value){
@@ -418,17 +458,15 @@ function(core, material, event, params, selector){
     plane.draw();
   }
 
-  function resize(){
-    canvas.width = Math.floor(canvas.clientWidth / canvas_pixel_scale);
-    canvas.height = Math.floor(canvas.clientHeight / canvas_pixel_scale);
-  }
-  window.addEventListener("resize", resize, false);
+  window.addEventListener("resize", function(){
+    layoutUI();
+  }, false);
 
   initSave();
   initUI();
   initGL();
   initAudio();
-  resize();
+  layoutUI();
   tryCompile(code_text);
   initTime();
 
