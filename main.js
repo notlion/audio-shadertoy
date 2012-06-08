@@ -199,20 +199,24 @@ function(core, material, event, params, selector){
   function postCode(){
     // get lzma compressed
     params.lzmaCompress(code_text.value.trim(), 1, function(code_lzma){
+
+      var shader_data = {
+            "code_lzma" : code_lzma,
+            "img" : canvas.toDataURL(),
+          };
+      if (sc_trackinfo) {
+        shader_data.track_url = sc_trackinfo.url || null;
+        shader_data.track_artist = sc_trackinfo.artist || null;
+        shader_data.track_title = sc_trackinfo.title || null;
+        shader_data.track_genre = sc_trackinfo.genre || null;
+        shader_data.track_duration = sc_trackinfo.duration || null;
+      }
+
       // post shader to DB
       $.ajax({
           type: 'POST',
           url: "/s",
-          crossDomain: true,
-          data: {
-            "code_lzma" : code_lzma,
-            "img" : canvas.toDataURL(),
-            "track_url" : sc_trackinfo.url,
-            "track_artist" : sc_trackinfo.artist,
-            "track_title" : sc_trackinfo.title,
-            "track_genre" : sc_trackinfo.genre,
-            "track_duration" : sc_trackinfo.duration
-          },
+          data: shader_data,
           dataType: 'json',
           success: function(responseData, textStatus, jqXHR) {
               window.location = '#s=' + responseData.short_url;
