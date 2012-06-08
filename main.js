@@ -221,12 +221,12 @@ function(core, material, event, params, selector){
         "img" : canvas.toDataURL(),
       };
 
-      if(sc_trackinfo){
-        shader_data.track_url = sc_trackinfo.url || null;
-        shader_data.track_artist = sc_trackinfo.artist || null;
-        shader_data.track_title = sc_trackinfo.title || null;
-        shader_data.track_genre = sc_trackinfo.genre || null;
-        shader_data.track_duration = sc_trackinfo.duration || null;
+      if(sc_playing_track){
+        shader_data.track_url      = sc_playing_track.url      || null;
+        shader_data.track_artist   = sc_playing_track.artist   || null;
+        shader_data.track_title    = sc_playing_track.title    || null;
+        shader_data.track_genre    = sc_playing_track.genre    || null;
+        shader_data.track_duration = sc_playing_track.duration || null;
       }
 
       // Post shader to DB
@@ -302,7 +302,7 @@ function(core, material, event, params, selector){
   // SOUNDCLOUD //
 
   var sc_url_prefix = "http://soundcloud.com/"
-    , sc_last_url_loaded, sc_last_url_played, sc_trackinfo;
+    , sc_last_url_loaded, sc_last_url_played, sc_playing_track;
 
   var sm_playing_sound = null;
   var sm_options = {
@@ -323,20 +323,15 @@ function(core, material, event, params, selector){
   function loadSoundCloudTrack(url){
     if(url == sc_last_url_loaded || url == sc_last_url_played)
       return;
+
     sc_last_url_loaded = url;
+
     SC.post("/resolve.json", { url: url }, function(res, err){
-      sc_trackinfo = {
-        "url" : res.permalink_url,
-        "artist" : res.user.username,
-        "title" : res.title,
-        "genre" : res.genre,
-        "duration" : res.duration
-      }
       if(err) {
         console.error("Could not find track: %s", err.message);
       }
       else if(url == sc_last_url_loaded) {
-        playSoundCloudTrack(res.uri);
+        playSoundCloudTrack(res);
         sc_last_url_played = url;
       }
     });
@@ -349,8 +344,15 @@ function(core, material, event, params, selector){
     initTime();
   }
 
-  function playSoundCloudTrack(uri){
-    SC.stream(uri, sm_options, onSoundCloudStreamReady);
+  function playSoundCloudTrack(track){
+    sc_playing_track = {
+      "url":      track.permalink_url,
+      "artist":   track.user.username,
+      "title":    track.title,
+      "genre":    track.genre,
+      "duration": track.duration
+    }
+    SC.stream(track.uri, sm_options, onSoundCloudStreamReady);
   }
 
 
