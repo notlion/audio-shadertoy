@@ -1,23 +1,24 @@
 @import "bourbon/bourbon";
 
-html {
-  height: 100%;
+html, body {
+  width: 100%; height: 100%;
 }
 
 body {
-  background: #000;
+  background: #202020;
   color: #fff;
   padding: 0;
   margin: 0;
-  height: 100%;
   overflow: hidden;
   &.popped {
     background-color: rgb(19, 22, 18);
   }
 }
 
-#canvas {
+#gl-canvas {
+  position: absolute;
   width: 100%; height: 100%;
+  @include box-shadow(rgba(0, 0, 0, 0.5) 0px 2px 12px);
 }
 
 #code {
@@ -112,13 +113,23 @@ body {
   }
 }
 
+#save-scrim {
+  position: absolute;
+  width: 100%; height: 100%;
+  &.shut {
+    display: none;
+  }
+}
+
 #save-dialog {
   position: absolute;
-  left: 46px; top: 26px;
   background-color: #77f;
   padding: 16px;
   border-radius: 5px;
   @include box-shadow(inset rgba(0, 0, 0, 0.25) 0px 0px 6px, rgba(0, 0, 0, 0.5) 0px 2px 12px);
+  &.shut {
+    display: none;
+  }
   &>* {
     float: left;
   }
