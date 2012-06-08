@@ -17,6 +17,7 @@ function(core, material, event, params, selector){
     , save_dialog = document.getElementById("save-dialog")
     , save_dialog_link = document.getElementById("save-dialog-link")
     , save_dialog_save = document.getElementById("save-dialog-save")
+    , save_scrim = document.getElementById("save-scrim")
     , canvas_thumbed = false
     , canvas_thumb_size = 256;
 
@@ -152,6 +153,16 @@ function(core, material, event, params, selector){
     }
     addCodeEventListeners(code_text);
 
+    function setCanvasThumbed(thumbed){
+      if(thumbed !== canvas_thumbed) {
+        canvas_thumbed = thumbed;
+        layoutUI(true);
+      }
+    }
+    save_scrim.addEventListener("click", function(e){
+      setCanvasThumbed(false);
+    }, false);
+
     // TODO: Set this via permalink
     setCodeOpen(true);
     setCodePoppedOut(false);
@@ -167,20 +178,22 @@ function(core, material, event, params, selector){
       , canvas_off = canvas_sel.offset()
       , canvas_props
       , save_dialog_sel = $(save_dialog)
-      , dur = animate ? 250 : 0, ease = "swing", padding = 32;
+      , dur = animate ? 250 : 0, ease = "swing", padding = 24;
 
     if(canvas_thumbed) {
       canvas_props = {
         left: (window.innerWidth - canvas_thumb_size) / 2,
-        top: (window.innerHeight - canvas_thumb_size) / 2,
+        top: (window.innerHeight - canvas_thumb_size + save_dialog.offsetHeight + padding) / 2,
         width: canvas_thumb_size + "px",
         height: canvas_thumb_size + "px"
       };
+      save_scrim.classList.remove("shut");
     }
     else {
       canvas_props = {
         left: 0, top: 0, width: "100%", height: "100%"
       };
+      save_scrim.classList.add("shut");
     }
 
     canvas_sel.animate(canvas_props, dur, ease, updateCanvasRes);
@@ -440,10 +453,6 @@ function(core, material, event, params, selector){
     plane.draw();
   }
 
-  window.addEventListener("resize", function(){
-    layoutUI();
-  }, false);
-
   initSave();
   initUI();
   initGL();
@@ -462,5 +471,9 @@ function(core, material, event, params, selector){
   });
 
   window.requestAnimationFrame(render);
+
+  window.addEventListener("resize", function(){
+    layoutUI();
+  }, false);
 
 });
