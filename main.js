@@ -157,25 +157,25 @@ function(core, material, event, params, selector){
   var code_dialog_save = document.getElementById("button-save");
 
   function postCode(){
-
     // get lzma compressed
-    params.lzmaCompress(code_text.value.trim(), 1, function(src_compressed){
-
-      var shader_obj = {
-        "code" : code_text.value.trim(),
-        "code_lzma" : src_compressed,
-        "image" : canvas.toDataURL()
-      }
-
+    params.lzmaCompress(code_text.value.trim(), 1, function(code_lzma){
       // post shader to DB
       $.ajax({
           type: 'POST',
-          url: "http://api.audioshader.net/save",
+          url: "/s",
           crossDomain: true,
-          data: shader_obj,
+          data: {
+            "code_lzma" : code_lzma,
+            "img" : canvas.toDataURL(),
+            "track_url" : sc_trackinfo.url,
+            "track_artist" : sc_trackinfo.artist,
+            "track_title" : sc_trackinfo.title,
+            "track_genre" : sc_trackinfo.genre,
+            "track_duration" : sc_trackinfo.duration
+          },
           dataType: 'json',
           success: function(responseData, textStatus, jqXHR) {
-            console.log(responseData.short_url); // short url
+            window.location = '#s=' + responseData.short_url;
           },
           error: function (responseData, textStatus, errorThrown) {
             console.log('POST failed.');
@@ -241,7 +241,7 @@ function(core, material, event, params, selector){
   // SOUNDCLOUD //
 
   var sc_url_prefix = "http://soundcloud.com/"
-    , sc_last_url_loaded, sc_last_url_played;
+    , sc_last_url_loaded, sc_last_url_played, sc_trackinfo;
 
   var sm_playing_sound = null;
   var sm_options = {
@@ -264,6 +264,13 @@ function(core, material, event, params, selector){
       return;
     sc_last_url_loaded = url;
     SC.post("/resolve.json", { url: url }, function(res, err){
+      sc_trackinfo = {
+        "url" : res.permalink_url,
+        "artist" : res.user.username,
+        "title" : res.title,
+        "genre" : res.genre,
+        "duration" : res.duration
+      }
       if(err) {
         console.error("Could not find track: %s", err.message);
       }
@@ -432,15 +439,17 @@ function(core, material, event, params, selector){
         tryCompile(code_text);
       });
     },
-    "s": function(short_id){
+    "s": function(short){
       $.ajax({
           type: 'GET',
-          url: "http://api.audioshader.net/short/" + short_id,
+          url: "/sh/" + short,
           crossDomain: true,
           dataType: 'json',
           success: function(responseData, textStatus, jqXHR) {
-            code_text.value = responseData.code;
+            params.lzmaDecompress(responseData.code_lzma, function(src){
+            code_text.value = src;
             tryCompile(code_text);
+          });
           },
           error: function (responseData, textStatus, errorThrown) {
             console.log('fail.');
