@@ -427,7 +427,11 @@ function(core, material, event, params, selector){
 
   function initGL(){
     try{
-      gl = canvas.getContext("experimental-webgl");
+      var webgl_opts = {
+        preserveDrawingBuffer: true
+      };
+      gl = canvas.getContext("webgl", webgl_opts) ||
+           canvas.getContext("experimental-webgl", webgl_opts);
       // gl = core.util.glWrapContextWithErrorChecks(gl);
     }
     catch(err){
