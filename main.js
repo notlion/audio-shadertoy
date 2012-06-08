@@ -211,22 +211,37 @@ function(core, material, event, params, selector){
 
   // SAVE //
 
-  var auth_token;
+  var code_dialog_save = document.getElementById("button-save");
 
   function postCode(){
     // get lzma compressed
-    params.lzmaCompress(code_text.value.trim(), 1, function(src_compressed){
-      var shader_obj = {
-        "auth_token" : auth_token,
-        "code" : code_text.value.trim(),
-        "code_lzma" : src_compressed//,
-        // "image" : canvas.toDataURL()
+    params.lzmaCompress(code_text.value.trim(), 1, function(code_lzma){
+
+      var shader_data = {
+            "code_lzma" : code_lzma,
+            "img" : canvas.toDataURL(),
+          };
+      if (sc_trackinfo) {
+        shader_data.track_url = sc_trackinfo.url || null;
+        shader_data.track_artist = sc_trackinfo.artist || null;
+        shader_data.track_title = sc_trackinfo.title || null;
+        shader_data.track_genre = sc_trackinfo.genre || null;
+        shader_data.track_duration = sc_trackinfo.duration || null;
       }
-      $.post("s/index.php", shader_obj, function(res){
-        console.log(res);
-        code_dialog_save.value = "Saved";
-        code_dialog_save.disabled = true;
-        save_dialog_link.value = res.short_url;
+
+      // post shader to DB
+      $.ajax({
+          type: 'POST',
+          url: "/s",
+          data: shader_data,
+          dataType: 'json',
+          success: function(responseData, textStatus, jqXHR) {
+              window.location = '#s=' + responseData.short_url;
+              save_dialog_link.value = window.location;
+          },
+          error: function (responseData, textStatus, errorThrown) {
+            console.log('POST failed.');
+          }
       });
     });
   }
@@ -287,7 +302,7 @@ function(core, material, event, params, selector){
   // SOUNDCLOUD //
 
   var sc_url_prefix = "http://soundcloud.com/"
-    , sc_last_url_loaded, sc_last_url_played;
+    , sc_last_url_loaded, sc_last_url_played, sc_trackinfo;
 
   var sm_playing_sound = null;
   var sm_options = {
@@ -310,6 +325,13 @@ function(core, material, event, params, selector){
       return;
     sc_last_url_loaded = url;
     SC.post("/resolve.json", { url: url }, function(res, err){
+      sc_trackinfo = {
+        "url" : res.permalink_url,
+        "artist" : res.user.username,
+        "title" : res.title,
+        "genre" : res.genre,
+        "duration" : res.duration
+      }
       if(err) {
         console.error("Could not find track: %s", err.message);
       }
@@ -470,6 +492,23 @@ function(core, material, event, params, selector){
       params.lzmaDecompress(hex, function(src){
         code_text.value = src;
         tryCompile(code_text);
+      });
+    },
+    "s": function(short){
+      $.ajax({
+          type: 'GET',
+          url: "/sh/" + short,
+          crossDomain: true,
+          dataType: 'json',
+          success: function(responseData, textStatus, jqXHR) {
+            params.lzmaDecompress(responseData.code_lzma, function(src){
+            code_text.value = src;
+            tryCompile(code_text);
+          });
+          },
+          error: function (responseData, textStatus, errorThrown) {
+            console.log('fail.');
+          }
       });
     }
   });
