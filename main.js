@@ -65,15 +65,21 @@ function(core, material, event, params, selector){
       setCodeOpen(!code_open);
     }, false);
 
+    function setCodeEdited(edited){
+      if(edited === undefined)
+        edited = true;
+      code_save_indicator.setAttribute("class", edited ? "on" : "");
+    }
+
     function saveCode(){
       params.lzmaCompress(code_text.value.trim(), 1, function(src_compressed){
         params.saveUrlHash({
           "fs": src_compressed
         });
         save_dialog_link.value = window.location;
-        code_save_indicator.setAttribute("class", "");
         canvas_thumbed = true;
         layoutUI(true);
+        setCodeEdited(false);
       });
     }
     code_save.addEventListener("click", saveCode, false);
@@ -133,8 +139,7 @@ function(core, material, event, params, selector){
            (e.keyCode >= 91 && e.keyCode <= 93))
           return;
 
-        // Indicate code has been edited
-        code_save_indicator.setAttribute("class", "on");
+        setCodeEdited();
 
         tryCompile(textarea);
       }, false);
@@ -142,6 +147,7 @@ function(core, material, event, params, selector){
         e.stopPropagation();
       }, false);
       textarea.addEventListener("paste", function(e){
+        setCodeEdited();
         setTimeout(function(){
           tryCompile(textarea);
         }, 0);
