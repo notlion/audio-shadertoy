@@ -25,6 +25,7 @@ function(core, material, event, params, selector){
     var code = document.getElementById("code")
       , code_toggle = document.getElementById("code-toggle")
       , code_save = document.getElementById("code-save")
+      , code_save_indicator = document.getElementById("code-save-indicator")
       , code_popout = document.getElementById("code-popout")
       , code_window = null
       , popped_code_text = null
@@ -70,6 +71,7 @@ function(core, material, event, params, selector){
           "fs": src_compressed
         });
         save_dialog_link.value = window.location;
+        code_save_indicator.setAttribute("class", "");
         canvas_thumbed = true;
         layoutUI(true);
       });
@@ -130,6 +132,9 @@ function(core, material, event, params, selector){
         if((e.keyCode >= 16 && e.keyCode <= 45) ||
            (e.keyCode >= 91 && e.keyCode <= 93))
           return;
+
+        // Indicate code has been edited
+        code_save_indicator.setAttribute("class", "on");
 
         tryCompile(textarea);
       }, false);
@@ -502,19 +507,19 @@ function(core, material, event, params, selector){
     },
     "s": function(short){
       $.ajax({
-          type: 'GET',
-          url: "/sh/" + short,
-          crossDomain: true,
-          dataType: 'json',
-          success: function(responseData, textStatus, jqXHR) {
-            params.lzmaDecompress(responseData.code_lzma, function(src){
+        type: 'GET',
+        url: "/sh/" + short,
+        crossDomain: true,
+        dataType: 'json',
+        success: function(res){
+          params.lzmaDecompress(res.code_lzma, function(src){
             code_text.value = src;
             tryCompile(code_text);
           });
-          },
-          error: function (responseData, textStatus, errorThrown) {
-            console.log('fail.');
-          }
+        },
+        error: function (res) {
+          console.log('fail.');
+        }
       });
     }
   });

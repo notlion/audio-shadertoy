@@ -62,27 +62,29 @@ void main(){
 }
 </textarea>
   </div>
-  <svg id="code-toggle" title="Toggle Shader Source" class="shut" width="30" height="30" version="1.2" xmlns="http://www.w3.org/2000/svg">
-    <g transform="translate(15,15)">
-      <circle cx="0" cy="0" r="13"/>
-      <path d="M -7,0 L 7,0 M 0,-7 L 0,7"/>
-    </g>
-  </svg>
-  <svg id="code-save" title="Save Shader Source" class="hidden" width="30" height="30" version="1.2" xmlns="http://www.w3.org/2000/svg">
-    <g transform="translate(15,15)rotate(45)">
-      <circle cx="0" cy="0" r="13"/>
-      <path d="M -7,0 L 0,-7 L 7,0 M 0,-7 L 0,7"/>
-    </g>
-  </svg>
-  <svg id="code-popout" title="Popout Code in New Window" class="hidden" width="30" height="30" version="1.2" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="15" cy="15" r="13"/>
-    <rect x="13" y="9" width="8" height="8" />
-    <rect x="9" y="13" width="8" height="8" />
-  </svg>
+  <div id="code-ui">
+    <svg id="code-toggle" title="Toggle Shader Source" class="shut" width="30" height="30" version="1.2" xmlns="http://www.w3.org/2000/svg">
+      <g transform="translate(15,15)">
+        <circle cx="0" cy="0" r="13"/>
+        <path d="M -7,0 L 7,0 M 0,-7 L 0,7"/>
+      </g>
+    </svg>
+    <svg id="code-save" title="Save Shader Source" width="30" height="30" version="1.2" xmlns="http://www.w3.org/2000/svg">
+      <g transform="translate(15,15)">
+        <circle cx="0" cy="0" r="13"/>
+        <circle id="code-save-indicator" cx="0" cy="0" r="5"/>
+      </g>
+    </svg>
+    <svg id="code-popout" title="Popout Code in New Window" width="30" height="30" version="1.2" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="15" cy="15" r="13"/>
+      <rect x="13" y="9" rx="1" ry="1" width="8" height="8" />
+      <rect x="9" y="13" rx="1" ry="1" width="8" height="8" />
+    </svg>
+  </div>
   <div id="save-scrim" class="shut"></div>
   <div id="save-dialog" class="shut">
     <input id="save-dialog-link" class="dialog-textfield" type="text" size="36" autocomplete="off" spellcheck="false" readonly="readonly">
-    <input id="save-dialog-save" class="dialog-button" type="button" value="Share">
+    <a id="save-dialog-save" class="dialog-button"><p>Share</p></a>
   </div>
 </body>
 </html>

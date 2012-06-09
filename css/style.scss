@@ -70,15 +70,21 @@ body {
   }
 }
 
-#code-toggle, #code-save, #code-popout {
+#code-ui {
   position: absolute;
-  stroke: #fff;
-  stroke-width: 2px;
-  cursor: pointer;
-  @include transition(opacity, 0.2s, ease-out);
+  left: 12px; top: 12px;
+  &>svg {
+    float: left;
+    margin-right: 3px;
+    stroke: #fff;
+    stroke-width: 2px;
+    cursor: pointer;
+    &:not(:first-child) {
+      @include transition(opacity, 0.2s, ease-out);
+    }
+  }
 }
 #code-toggle {
-  left: 12px; top: 12px;
   fill: #012;
   -webkit-transition-property: -webkit-transform;
   -moz-transition-property: -moz-transform;
@@ -99,15 +105,16 @@ body {
   }
 }
 #code-save, #code-popout {
-  left: 46px; top: 12px;
   fill: #000;
   opacity: 0;
   &:hover {
     fill: #282;
   }
 }
+#code-save-indicator.on {
+  fill: #fff;
+}
 #code-popout {
-  left: 80px;
   &:hover {
     fill: #888;
   }
@@ -134,7 +141,7 @@ body {
   &>* {
     float: left;
   }
-  &>input {
+  &>input, a {
     margin: 0;
     border: 0;
     border-radius: 2px;
@@ -149,8 +156,7 @@ body {
   background-color: rgba(0, 0, 0, 0.25);
 }
 .dialog-button {
-  font-size: 14px;
-  font-weight: bold;
+  display: table;
   padding: 0 8px 0 8px;
   margin-left: 8px !important;
   color: #000;
@@ -158,5 +164,12 @@ body {
   cursor: pointer;
   &:hover {
     background-color: #fff;
+  }
+  &>p {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
   }
 }
