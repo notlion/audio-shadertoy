@@ -415,7 +415,7 @@ function(core, material, event, params, selector){
       program.link();
       program.assignLocations(plane);
 
-      setMouseMoveEnabled(!!program.uniforms.u_mouse);
+      setMouseMoveEnabled(!!program.uniforms.mouse);
 
       textarea.classList.remove("error");
 
