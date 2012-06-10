@@ -1,15 +1,31 @@
-require.config({
-  paths: { "embr": "lib/embr/src" }
+window.SM2_DEFER = true;
+requirejs.config({
+  shim: {
+    "lib/jquery": {
+      exports: function(){
+        return this.jQuery.noConflict();
+      }
+    },
+    "soundcloud": {
+      deps: [ "soundmanager" ],
+      exports: "SC"
+    }
+  },
+  paths: {
+    "soundcloud": "http://connect.soundcloud.com/sdk",
+    "soundmanager": "lib/soundmanager/soundmanager2-nodebug"
+  }
 });
 require([
-  "embr/core",
-  "embr/material",
-  "event",
+  "utils",
+  "events",
   "params",
   "selector",
-  "lib/soundmanager/soundmanager2-nodebug"
+  "lib/embr/src/embr",
+  "lib/jquery",
+  "soundcloud"
 ],
-function(core, material, event, params, selector){
+function(utils, events, params, selector, Embr, $, SC){
 
   // UI //
 
@@ -46,15 +62,15 @@ function(core, material, event, params, selector){
           setCodePoppedOut(false);
         }
         else{
-          event.addTransitionEndListener(code, function(e){
+          events.addTransitionEndListener(code, function(e){
             code.style.visibility = "hidden";
           }, true);
           code.classList.add("shut");
-          event.addTransitionEndListener(code_save, function(e){
+          events.addTransitionEndListener(code_save, function(e){
             code_save.style.display = "none";
           }, true);
           code_save.style.opacity = "0";
-          event.addTransitionEndListener(code_popout, function(e){
+          events.addTransitionEndListener(code_popout, function(e){
             code_popout.style.display = "none";
           }, true);
           code_popout.style.opacity = "0";
@@ -174,14 +190,19 @@ function(core, material, event, params, selector){
       setCanvasThumbed(false);
     }, false);
 
+    window.addEventListener("resize", function(){
+      layoutUI();
+    }, false);
+
     // TODO: Set this via permalink
     setCodeOpen(true);
     setCodePoppedOut(false);
   }
 
   function updateCanvasRes(){
-    canvas.width = Math.floor(canvas.clientWidth / canvas_pixel_scale);
-    canvas.height = Math.floor(canvas.clientHeight / canvas_pixel_scale);
+    var scale = canvas_thumbed ? 1 : 1 / canvas_pixel_scale;
+    canvas.width = Math.floor(canvas.clientWidth * scale);
+    canvas.height = Math.floor(canvas.clientHeight * scale);
   }
 
   function layoutUI(animate){
@@ -228,8 +249,8 @@ function(core, material, event, params, selector){
     // get lzma compressed
     params.lzmaCompress(code_text.value.trim(), 1, function(code_lzma){
       var shader_data = {
-        "code_lzma" : code_lzma,
-        "img" : canvas.toDataURL(),
+        "code_lzma": code_lzma,
+        "img": canvas.toDataURL(),
       };
 
       if(sc_playing_track){
@@ -240,12 +261,11 @@ function(core, material, event, params, selector){
         shader_data.track_duration = sc_playing_track.duration || null;
       }
 
-      // Post shader to DB
+      // Post to DB
       $.ajax({
-        type: "POST",
+        type: "post",
         url: "/s",
-        data: shader_data,
-        dataType: "json",
+        data: shader_data, dataType: "json",
         success: function(res){
           window.location = '#s=' + res.short_url;
           save_dialog_link.value = window.location;
@@ -265,12 +285,11 @@ function(core, material, event, params, selector){
   // MOUSE //
 
   var mouse_move_enabled = false;
-  var mouse_pos = new core.Vec2(0, 0);
+  var mouse_pos = new Float32Array([ 0, 0 ]);
 
   function onMouseMove(e){
-    mouse_pos.set(
-      e.clientX / canvas.clientWidth, 1 - (e.clientY / canvas.clientHeight)
-    );
+    mouse_pos[0] = e.clientX / canvas.clientWidth;
+    mouse_pos[1] = 1 - (e.clientY / canvas.clientHeight);
   }
   function setMouseMoveEnabled(enabled){
     if(enabled != mouse_move_enabled){
@@ -302,11 +321,14 @@ function(core, material, event, params, selector){
   }
 
   function initFrequencyData(num_bands){
-    var fmt = { format: gl.LUMINANCE, formati: gl.LUMINANCE };
+    var fmt = {
+      width: num_bands, height: 1,
+      format: gl.LUMINANCE, format_internal: gl.LUMINANCE
+    };
     eq_data_left = new Uint8Array(num_bands);
     eq_data_right = new Uint8Array(num_bands);
-    eq_texture_left.setData(num_bands, 1, eq_data_left, fmt);
-    eq_texture_right.setData(num_bands, 1, eq_data_right, fmt);
+    eq_texture_left.set(fmt).set({ data: eq_data_left });
+    eq_texture_right.set(fmt).set({ data: eq_data_right });
   }
 
 
@@ -315,19 +337,24 @@ function(core, material, event, params, selector){
   var sc_url_prefix = "http://soundcloud.com/"
     , sc_last_url_loaded, sc_last_url_played, sc_playing_track;
 
-  var sm_playing_sound = null;
-  var sm_options = {
-    useEQData: true,
-    autoPlay: true,
-    multiShot: false
-  };
+  var soundManager
+    , sm_playing_sound = null
+    , sm_options = {
+        useEQData: true,
+        autoPlay: true,
+        multiShot: false
+      };
 
   var eq_mix = 0.25;
 
   function initSoundCloud(){
+    soundManager = window.soundManager = new SoundManager();
     soundManager.url = "lib/soundmanager/";
     soundManager.flashVersion = 9;
+    soundManager.preferFlash = true;
+    soundManager.useHTML5Audio = false;
     soundManager.useHighPerformance = true;
+    soundManager.beginDelayedInit();
     SC.initialize({ client_id: "0edc2b5846f860f3aa21148493e30a8f" });
   }
 
@@ -399,6 +426,8 @@ function(core, material, event, params, selector){
     }
   }
 
+  var shader_src_prefix = "precision highp float;\n";
+
   function tryCompile(textarea){
     try{
       var shader_src_frag = textarea.value.trim();
@@ -407,7 +436,7 @@ function(core, material, event, params, selector){
         "smoothing": function(value){
           value = 1 - value;
           if(!isNaN(value))
-            eq_mix = core.math.clamp(value, 0, 1);
+            eq_mix = utils.clamp(value, 0, 1);
         },
         "pixel_scale": function(value){
           value = Math.floor(+value);
@@ -422,9 +451,10 @@ function(core, material, event, params, selector){
         }
       });
 
-      program.compile(shader_src_vert, shader_src_frag);
+      program.compile(shader_src_vert, shader_src_prefix + shader_src_frag);
       program.link();
-      program.assignLocations(plane);
+
+      plane.setProg(program);
 
       setMouseMoveEnabled(!!program.uniforms.mouse);
 
@@ -445,28 +475,30 @@ function(core, material, event, params, selector){
       };
       gl = canvas.getContext("webgl", webgl_opts) ||
            canvas.getContext("experimental-webgl", webgl_opts);
-      // gl = core.util.glWrapContextWithErrorChecks(gl);
+      // gl = Embr.wrapContextWithErrorChecks(gl);
+
+      Embr.setContext(gl);
     }
     catch(err){
       console.error(err);
+      return;
     }
 
     var positions = [ -1, -1, 0, -1, 1, 0, 1, -1, 0, 1, 1, 0 ];
     var texcoords = [ 0, 0, 0, 1, 1, 0, 1, 1 ];
-    plane = new core.Vbo(gl, gl.TRIANGLE_STRIP, gl.STATIC_DRAW, {
-      a_position: { data: positions, size: 3 },
-      a_texcoord: { data: texcoords, size: 2 }
-    });
+    plane = new Embr.Vbo(gl.TRIANGLE_STRIP)
+      .setAttr("a_position", { data: positions, size: 3 })
+      .setAttr("a_texcoord", { data: texcoords, size: 2 });
 
-    program = new core.Program(gl);
-    eq_texture_left = new core.Texture(gl);
-    eq_texture_right = new core.Texture(gl);
+    program = new Embr.Program();
+    eq_texture_left = new Embr.Texture();
+    eq_texture_right = new Embr.Texture();
   }
 
   function render(){
     gl.viewport(0, 0, canvas.width, canvas.height);
 
-    window.requestAnimationFrame(render);
+    utils.requestAnimationFrame(render);
 
     var progress = 0;
 
@@ -475,13 +507,13 @@ function(core, material, event, params, selector){
       for(var i = 0; i < 256; ++i) {
         amp_l = sm_playing_sound.eqData.left[i] * 255;
         amp_r = sm_playing_sound.eqData.right[i] * 255;
-        eq_data_left[i] = core.math.lerp(eq_data_left[i], amp_l, eq_mix);
-        eq_data_right[i] = core.math.lerp(eq_data_right[i], amp_r, eq_mix);
+        eq_data_left[i] += (amp_l - eq_data_left[i]) * eq_mix;
+        eq_data_right[i] += (amp_r - eq_data_right[i]) * eq_mix;
       }
       eq_texture_left.bind(0);
-      eq_texture_left.updateData(eq_data_left);
+      eq_texture_left.set({ data: eq_data_left });
       eq_texture_right.bind(1);
-      eq_texture_right.updateData(eq_data_right);
+      eq_texture_right.set({ data: eq_data_right });
       progress = sm_playing_sound.position / sm_playing_sound.durationEstimate;
     }
 
@@ -496,44 +528,47 @@ function(core, material, event, params, selector){
     plane.draw();
   }
 
-  initSave();
-  initUI();
-  initGL();
-  initAudio();
-  layoutUI();
-  tryCompile(code_text);
-  initTime();
-
-  params.loadUrlHash({
-    "fs": function(hex){
-      params.lzmaDecompress(hex, function(src){
-        code_text.value = src;
-        tryCompile(code_text);
-      });
-    },
-    "s": function(short){
-      $.ajax({
-        type: 'GET',
-        url: "/sh/" + short,
-        crossDomain: true,
-        dataType: 'json',
-        success: function(res){
-          params.lzmaDecompress(res.code_lzma, function(src){
-            code_text.value = src;
-            tryCompile(code_text);
-          });
-        },
-        error: function (res) {
-          console.log('fail.');
-        }
-      });
-    }
-  });
-
-  window.requestAnimationFrame(render);
-
-  window.addEventListener("resize", function(){
+  function init(){
+    initSave();
+    initUI();
+    initGL();
+    initAudio();
     layoutUI();
-  }, false);
+    initTime();
+
+    var hash_exists = false;
+
+    params.loadUrlHash({
+      "fs": function(hex){
+        params.lzmaDecompress(hex, function(src){
+          code_text.value = src;
+          tryCompile(code_text);
+        });
+        hash_exists = true;
+      },
+      "s": function(id){
+        $.ajax({
+          type: "get",
+          url: "/sh/" + id,
+          dataType: "json",
+          success: function(res){
+            params.lzmaDecompress(res.code_lzma, function(src){
+              code_text.value = src;
+              tryCompile(code_text);
+            });
+          }
+        });
+        hash_exists = true;
+      }
+    });
+
+    if(!hash_exists){
+      tryCompile(code_text);
+    }
+
+    utils.requestAnimationFrame(render);
+  }
+
+  window.addEventListener("load", init);
 
 });
