@@ -1,7 +1,7 @@
 window.SM2_DEFER = true;
 requirejs.config({
   shim: {
-    "lib/jquery": {
+    "jquery": {
       exports: function(){
         return this.jQuery.noConflict();
       }
@@ -12,6 +12,8 @@ requirejs.config({
     }
   },
   paths: {
+    "embr": "lib/embr/src/embr",
+    "jquery": "lib/jquery",
     "soundcloud": "http://connect.soundcloud.com/sdk",
     "soundmanager": "lib/soundmanager/soundmanager2-nodebug"
   }
@@ -21,8 +23,8 @@ require([
   "events",
   "params",
   "selector",
-  "lib/embr/src/embr",
-  "lib/jquery",
+  "embr",
+  "jquery",
   "soundcloud"
 ],
 function(utils, events, params, selector, Embr, $, SC){
