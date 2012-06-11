@@ -29,6 +29,8 @@ require([
 ],
 function(utils, events, params, selector, Embr, $, SC){
 
+  "use strict";
+
   // UI //
 
   var code_text = document.getElementById("code-text")
