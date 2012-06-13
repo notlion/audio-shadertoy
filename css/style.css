@@ -107,7 +107,8 @@ body {
 #code-ui {
   position: absolute;
   left: 12px;
-  top: 12px; }
+  top: 12px;
+  height: 30px; }
   #code-ui > svg {
     float: left;
     margin-right: 3px;
@@ -135,6 +136,15 @@ body {
       -ms-transition-delay: 0;
       -o-transition-delay: 0;
       transition-delay: 0; }
+
+#code-tooltip {
+  float: left;
+  height: 100%;
+  padding: 0 10px 0 10px; }
+  #code-tooltip > p {
+    font-family: sans-serif;
+    font-size: 14px;
+    font-weight: bold; }
 
 #code-toggle {
   fill: #012;
@@ -217,7 +227,6 @@ body {
   background-color: rgba(0, 0, 0, 0.25); }
 
 .dialog-button {
-  display: table;
   padding: 0 8px 0 8px;
   margin-left: 8px !important;
   color: #000;
@@ -226,8 +235,12 @@ body {
   .dialog-button:hover {
     background-color: #fff; }
   .dialog-button > p {
-    display: table-cell;
-    vertical-align: middle;
-    text-align: center;
     font-size: 14px;
     font-weight: bold; }
+
+.vcenter {
+  display: table; }
+  .vcenter > p {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center; }

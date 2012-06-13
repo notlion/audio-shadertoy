@@ -1,10 +1,8 @@
 window.SM2_DEFER = true;
 requirejs.config({
   shim: {
-    "jquery": {
-      exports: function(){
-        return this.jQuery.noConflict();
-      }
+    "zepto": {
+      exports: "Zepto"
     },
     "soundcloud": {
       deps: [ "soundmanager" ],
@@ -13,7 +11,7 @@ requirejs.config({
   },
   paths: {
     "embr": "lib/embr/src/embr",
-    "jquery": "lib/jquery",
+    "zepto": "lib/zepto",
     "soundcloud": "http://connect.soundcloud.com/sdk",
     "soundmanager": "lib/soundmanager/soundmanager2-nodebug"
   }
@@ -24,10 +22,10 @@ require([
   "params",
   "selector",
   "embr",
-  "jquery",
-  "soundcloud"
+  "soundcloud",
+  "zepto"
 ],
-function(utils, events, params, selector, Embr, $, SC){
+function(utils, events, params, selector, Embr, SC, $){
 
   "use strict";
 
@@ -47,6 +45,7 @@ function(utils, events, params, selector, Embr, $, SC){
       , code_save = document.getElementById("code-save")
       , code_save_indicator = document.getElementById("code-save-indicator")
       , code_popout = document.getElementById("code-popout")
+      , code_tooltip = $("#code-tooltip > p")
       , code_window = null
       , popped_code_text = null
       , code_open = false
@@ -136,6 +135,14 @@ function(utils, events, params, selector, Embr, $, SC){
       setCodePoppedOut(false);
     }
 
+    $("#code-ui > svg")
+      .on("mouseover", function(){
+        code_tooltip.text(this.getAttribute("title"));
+      })
+      .on("mouseout", function(){
+        code_tooltip.text("");
+      });
+
     function addCodeEventListeners(textarea){
       // Compile as you type
       textarea.addEventListener("keydown", function(e){
@@ -214,31 +221,31 @@ function(utils, events, params, selector, Embr, $, SC){
       , canvas_off = canvas_sel.offset()
       , canvas_props
       , save_dialog_sel = $(save_dialog)
-      , dur = animate ? 250 : 0, ease = "swing", padding = 24;
+      , duration = animate ? 250 : 0, ease = "ease-out", padding = 24;
 
     if(canvas_thumbed) {
       canvas_props = {
         left: (window.innerWidth - canvas_thumb_size) / 2,
         top: (window.innerHeight - canvas_thumb_size + save_dialog.offsetHeight + padding) / 2,
-        width: canvas_thumb_size + "px",
-        height: canvas_thumb_size + "px"
+        width: canvas_thumb_size,
+        height: canvas_thumb_size
       };
       save_dialog.classList.remove("shut");
       save_scrim.classList.remove("shut");
     }
     else {
       canvas_props = {
-        left: 0, top: 0, width: "100%", height: "100%"
+        left: 0, top: 0, width: window.innerWidth, height: window.innerHeight
       };
       save_scrim.classList.add("shut");
     }
 
-    canvas_sel.animate(canvas_props, dur, ease, updateCanvasRes);
+    canvas_sel.animate(canvas_props, duration, ease, updateCanvasRes);
 
     save_dialog_sel.animate({
       left: (window.innerWidth - save_dialog.offsetWidth) / 2,
       top: canvas_props.top - (save_dialog.offsetHeight + padding)
-    }, dur, ease, function(){
+    }, duration, ease, function(){
       if(!canvas_thumbed)
         save_dialog.classList.add("shut");
     });
