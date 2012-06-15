@@ -1,10 +1,17 @@
 {
   "name": "audio-shadertoy",
-  "version": "0.0.1",
+  "subdomain": "ast",
+  "scripts": {
+    "start": "app.js"
+  },
+  "version": "0.0.0-1",
+  "engines": {
+    "node": "0.6.x"
+  },
   "dependencies": {
-    "express": "2.5.6",
-    "ejs" : "latest",
-    "mongoose" : "2.5.6",
-    "request" : "2.9.153"
+    "ejs": "0.7.x",
+    "request": "2.9.x",
+    "mongoose": "2.5.x",
+    "express": "2.5.x"
   }
 }
