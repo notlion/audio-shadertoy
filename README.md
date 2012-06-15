@@ -1,4 +1,4 @@
-Audio-ShaderToy is a GLSL shaders editor that allows you to use audio data (via SoundCloud) to create audio-reactive visuals.
+Audio-ShaderToy is a GLSL editor that features audio spectrum data (via a SoundCloudURL) for creating audio-reactive shaders.
 
 ---------------
 
