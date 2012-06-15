@@ -1,12 +1,9 @@
-html, body {
+@import url(style.css);
+html {
   width: 100%;
   height: 100%; }
 
 body {
-  background: #202020;
-  color: #fff;
-  padding: 0;
-  margin: 0;
   overflow: hidden; }
   body.popped {
     background-color: #131612; }

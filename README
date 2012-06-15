@@ -1,5 +1,0 @@
-Audio ShaderToy
-
-Drag a .mp3 to your browser and go!
-
-We use Web Audio API, so this is Chrome-only for now. Hopefully there will be a standard way of doing this soon.

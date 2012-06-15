@@ -1,5 +1,5 @@
 define([
-  "lib/lzma/lzma"
+  "/lib/lzma/lzma.js"
 ],
 function(){
 
@@ -28,7 +28,7 @@ function(){
 
   // LZMA COMPRESSION //
 
-  var compressor = LZMA ? new LZMA("lib/lzma/lzma_worker.js") : null;
+  var compressor = LZMA ? new LZMA("/lib/lzma/lzma_worker.js") : null;
 
   function hexToByteArray(hex){
     var tmp, arr = [];

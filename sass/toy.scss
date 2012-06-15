@@ -1,14 +1,11 @@
 @import "bourbon/bourbon";
+@import "style.css";
 
-html, body {
+html {
   width: 100%; height: 100%;
 }
 
 body {
-  background: #202020;
-  color: #fff;
-  padding: 0;
-  margin: 0;
   overflow: hidden;
   &.popped {
     background-color: rgb(19, 22, 18);

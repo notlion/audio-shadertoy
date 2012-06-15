@@ -10,10 +10,10 @@ requirejs.config({
     }
   },
   paths: {
-    "embr": "lib/embr/src/embr",
-    "zepto": "lib/zepto",
+    "embr": "/lib/embr/src/embr",
+    "zepto": "/lib/zepto",
     "soundcloud": "http://connect.soundcloud.com/sdk",
-    "soundmanager": "lib/soundmanager/soundmanager2-nodebug"
+    "soundmanager": "/lib/soundmanager/soundmanager2-nodebug"
   }
 });
 require([
@@ -109,7 +109,7 @@ function(utils, events, params, selector, Embr, SC, $){
         if(popped){ // Pop
           var opts = "width=700,height=500,left=50,top=50," +
                      "scrollbars=yes,menubar=no,location=no";
-          code_window = window.open("pop.html", "code-window", opts);
+          code_window = window.open("/pop", "code-window", opts);
           code_window.addEventListener("load", onCodeWindowLoad);
           code_window.addEventListener("beforeunload", onCodeWindowUnload);
         }
@@ -259,29 +259,32 @@ function(utils, events, params, selector, Embr, SC, $){
   function postCode(){
     // get lzma compressed
     params.lzmaCompress(code_text.value.trim(), 1, function(code_lzma){
+
       var shader_data = {
-        "code_lzma": code_lzma,
-        "img": canvas.toDataURL(),
+        code_lzma : code_lzma,
+        img : canvas.toDataURL()
       };
 
       if(sc_playing_track){
-        shader_data.track_url      = sc_playing_track.url      || null;
-        shader_data.track_artist   = sc_playing_track.artist   || null;
-        shader_data.track_title    = sc_playing_track.title    || null;
-        shader_data.track_genre    = sc_playing_track.genre    || null;
-        shader_data.track_duration = sc_playing_track.duration || null;
+        shader_data.track = {
+          artist : sc_playing_track.artist,
+          title : sc_playing_track.title,
+          url : sc_playing_track.url,
+          genre : sc_playing_track.genre,
+          duration : sc_playing_track.duration
+        }
       }
 
-      // Post to DB
       $.ajax({
         type: "post",
-        url: "/s",
-        data: shader_data, dataType: "json",
+        url: "/save",
+        data: shader_data,
+        dataType: "json",
         success: function(res){
-          window.location = '#s=' + res.short_url;
+          window.location = '#s=' + res.shader.short_id;
           save_dialog_link.value = window.location;
         },
-        error: function(){
+        error: function(err){
           console.error('POST failed.');
         }
       });
@@ -360,7 +363,7 @@ function(utils, events, params, selector, Embr, SC, $){
 
   function initSoundCloud(){
     soundManager = window.soundManager = new SoundManager();
-    soundManager.url = "lib/soundmanager/";
+    soundManager.url = "/lib/soundmanager/";
     soundManager.flashVersion = 9;
     soundManager.preferFlash = true;
     soundManager.useHTML5Audio = false;
@@ -559,11 +562,11 @@ function(utils, events, params, selector, Embr, SC, $){
       },
       "s": function(id){
         $.ajax({
-          type: "get",
-          url: "/sh/" + id,
+          type: "GET",
+          url: "/short/" + id,
           dataType: "json",
           success: function(res){
-            params.lzmaDecompress(res.code_lzma, function(src){
+            params.lzmaDecompress(res.shader.code_lzma, function(src){
               code_text.value = src;
               tryCompile(code_text);
             });

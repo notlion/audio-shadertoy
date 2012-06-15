@@ -1,0 +1,80 @@
+@import url(style.css);
+html {
+  background: #202020; }
+
+body {
+  text-align: center; }
+
+header {
+  margin: 10px 0;
+  height: 230px; }
+
+ul, li {
+  list-style-type: none;
+  margin: 0;
+  padding: 0; }
+
+h1 {
+  font-size: 1.6em;
+  font-weight: normal;
+  background: #000;
+  color: #59f;
+  text-shadow: #0019ff 0px 0px 4px;
+  display: inline-block;
+  padding: 15px 30px;
+  border-radius: 25px; }
+  h1 a {
+    color: #59f; }
+  h1 a:hover {
+    color: #59f; }
+
+h2 {
+  font-size: 1em; }
+
+ul.nav {
+  margin: 50px; }
+
+ul.nav li {
+  display: inline-block; }
+  ul.nav li a {
+    display: inline-block;
+    border: 2px solid #fff;
+    border-radius: 25px;
+    background: #000;
+    padding: 5px 10px;
+    color: #ddd;
+    font-weight: bold; }
+  ul.nav li a:hover {
+    background: #999;
+    background: #534BD0;
+    text-decoration: none; }
+
+#shaders {
+  margin: 0;
+  padding: 0;
+  line-height: 1.3em; }
+  #shaders li {
+    text-align: center;
+    margin: 50px;
+    height: 360px; }
+    #shaders li .thumb {
+      margin: 0 auto;
+      width: 256px;
+      height: 256px;
+      background: #0ff;
+      box-shadow: rgba(0, 0, 0, 0.5) 0px 2px 12px;
+      margin-bottom: 20px; }
+    #shaders li .artist {
+      font-weight: bold;
+      font-size: 0.9em;
+      padding: 10px;
+      color: #666; }
+    #shaders li a:hover .artist {
+      color: #999; }
+    #shaders li img:hover {
+      box-shadow: rgba(65, 65, 65, 0.4) 0px 0px 20px; }
+
+#loader {
+  text-align: center; }
+  #loader img {
+    box-shadow: rgba(0, 0, 0, 0.5) 0px 2px 12px; }
