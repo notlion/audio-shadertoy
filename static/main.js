@@ -285,7 +285,7 @@ function(utils, events, params, selector, Embr, SC, $){
           save_dialog_link.value = window.location;
         },
         error: function(err){
-          console.error('POST failed.');
+          console.error("POST failed.");
         }
       });
     });

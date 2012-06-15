@@ -9,25 +9,46 @@ requirejs.config({
   }
 });
 require([
-  "utils",
-  "events",
-  "params",
   "zepto"
 ],
-function(utils, events, params, $){
+function($){
 
   "use strict";
 
-  var shader_limit = 10, shader_skip = 0;
+  var loading = false,
+      limit = 10,
+      skip = 0;
 
-  function getShaders(params) {
+  function init() {
+    getMore();
+  }
+
+  function onWindowScroll() {
+    if ($(document).height() - window.pageYOffset - window.innerHeight <= 0 &&
+        !loading) {
+      getMore();
+    }
+  }
+
+  function getMore() {
+    $("loader").show();
+    getShaders({ limit : limit, skip : skip }, function(shaders) {
+      $("loader").hide();
+      skip += limit;
+      appendShaderList(shaders);
+    });
+  }
+
+  function getShaders(params, callback) {
+    loading = true;
     $.ajax({
       type : "GET",
       url : "/get",
       dataType : "json",
       data : params,
       success : function(data) {
-        buildShaderList(data.shaders);
+        loading = false;
+        callback(data.shaders);
       },
       error : function (err) {
         console.log("error fetching shaders.");
@@ -35,11 +56,13 @@ function(utils, events, params, $){
     });
   }
 
-  function buildShaderList(shadersArray) {
+  function appendShaderList(shadersArray) {
     var html = [];
     for(var i = 0; i < shadersArray.length; i++) {
       html.push([
-        '<li><div class="thumb"></div>',
+        '<li><div class="thumb">',
+        '<img src="' + shadersArray[i].img + '">',
+        '</div>',
         '<a href="/toy/#s=' + shadersArray[i].short_id + '">',
         shadersArray[i].short_id,
         '</a></li>'].join(""));
@@ -47,76 +70,7 @@ function(utils, events, params, $){
     $("#shaders").append(html.join(""));
   }
 
-  function init() {
-    getShaders({ limit : shader_limit, skip : shader_skip });
-  }
-
   window.addEventListener("load", init);
+  window.addEventListener("scroll", onWindowScroll)
 
 });
-
-/*
-// index.js
-$(document).ready( function() {
-    getShaders({ limit : 10 });
-});
-
-
-var getShaders = function(params) {
-  $.ajax({
-    url : "/get",
-    dataType : "json",
-    type : "GET",
-    data : params,
-    success : function(data) {
-      if (data.status == "OK") {
-        buildShaderList(data.shaders);
-      }
-    },
-    error : function(err) {
-      console.log("error fetching blog posts");
-    }
-  });
-}
-
-
-var buildShaderList = function(shadersArray) {
-  newHTML = "";
-  for(i = 0; i < shadersArray.length; i++) {
-    cur = shadersArray[i];
-    var tmpHTML = "<li>" + cur.short_id + "</li>";
-    newHTML += tmpHTML;
-  }
-  $("#shaders").append(newHTML);
-}
-
-
-var saveShader = function() {
-
-  var shaderParams = {
-    code_lzma : "test_code_lzma",
-    track : {
-      artist : "artist",
-      title : "title",
-      url : "http://",
-      duration : 23492
-    }
-  };
-
-  $.ajax({
-    url : '/save',
-    type : 'POST',
-    data : shaderParams,
-    dataType : 'json',
-    success : function(response) {
-      if (response.status == "OK") {
-        console.log(response);
-      }
-    },
-    error : function(error) {
-      console.log(error);
-    }
-  });
-}
-
-*/

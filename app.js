@@ -94,6 +94,7 @@ app.post("/save", function(req, res){
     var newShader = new Shader({
       short_id : generateID(iteration),
       code_lzma : req.body.code_lzma,
+      img : req.body.img,
       track : req.body.track
     });
     newShader.save(function (err) {
