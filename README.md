@@ -26,7 +26,6 @@ Install all the Node dependencies listed in package.json run the following comma
 
     npm install
 
----------------
 
 ## Local Testing
 
