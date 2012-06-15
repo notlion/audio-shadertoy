@@ -42,16 +42,27 @@ app.get("/pop", function(req, res){
 app.get("/get", function(req, res){
   var limit  = req.query["limit"];
   var skip = req.query["skip"];
-  var query = Shader.find({  }).skip(skip).limit(limit);
+  var query = Shader.find().skip(skip).limit(limit);
   query.sort("date", -1);
   query.exec(function (err, shaders) {
     res.json({
-      "status" : "OK",
-      "shaders" : shaders
+      status : "OK",
+      shaders : shaders
     });
   });
 });
 
+
+// get total number of shaders
+app.get("/count", function(req, res){
+  var query = Shader.find().count();
+  query.exec(function (err, count) {
+    res.json({
+      status : "OK",
+      count : count
+    });
+  });
+});
 
 // get single by short_id
 app.get("/short/:short_id",function(req, res){
@@ -62,12 +73,12 @@ app.get("/short/:short_id",function(req, res){
     }
     else if (shader === null ) {
       res.json({
-        "status" : "NOT FOUND"
+        status : "NOT FOUND"
       });
     } else {
       res.json({
-        "status" : "OK",
-        "shader" : shader
+        status : "OK",
+        shader : shader
       });
     }
   });
@@ -111,8 +122,8 @@ app.post("/save", function(req, res){
   saveShader(1, function(savedShader) {
     console.log("Saving Success!", savedShader);
     res.json({
-      "status" : "OK",
-      "shader" : savedShader
+      status : "OK",
+      shader : savedShader
     });
   });
 });

@@ -11,7 +11,8 @@ body {
   font-weight: bold; }
 
 a {
-  color: #aaa; }
+  color: #aaa;
+  text-decoration: none; }
 
 a:hover {
   color: #fff; }
