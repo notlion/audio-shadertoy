@@ -28,13 +28,12 @@ Install all the Node dependencies listed in package.json run the following comma
 
 ---------------
 
-### Local Testing
+## Local Testing
 
-#### This project uses SASS with Burboun for editing css.
-To watch your sass folder, run:
+#### Get sass running to update the css
 
     sass --watch ./sass:static/css -r ./sass/bourbon/lib/bourbon.rb
 
-#### To test the app locally, use foreman
+#### Use foreman to test the app locally
 
     foreman start
