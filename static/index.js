@@ -5,7 +5,7 @@ requirejs.config({
     }
   },
   paths: {
-    "zepto": "/lib/zepto"
+    "zepto": "lib/zepto"
   }
 });
 require([
@@ -26,7 +26,7 @@ function($){
     // get full database count to inhibit over-paging.
     $.ajax({
       type : "GET",
-      url : "/count",
+      url : "count",
       dataType : "json",
       success : function(data) {
         count = data.count;
@@ -62,7 +62,7 @@ function($){
 
     $.ajax({
       type : "GET",
-      url : "/get",
+      url : "get",
       dataType : "json",
       data : params,
       success : function(data) {
@@ -85,7 +85,7 @@ function($){
 
       html.push([
         '<li>',
-        '<a href="/toy/#s=' + shader.short_id + '">',
+        '<a href="toy/#s=' + shader.short_id + '">',
         '<div class="thumb">',
         '<img src="' + shader.img + '">',
         '</div>',

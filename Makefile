@@ -1,5 +1,5 @@
 main-built.js:
-	node node_modules/requirejs/bin/r.js -o main.build.js
+	node node_modules/requirejs/bin/r.js -o toy-main.build.js
 
 clean:
-	rm -rf main-built.js
+	rm -rf static/toy/main-built.js

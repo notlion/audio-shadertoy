@@ -10,10 +10,14 @@ requirejs.config({
     }
   },
   paths: {
-    "embr": "/lib/embr/src/embr",
-    "zepto": "/lib/zepto",
+    "utils": "../lib/utils",
+    "events": "../lib/events",
+    "params": "../lib/params",
+    "selector": "../lib/selector",
+    "embr": "../lib/embr/src/embr",
+    "zepto": "../lib/zepto",
     "soundcloud": "http://connect.soundcloud.com/sdk",
-    "soundmanager": "/lib/soundmanager/soundmanager2-nodebug"
+    "soundmanager": "../lib/soundmanager/soundmanager2-nodebug"
   }
 });
 require([

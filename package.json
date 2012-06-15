@@ -11,6 +11,7 @@
   "dependencies": {
     "ejs": "0.7.x",
     "request": "2.9.x",
+    "requirejs": "2.0.x",
     "mongoose": "2.5.x",
     "express": "2.5.x"
   }
