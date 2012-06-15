@@ -7,7 +7,7 @@ require("./models").configureSchema(mongoose.Schema, mongoose);
 var Shader = mongoose.model("Shader");
 
 var app = express.createServer(express.logger());
-app.db = mongoose.connect(process.env.MONGOLAB_URI);
+app.db = mongoose.connect(process.env.MONGODB_URI);
 app.configure(function() {
     app.set("view engine", "ejs");
     app.set("views", __dirname + "/views");
