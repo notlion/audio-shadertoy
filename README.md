@@ -15,7 +15,7 @@ Create **.gitignore** file. Place the following text into the file and save.
     .env
 
 ---------------
-## Update the .env file with your MONGODB_URI with your own database credentials.
+## Update the .env file with a MONGODB_URI variable.
 
     echo "MONGODB_URI=mongodb://<user>:<pass>@<host>:<db>" >> .env
 
@@ -36,13 +36,15 @@ Install all the Node dependencies listed in package.json run the following comma
 
 ---------------
 
-## This project uses SASS with Burboun for editing css.
+## Local Testing
+
+### This project uses SASS with Burboun for editing css.
 To watch your sass folder, run:
 
     sass --watch ./sass:static/css -r ./sass/bourbon/lib/bourbon.rb
 
 ---------------
 
-## To test the app locally, use foreman
+### To test the app locally, use foreman
 
     foreman start
