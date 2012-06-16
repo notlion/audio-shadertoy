@@ -85,11 +85,11 @@ function($){
 
       html.push([
         '<li>',
-        '<a href="toy/#s=' + shader.short_id + '">',
         '<div class="thumb">',
+        '<a href="toy/#s=' + shader.short_id + '">',
         '<img src="img/' + shader.short_id + '">',
-        '</div>',
-        '</a>'].join(''));
+        '</a>',
+        '</div>'].join(''));
 
       if (shader.track.title) {
         html.push([
