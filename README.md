@@ -16,7 +16,8 @@ Clone this repository or Download the Zip file
     echo "MONGODB_URI=mongodb://<user>:<pass>@<host>:<db>" >> .env
 
 #### Initialize and Update the Git Modules
-[Embr](https://github.com/notlion/embr), a minimal toolkit and WebGL, is included in the source as a submodule. Initialize ember with the following commands:
+[Embr](https://github.com/notlion/embr), a minimal WebGL toolkit, is included in the source as a git submodule.
+Initialize embr with the following commands:
 
     git submodule init
     git submodule update
@@ -25,7 +26,6 @@ Clone this repository or Download the Zip file
 Install all the Node dependencies listed in package.json run the following command in Terminal
 
     npm install
-
 
 ## Local Testing
 
