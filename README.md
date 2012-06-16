@@ -2,7 +2,7 @@ Audio-ShaderToy is a GLSL editor that includes audio spectrum data for creating 
 
 Currently running at [audioshader.net](www.audioshader.net).
 
-The core and concept of Audio-ShaderToy was created by Ryan Alexander, Reza Ali, and Gabriel Dunne.
+By [@notlion](https://github.com/notlion) [@quilime](https://github.com/quilime) [@rezaali](https://github.com/rezaali)
 
 ---------------
 
