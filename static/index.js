@@ -87,7 +87,7 @@ function($){
         '<li>',
         '<a href="toy/#s=' + shader.short_id + '">',
         '<div class="thumb">',
-        '<img src="' + shader.img + '">',
+        '<img src="img/' + shader.short_id + '">',
         '</div>',
         '</a>'].join(''));
 

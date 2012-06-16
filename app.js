@@ -42,7 +42,9 @@ app.get("/pop", function(req, res){
 app.get("/get", function(req, res){
   var limit  = req.query["limit"];
   var skip = req.query["skip"];
-  var query = Shader.find().skip(skip).limit(limit);
+  var query = Shader.find({},
+    ["code_lzma", "date", "track", "short_id"]
+    ).skip(skip).limit(limit);
   query.sort("date", -1);
   query.exec(function (err, shaders) {
     res.json({
@@ -64,6 +66,7 @@ app.get("/count", function(req, res){
   });
 });
 
+
 // get single by short_id
 app.get("/short/:short_id",function(req, res){
   Shader.findOne({ short_id : req.params.short_id }, function(err, shader){
@@ -80,6 +83,24 @@ app.get("/short/:short_id",function(req, res){
         status : "OK",
         shader : shader
       });
+    }
+  });
+});
+
+
+// get image by short_id
+app.get("/img/:short_id",function(req, res){
+  Shader.findOne({ short_id : req.params.short_id },
+    function(err, shader){
+    if (err) {
+      console.log(err);
+      res.send("db error");
+    }
+    else if (shader !== null) {
+      var base64Data = shader.img.replace(/^data:image\/png;base64,/,"");
+      res.writeHead(200, {'Content-Type': 'image/png'});
+      res.write(new Buffer(base64Data, 'base64'));
+      res.end();
     }
   });
 });
