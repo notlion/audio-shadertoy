@@ -8,7 +8,7 @@ body {
   text-align:center; }
 header {
   margin:10px 0;
-  height:200px;
+  height:120px;
 }
 ul, li {
   list-style-type:none;
@@ -38,8 +38,10 @@ h2 {
 
 
 ul.nav {
-  margin:50px;
-}
+    position:fixed;
+    top:12px;
+    left:12px;
+  }
 ul.nav li {
   display:inline-block;
   & a {
