@@ -113,7 +113,7 @@ function(utils, events, params, selector, Embr, SC, $){
         if(popped){ // Pop
           var opts = "width=700,height=500,left=50,top=50," +
                      "scrollbars=yes,menubar=no,location=no";
-          code_window = window.open("/pop", "code-window", opts);
+          code_window = window.open("pop.html", "code-window", opts);
           code_window.addEventListener("load", onCodeWindowLoad);
           code_window.addEventListener("beforeunload", onCodeWindowUnload);
         }

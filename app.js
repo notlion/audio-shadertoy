@@ -1,5 +1,4 @@
 var express = require("express"),
-    ejs = require("ejs"),
     mongoose = require("mongoose"),
     requestURL = require("request");
 
@@ -9,32 +8,10 @@ var Shader = mongoose.model("Shader");
 var app = express.createServer(express.logger());
 app.db = mongoose.connect(process.env.MONGODB_URI);
 app.configure(function() {
-    app.set("view engine", "ejs");
-    app.set("views", __dirname + "/views");
-    app.set("view options", { layout : false });
-    app.register("html", require("ejs"));
     app.use(express.static(__dirname + "/static"));
     app.use(express.bodyParser());
     app.use(express.logger());
     app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-});
-
-
-// index
-app.get("/", function(req, res){
-    res.render("index.html");
-});
-
-
-// toy
-app.get("/toy", function(req, res){
-    res.render("toy.html");
-});
-
-
-// pop
-app.get("/pop", function(req, res){
-    res.render("pop.html");
 });
 
 
