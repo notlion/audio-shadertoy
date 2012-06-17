@@ -1,0 +1,194 @@
+@import "bourbon/bourbon";
+@import "style.css";
+
+html {
+  width: 100%; height: 100%;
+}
+
+body {
+  overflow: hidden;
+  &.popped {
+    background-color: #333;
+  }
+}
+
+#gl-canvas {
+  position: absolute;
+  width: 100%; height: 100%;
+  @include box-shadow(rgba(0, 0, 0, 0.5) 0px 2px 12px);
+}
+
+#code {
+  position: absolute;
+  left: 30px; right: 50%; top: 30px; bottom: 30px;
+  padding: 20px 10px 10px 10px;
+  border-radius: 5px;
+  opacity: 1;
+  @include transition((background-color, opacity), 0.2s, ease-in);
+  &:hover {
+    @include transition-duration(0.1s);
+    @include transition-timing-function(ease-out);
+    @include box-shadow(inset rgba(0, 0, 0, 0.5) 0px 0px 6px);
+    background-color: rgba(24, 28, 22, 0.8);
+  }
+  &.shut {
+    opacity: 0;
+  }
+  &.popped {
+    left: 0; right: 0; top: 0; bottom: 0;
+    padding: 0;
+    background:transparent;
+    &:hover {
+      background-color: transparent;
+    }
+    & #code-text {
+      background:#232323;
+      box-sizing: border-box;
+      -moz-box-sizing:border-box;
+      -webkit-box-sizing:border-box;
+      position: absolute;
+      left: 0; right: 0; top: 0; bottom: 0;
+      padding: 30px;
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+
+#code-text {
+  margin: 0;
+  border: 0;
+  outline: none;
+  resize: none;
+  width: 100%; height: 100%;
+  color: white;
+  background-color: transparent;
+  font-family: Monospace;
+  font-size: 14px;
+  font-weight: bold;
+  white-space: pre-wrap;
+  text-shadow: #000 0px 1px 3px;
+  &.error {
+    color: #f00;
+  }
+}
+
+#code-ui {
+  position: absolute;
+  left: 12px; top: 12px;
+  height: 30px;
+  &>svg {
+    float: left;
+    margin-right: 3px;
+    stroke: #fff;
+    stroke-width: 2px;
+    cursor: pointer;
+    &:not(:first-child) {
+      @include transition(opacity, 0.2s, ease-out);
+    }
+  }
+}
+#code-tooltip {
+  float: left;
+  height: 100%;
+  padding: 0 10px 0 10px;
+  &>p {
+    font-family: sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+  }
+}
+#code-toggle {
+  fill: #012;
+  -webkit-transition-property: -webkit-transform;
+  -moz-transition-property: -moz-transform;
+  -ms-transition-property: -ms-transform;
+  -o-transition-property: -o-transform;
+  transition-property: transform;
+  @include transition-duration(0.2s);
+  @include transition-timing-function(ease-out);
+  &.open {
+    @include transform(rotate(45deg));
+    fill: #000;
+  }
+  &.shut {
+    @include transform(rotate(0deg));
+  }
+  &:hover {
+    fill: #239;
+  }
+}
+#code-save, #code-popout {
+  fill: #000;
+  opacity: 0;
+  &:hover {
+    fill: #282;
+  }
+}
+#code-save-indicator.on {
+  fill: #fff;
+}
+#code-popout {
+  &:hover {
+    fill: #888;
+  }
+}
+
+#save-scrim {
+  position: absolute;
+  width: 100%; height: 100%;
+  cursor: pointer;
+  &.shut {
+    display: none;
+  }
+}
+
+#save-dialog {
+  position: absolute;
+  background-color: #77f;
+  padding: 16px;
+  border-radius: 5px;
+  @include box-shadow(inset rgba(0, 0, 0, 0.25) 0px 0px 6px, rgba(0, 0, 0, 0.5) 0px 2px 12px);
+  &.shut {
+    visibility: hidden;
+  }
+  &>* {
+    float: left;
+  }
+  &>input, a {
+    margin: 0;
+    border: 0;
+    border-radius: 2px;
+    height: 28px;
+    font-family: Sans-serif;
+  }
+}
+.dialog-textfield {
+  padding: 0 0 0 8px;
+  font-size: 16px;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.25);
+}
+.dialog-button {
+  padding: 0 8px 0 8px;
+  margin-left: 8px !important;
+  color: #000;
+  background-color: rgba(255, 255, 255, 0.75);
+  cursor: pointer;
+  &:hover {
+    background-color: #fff;
+  }
+  &>p {
+    font-size: 14px;
+    font-weight: bold;
+  }
+}
+
+.vcenter {
+  display: table;
+  &>p {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+  }
+}

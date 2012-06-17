@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Audio-ShaderToy</title>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+  <link href="../css/toy.css" media="all" rel="stylesheet" type="text/css"/>
+  <script data-main="main.js" src="../lib/require.js"></script>
+</head>
+<body>
+  <canvas id="gl-canvas"></canvas>
+  <div id="code" class="shut" style="visibility:hidden">
+<textarea id="code-text" spellcheck="false">
+// Audio ShaderToy
+
+// #define track http://soundcloud.com/funckarma/psar-dymag-mix
+#define smoothing .75
+#define pixel_scale 2
+
+uniform sampler2D amp_left, amp_right;
+uniform float aspect, time, progress;
+
+varying vec2 texcoord;
+
+void main(){
+  float amp_l = texture2D(amp_left, texcoord).x;
+  float amp_r = texture2D(amp_right, vec2(1., 0.) - texcoord).x;
+
+  vec2 tc = texcoord;
+  vec3 color = vec3(0.);
+  color.r = float(amp_l > tc.y) * (tc.y / amp_l);
+  color.b = float(amp_r > tc.y) * (tc.y / amp_r);
+  color.g = (color.r + color.b) * .5;
+
+  vec2 p = (texcoord - vec2(1.)) * vec2(-aspect, -1.) - vec2(.075);
+  float r = length(p) / .04;
+  float t = (atan(p.x, p.y) + 3.14159) / (3.14159 * 2.);
+  if(r < 1.)
+    color = vec3(float(progress > t) * (t / progress) * r) + .07;
+
+  gl_FragColor = vec4(color, 1.);
+}
+</textarea>
+  </div>
+  <div id="code-ui">
+    <svg id="code-toggle" title="Toggle Code Open" class="shut" width="30" height="30" version="1.2" xmlns="http://www.w3.org/2000/svg">
+      <g transform="translate(15,15)">
+        <circle cx="0" cy="0" r="13"/>
+        <path d="M -7,0 L 7,0 M 0,-7 L 0,7"/>
+      </g>
+    </svg>
+    <svg id="code-save" title="Save Shader" width="30" height="30" version="1.2" xmlns="http://www.w3.org/2000/svg">
+      <g transform="translate(15,15)">
+        <circle cx="0" cy="0" r="13"/>
+        <circle id="code-save-indicator" cx="0" cy="0" r="5"/>
+      </g>
+    </svg>
+    <svg id="code-popout" title="Open Code in New Window" width="30" height="30" version="1.2" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="15" cy="15" r="13"/>
+      <rect x="13" y="9" rx="1" ry="1" width="8" height="8" />
+      <rect x="9" y="13" rx="1" ry="1" width="8" height="8" />
+    </svg>
+    <div id="code-tooltip" class="vcenter"><p></p></div>
+  </div>
+  <div id="save-scrim" class="shut"></div>
+  <div id="save-dialog" class="shut">
+    <input id="save-dialog-link" class="dialog-textfield" type="text" size="36" autocomplete="off" spellcheck="false" readonly="readonly">
+    <a id="save-dialog-save" class="dialog-button vcenter"><p>Share</p></a>
+  </div>
+</body>
+</html>

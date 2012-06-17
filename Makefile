@@ -1,9 +1,5 @@
 main-built.js:
-	node lib/r.js -o name=main out=main-built.js \
-		baseUrl=. \
-		paths.embr=lib/embr/src \
-		useStrict=true \
-		preserveLicenseComments=false
+	node node_modules/requirejs/bin/r.js -o toy-main.build.js
 
 clean:
-	rm -rf main-built.js
+	rm -rf static/toy/main-built.js
