@@ -9,7 +9,7 @@ var Shader = mongoose.model("Shader");
 
 var app = express.createServer(express.logger());
 app.db = mongoose.connect(process.env.MONGODB_URI);
-app.configure(function() {
+app.configure(function(){
     app.use(express.static(__dirname + "/static"));
     app.use(express.bodyParser());
     app.use(express.logger());
@@ -19,29 +19,34 @@ app.configure(function() {
 
 // get shaders
 app.get("/get", function(req, res){
-  var limit  = req.query["limit"];
-  var skip = req.query["skip"];
-  var query = Shader.find({},
-    ["code_lzma", "date", "track", "short_id"]
-    ).skip(skip).limit(limit);
-  query.sort("date", -1);
-  query.exec(function (err, shaders) {
-    res.json({
-      status : "OK",
-      shaders : shaders
+  Shader.find({}, ["code_lzma", "date", "track", "short_id"])
+    .skip(req.query["skip"])
+    .limit(req.query["limit"])
+    .sort("date", -1)
+    .exec(function (err, shaders) {
+      if (err) {
+        res.send("Error fetching shaders.");
+      } else {
+        res.json({
+          status : "OK",
+          shaders : shaders
+        });
+      }
     });
-  });
 });
 
 
-// get total number of shaders
+// get total shader DB count
 app.get("/count", function(req, res){
-  var query = Shader.find().count();
-  query.exec(function (err, count) {
-    res.json({
-      status : "OK",
-      count : count
-    });
+  Shader.find().count().exec(function (err, count) {
+    if (err) {
+      res.send("Error counting shaders.");
+    } else {
+      res.json({
+        status : "OK",
+        count : count
+      });
+    }
   });
 });
 
@@ -50,13 +55,7 @@ app.get("/count", function(req, res){
 app.get("/short/:short_id",function(req, res){
   Shader.findOne({ short_id : req.params.short_id }, function(err, shader){
     if (err) {
-      console.log(err);
-      res.send("db error");
-    }
-    else if (shader === null ) {
-      res.json({
-        status : "NOT FOUND"
-      });
+      res.send("Error finding shader with short_id: " + req.params.short_id);
     } else {
       res.json({
         status : "OK",
@@ -69,18 +68,16 @@ app.get("/short/:short_id",function(req, res){
 
 // get image by short_id
 app.get("/img/:short_id",function(req, res){
-  Shader.findOne({ short_id : req.params.short_id },
+  Shader.findOne({ short_id : req.params.short_id }, ['img'],
     function(err, shader){
-    if (err) {
-      console.log(err);
-      res.send("db error");
-    }
-    else if (shader !== null) {
-      var base64Data = shader.img.replace(/^data:image\/png;base64,/,"");
-      res.writeHead(200, {'Content-Type': 'image/png'});
-      res.write(new Buffer(base64Data, 'base64'));
-      res.end();
-    }
+      if (err) {
+        res.send("Error fetching image for shader: " + req.params.short_id);
+      } else {
+        var base64Data = shader.img.replace(/^data:image\/png;base64,/,"");
+        res.writeHead(200, {"Content-Type": "image/png"});
+        res.write(new Buffer(base64Data, "base64"));
+        res.end();
+      }
   });
 });
 
@@ -109,12 +106,12 @@ app.post("/save", function(req, res){
       track : req.body.track
     });
     newShader.save(function (err) {
-      if (err === null) {
-        callback(this.emitted.complete[0]);
-      }
-      else if (err.code === 11000) {
+      if (err.code === 11000) {
         console.log("Duplicate short_id; Generating another...");
         saveShader(iteration += 1, callback);
+      }
+      else {
+        callback(this.emitted.complete[0]);
       }
     });
   };
