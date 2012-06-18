@@ -35,8 +35,8 @@ function($){
   }
 
   function onWindowScroll() {
-    if ($(document).height() - window.pageYOffset - window.innerHeight <= 0 &&
-        !loading) {
+    if($(document).height() - window.pageYOffset - window.innerHeight <= 0 &&
+       !loading) {
       getMore();
     }
   }
@@ -51,10 +51,9 @@ function($){
   }
 
   function getShaders(params, callback) {
-
     loading = true;
 
-    if (count < limit + skip) {
+    if(count < limit + skip) {
       $("#loader").hide();
       loading = false;
       return false;
@@ -76,7 +75,6 @@ function($){
   }
 
   function appendShaderList(shadersArray) {
-
     var html = [];
 
     for(var i = 0; i < shadersArray.length; i++) {

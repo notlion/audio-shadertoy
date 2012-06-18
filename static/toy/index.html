@@ -4,15 +4,26 @@
   <title>Audio-ShaderToy</title>
   <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
   <link href="../css/toy.css" media="all" rel="stylesheet" type="text/css"/>
-  <script data-main="main.js" src="../lib/require.js"></script>
+  <link href="../css/editor.css" media="all" rel="stylesheet" type="text/css"/>
+  <script data-main="../src/toy-main.js" src="../lib/require.js"></script>
 </head>
 <body>
-  <canvas id="gl-canvas"></canvas>
-  <div id="code" class="shut" style="visibility:hidden">
-<textarea id="code-text" spellcheck="false">
+<canvas id="gl-canvas"></canvas>
+<script id="src-vertex-default" type="x-shader/x-vertex">
+attribute vec3 a_position;
+attribute vec2 a_texcoord;
+
+varying vec2 texcoord;
+
+void main(){
+  texcoord = a_texcoord;
+  gl_Position = vec4(a_position, 1.);
+}
+</script>
+<script id="src-fragment-default" type="x-shader/x-fragment">
 // Audio ShaderToy
 
-// #define track http://soundcloud.com/funckarma/psar-dymag-mix
+#define track http://soundcloud.com/funckarma/psar-dymag-mix
 #define smoothing .75
 #define pixel_scale 2
 
@@ -39,6 +50,9 @@ void main(){
 
   gl_FragColor = vec4(color, 1.);
 }
+</script>
+<!-- <div id="code" class="shut" style="visibility:hidden">
+<textarea id="code-text" spellcheck="false">
 </textarea>
   </div>
   <div id="code-ui">
@@ -60,7 +74,7 @@ void main(){
       <rect x="9" y="13" rx="1" ry="1" width="8" height="8" />
     </svg>
     <div id="code-tooltip" class="vcenter"><p></p></div>
-  </div>
+  </div> -->
   <div id="save-scrim" class="shut"></div>
   <div id="save-dialog" class="shut">
     <input id="save-dialog-link" class="dialog-textfield" type="text" size="36" autocomplete="off" spellcheck="false" readonly="readonly">

@@ -1,5 +1,5 @@
 define([
-  "../lib/lzma/lzma.js"
+  "lib/lzma/lzma"
 ],
 function(){
 
