@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var express = require("express"),
     mongoose = require("mongoose"),
     requestURL = require("request");
