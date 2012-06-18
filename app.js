@@ -106,7 +106,7 @@ app.post("/save", function(req, res){
       track : req.body.track
     });
     newShader.save(function (err) {
-      if (err.code === 11000) {
+      if (err !== null && err.code === 11000) {
         console.log("Duplicate short_id; Generating another...");
         saveShader(iteration += 1, callback);
       }
