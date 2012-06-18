@@ -429,6 +429,25 @@ function(utils, events, params, selector, Embr, SC, $){
     "}"
   ].join("\n");
 
+  var shader_src_frag_template = [
+    "precision highp float;",
+    "uniform sampler2D amp_left, amp_right;",
+    "uniform float aspect, time, progress;",
+    "uniform vec2 mouse;",
+    "varying vec2 texcoord;",
+    "float ampLeft(float x){",
+      "return texture2D(amp_left, vec2(x, 0.)).x;",
+    "}",
+    "float ampRight(float x){",
+      "return texture2D(amp_right, vec2(x, 0.)).x;",
+    "}",
+    "#define PI 3.1415926535897931",
+    "{{CODE}}",
+    "void main(){",
+      "gl_FragColor = vec4(pixel(texcoord), 1.);",
+    "}"
+  ].join("\n");
+
   var shader_outlet_re = /^[ \t]*#define[ \t]+([\w_]*)[ \t]+(\S+)/gm;
 
   function parseShaderOutlets(src, callbacks){
@@ -443,8 +462,6 @@ function(utils, events, params, selector, Embr, SC, $){
       }
     }
   }
-
-  var shader_src_prefix = "precision highp float;\n";
 
   function tryCompile(textarea){
     try{
@@ -469,7 +486,9 @@ function(utils, events, params, selector, Embr, SC, $){
         }
       });
 
-      program.compile(shader_src_vert, shader_src_prefix + shader_src_frag);
+      var fs = shader_src_frag_template.replace("{{CODE}}", shader_src_frag);
+
+      program.compile(shader_src_vert, fs);
       program.link();
 
       plane.setProg(program);
@@ -513,6 +532,16 @@ function(utils, events, params, selector, Embr, SC, $){
     eq_texture_right = new Embr.Texture();
   }
 
+  function updateEqData(){
+    var i, amp_l, amp_r;
+    for(var i = 0; i < 256; ++i) {
+      amp_l = sm_playing_sound.eqData.left[i] * 255;
+      amp_r = sm_playing_sound.eqData.right[i] * 255;
+      eq_data_left[i] += (amp_l - eq_data_left[i]) * eq_mix;
+      eq_data_right[i] += (amp_r - eq_data_right[i]) * eq_mix;
+    }
+  }
+
   function render(){
     gl.viewport(0, 0, canvas.width, canvas.height);
 
@@ -521,13 +550,7 @@ function(utils, events, params, selector, Embr, SC, $){
     var progress = 0;
 
     if(sm_playing_sound){
-      var i, amp_l, amp_r;
-      for(var i = 0; i < 256; ++i) {
-        amp_l = sm_playing_sound.eqData.left[i] * 255;
-        amp_r = sm_playing_sound.eqData.right[i] * 255;
-        eq_data_left[i] += (amp_l - eq_data_left[i]) * eq_mix;
-        eq_data_right[i] += (amp_r - eq_data_right[i]) * eq_mix;
-      }
+      updateEqData();
       eq_texture_left.bind(0);
       eq_texture_left.set({ data: eq_data_left });
       eq_texture_right.bind(1);

@@ -12,32 +12,26 @@
 <textarea id="code-text" spellcheck="false">
 // Audio ShaderToy
 
-// #define track http://soundcloud.com/funckarma/psar-dymag-mix
+#define track http://soundcloud.com/chipdisko/usk-error-3003
 #define smoothing .75
 #define pixel_scale 2
 
-uniform sampler2D amp_left, amp_right;
-uniform float aspect, time, progress;
+vec3 pixel(vec2 pos){
+  float amp_l = ampLeft(pos.x);
+  float amp_r = ampRight(1. - pos.x);
 
-varying vec2 texcoord;
-
-void main(){
-  float amp_l = texture2D(amp_left, texcoord).x;
-  float amp_r = texture2D(amp_right, vec2(1., 0.) - texcoord).x;
-
-  vec2 tc = texcoord;
   vec3 color = vec3(0.);
-  color.r = float(amp_l > tc.y) * (tc.y / amp_l);
-  color.b = float(amp_r > tc.y) * (tc.y / amp_r);
+  color.r = float(amp_l > pos.y) * (pos.y / amp_l);
+  color.b = float(amp_r > pos.y) * (pos.y / amp_r);
   color.g = (color.r + color.b) * .5;
 
-  vec2 p = (texcoord - vec2(1.)) * vec2(-aspect, -1.) - vec2(.075);
+  vec2 p = (pos - vec2(1.)) * vec2(-aspect, -1.) - vec2(.075);
   float r = length(p) / .04;
-  float t = (atan(p.x, p.y) + 3.14159) / (3.14159 * 2.);
+  float t = (atan(p.x, p.y) + PI) / (PI * 2.);
   if(r < 1.)
     color = vec3(float(progress > t) * (t / progress) * r) + .07;
 
-  gl_FragColor = vec4(color, 1.);
+  return color;
 }
 </textarea>
   </div>
