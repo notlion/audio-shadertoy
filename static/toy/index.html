@@ -10,13 +10,11 @@
   <canvas id="gl-canvas"></canvas>
   <div id="code" class="shut" style="visibility:hidden">
 <textarea id="code-text" spellcheck="false">
-// Audio ShaderToy
-
 #define track http://soundcloud.com/chipdisko/usk-error-3003
 #define smoothing .75
 #define pixel_scale 2
 
-vec3 pixel(vec2 pos){
+vec3 pixel(vec2 pos) {
   float amp_l = ampLeft(pos.x);
   float amp_r = ampRight(1. - pos.x);
 
@@ -27,11 +25,11 @@ vec3 pixel(vec2 pos){
   color.g = (color.r + color.b) * .5;
 
   // Draw Progress
-  vec2 p = (pos - vec2(1.)) * vec2(-aspect, -1.) - vec2(.075);
-  float r = length(p) / .04;
+  vec2 p = (pos - vec2(1., 0.)) * vec2(-aspect, -1.) - vec2(.1, -.1);
+  float r = length(p) / .05;
   float t = (atan(p.x, p.y) + PI) / (PI * 2.);
   if(r < 1.)
-    color = vec3(float(progress > t) * (t / progress) * r) + .07;
+    return vec3(float(progress > t) * (t / progress) * r) + .07;
 
   return color;
 }
@@ -56,6 +54,9 @@ vec3 pixel(vec2 pos){
       <rect x="9" y="13" rx="1" ry="1" width="8" height="8" />
     </svg>
     <div id="code-tooltip" class="vcenter"><p></p></div>
+  </div>
+  <div id="etc-ui">
+    <a id="ui-gallery" class="ui-button vcenter" href="/"><p>Gallery</p></a>
   </div>
   <div id="save-scrim" class="shut"></div>
   <div id="save-dialog" class="shut">
