@@ -24,16 +24,20 @@ h1 {
 h2 {
   font-size: 1em; }
 
-ul.nav {
+#nav {
   position: fixed;
-  left: 12px;
-  top: 12px; }
-
-ul.nav li {
-  display: inline-block; }
+  left: 0;
+  top: 0;
+  width: 100%;
+  background-color: #033;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 12px; }
+  #nav ul {
+    margin: 8px; }
+    #nav ul li {
+      display: inline-block; }
 
 #shaders {
-  margin: 40px 0 40px 0;
+  margin: 60px 0 40px 0;
   padding: 0;
   line-height: 1.3em; }
   #shaders li {
