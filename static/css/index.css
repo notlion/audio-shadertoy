@@ -1,13 +1,6 @@
 @import url(style.css);
-html {
-  background: #202020; }
-
 body {
   text-align: center; }
-
-header {
-  margin: 10px 0;
-  height: 120px; }
 
 ul, li {
   list-style-type: none;
@@ -33,39 +26,47 @@ h2 {
 
 ul.nav {
   position: fixed;
-  top: 12px;
-  left: 12px; }
+  left: 12px;
+  top: 12px; }
 
 ul.nav li {
   display: inline-block; }
-  ul.nav li a {
-    display: inline-block;
-    border: 2px solid #fff;
-    border-radius: 25px;
-    background: #000;
-    padding: 5px 10px;
-    color: #ddd;
-    font-weight: bold; }
-  ul.nav li a:hover {
-    background: #999;
-    background: #534BD0;
-    text-decoration: none; }
 
 #shaders {
-  margin: 0;
+  margin: 40px 0 40px 0;
   padding: 0;
   line-height: 1.3em; }
   #shaders li {
+    display: inline-block;
     text-align: center;
-    margin: 50px;
-    height: 360px; }
+    margin: 20px;
+    width: 256px; }
     #shaders li .thumb {
       margin: 0 auto;
-      width: 256px;
-      height: 256px;
-      background: #0ff;
-      box-shadow: rgba(0, 0, 0, 0.5) 0px 2px 12px;
+      background: #000;
       margin-bottom: 20px; }
+      #shaders li .thumb, #shaders li .thumb img {
+        width: 256px;
+        height: 256px; }
+      #shaders li .thumb img {
+        box-shadow: rgba(0, 0, 0, 0.5) 0px 2px 12px;
+        -webkit-transition-property: box-shadow;
+        -moz-transition-property: box-shadow;
+        -ms-transition-property: box-shadow;
+        -o-transition-property: box-shadow;
+        transition-property: box-shadow;
+        -webkit-transition-duration: 0.1s;
+        -moz-transition-duration: 0.1s;
+        -ms-transition-duration: 0.1s;
+        -o-transition-duration: 0.1s;
+        transition-duration: 0.1s;
+        -webkit-transition-timing-function: ease-in;
+        -moz-transition-timing-function: ease-in;
+        -ms-transition-timing-function: ease-in;
+        -o-transition-timing-function: ease-in;
+        transition-timing-function: ease-in; }
+        #shaders li .thumb img:hover {
+          box-shadow: rgba(0, 255, 255, 0.4) 0px 2px 20px; }
     #shaders li .artist {
       font-weight: bold;
       font-size: 0.9em;
@@ -73,8 +74,6 @@ ul.nav li {
       color: #666; }
     #shaders li a:hover .artist {
       color: #999; }
-    #shaders li img:hover {
-      box-shadow: rgba(65, 65, 65, 0.4) 0px 0px 20px; }
 
 #loader {
   text-align: center; }
