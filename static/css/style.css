@@ -1,8 +1,7 @@
 html, body {
-  background: #444; }
+  background: #202020; }
 
 body {
-  background: #202020;
   color: #fff;
   padding: 0;
   margin: 0;
@@ -13,6 +12,27 @@ body {
 a {
   color: #aaa;
   text-decoration: none; }
+  a:hover {
+    color: #fff; }
 
-a:hover {
-  color: #fff; }
+.ui-button {
+  font-family: sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  height: 24px;
+  background-color: #000;
+  color: #fff;
+  padding: 0 10px 0 10px;
+  margin: 1px;
+  border-radius: 15px;
+  border: 2px solid #fff;
+  cursor: pointer; }
+  .ui-button:hover {
+    background-color: #239; }
+
+.vcenter {
+  display: table; }
+  .vcenter > p {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center; }

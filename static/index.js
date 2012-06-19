@@ -15,10 +15,10 @@ function($){
 
   "use strict";
 
-  var loading = false,
-      limit = 10,
-      skip = 0,
-      count = limit;
+  var loading = false
+    , limit = 10
+    , skip = 0
+    , count = limit;
 
   function init() {
     getMore();
@@ -76,32 +76,30 @@ function($){
   }
 
   function appendShaderList(shadersArray) {
-
     var html = [];
 
-    for(var i = 0; i < shadersArray.length; i++) {
-
-      var shader = shadersArray[i];
-
-      html.push([
+    shadersArray.forEach(function(shader){
+      html.push(
         '<li>',
         '<div class="thumb">',
-        '<a href="toy/#s=' + shader.short_id + '">',
-        '<img src="img/' + shader.short_id + '">',
-        '</a>',
-        '</div>'].join(''));
+          '<a href="toy/#s=', shader.short_id, '">',
+            '<img src="img/', shader.short_id, '">',
+          '</a>',
+        '</div>'
+      );
 
-      if (shader.track.title) {
-        html.push([
-        '<a href="' + shader.track.url + '">',
-        shader.track.artist + ' &mdash; ' + shader.track.title,
-        '</a>'
-        ].join(''));
+      if(shader.track.title) {
+        html.push(
+          '<a href="', shader.track.url, '">',
+            shader.track.artist, ' &mdash; ', shader.track.title,
+          '</a>'
+        );
       }
 
       html.push('</li>');
-    }
-    $("#shaders").append(html.join(''));
+    });
+
+    $("#shaders").append(html.join(""));
   }
 
   window.addEventListener("load", init);

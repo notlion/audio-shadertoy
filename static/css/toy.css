@@ -198,21 +198,6 @@ body {
   right: 12px;
   top: 12px; }
 
-.ui-button {
-  font-family: sans-serif;
-  font-size: 14px;
-  font-weight: bold;
-  height: 24px;
-  background-color: #000;
-  color: #fff;
-  padding: 0 10px 0 10px;
-  margin: 1px;
-  border-radius: 15px;
-  border: 2px solid #fff;
-  cursor: pointer; }
-  .ui-button:hover {
-    background-color: #239; }
-
 #save-scrim {
   position: absolute;
   width: 100%;
@@ -259,10 +244,3 @@ body {
   .dialog-button > p {
     font-size: 14px;
     font-weight: bold; }
-
-.vcenter {
-  display: table; }
-  .vcenter > p {
-    display: table-cell;
-    vertical-align: middle;
-    text-align: center; }
