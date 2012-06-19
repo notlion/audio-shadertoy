@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 
 var express = require("express"),
-    mongoose = require("mongoose"),
-    requestURL = require("request");
+    mongoose = require("mongoose");
 
 require("./models").configureSchema(mongoose.Schema, mongoose);
 var Shader = mongoose.model("Shader");
