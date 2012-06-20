@@ -35,7 +35,7 @@ function($){
   }
 
   function onWindowScroll() {
-    if ($(document).height() - window.pageYOffset - window.innerHeight <= 0 &&
+    if ($(document).height() - window.pageYOffset - window.innerHeight <= 1 &&
         !loading) {
       getMore();
     }
