@@ -144,6 +144,12 @@ vec3 pixel(vec2 pos){
   return vec3(r1 < 1. && r2 > 1. );
 }</pre>
 
+      <h4>Resolution <code>(vec2) resolution</code></h4>
+      <p>Shader Resolution</p>
+      <pre class="code">vec3 pixel(vec2 pos){
+  return vec3(gl_FragCoord.xy / resolution, 0.);
+}</pre>
+
       <h4>Amplitude Left <code>(sampler2D) amp_left</code></h4>
       <p>The amplitude spectrum texture of the left channel.</p>
 

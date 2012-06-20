@@ -54,7 +54,7 @@ function($){
 
     loading = true;
 
-    if (count < limit + skip) {
+    if (count+limit < (limit + skip)) {
       $("#loader").hide();
       loading = false;
       return false;
