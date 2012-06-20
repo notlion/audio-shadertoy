@@ -3,11 +3,12 @@ html, body {
   width: 100%; }
 
 body {
-  color: #fff;
+  color: #ddd;
   padding: 0;
   margin: 0;
   font-family: sans-serif;
   font-size: 14px;
+  line-height: 1.5em;
   font-weight: bold; }
 
 a {
@@ -16,9 +17,40 @@ a {
   a:hover {
     color: #fff; }
 
+section {
+  margin: 60px 0 100px 0; }
+
+p {
+  margin: 0.45em 0; }
+
+header {
+  margin-bottom: 20px; }
+
+footer {
+  margin-top: 50px; }
+
+ul, li {
+  list-style-type: none;
+  margin: 0;
+  padding: 0; }
+
+h1, h2, h3, h4, h5, h6 {
+  text-shadow: #0019ff 0px 0px 4px; }
+
+h1, h2, h3 {
+  color: #fff; }
+  h1 a, h2 a, h3 a {
+    color: #59f; }
+  h1 a:hover, h2 a:hover, h3 a:hover {
+    color: #59f; }
+
+h2 {
+  margin-bottom: 30px; }
+
 .ui-button {
   font-family: sans-serif;
   font-size: 14px;
+  line-height: 24px;
   font-weight: bold;
   height: 24px;
   background-color: #000;

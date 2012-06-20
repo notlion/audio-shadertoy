@@ -2,28 +2,6 @@
 body {
   text-align: center; }
 
-ul, li {
-  list-style-type: none;
-  margin: 0;
-  padding: 0; }
-
-h1 {
-  font-size: 1.6em;
-  font-weight: normal;
-  background: #000;
-  color: #59f;
-  text-shadow: #0019ff 0px 0px 4px;
-  display: inline-block;
-  padding: 15px 30px;
-  border-radius: 25px; }
-  h1 a {
-    color: #59f; }
-  h1 a:hover {
-    color: #59f; }
-
-h2 {
-  font-size: 1em; }
-
 #nav {
   position: fixed;
   left: 0;
@@ -32,7 +10,7 @@ h2 {
   background-color: #033;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 12px; }
   #nav ul {
-    margin: 8px; }
+    margin: 8px 0 3px 0; }
     #nav ul li {
       display: inline-block; }
 
