@@ -223,8 +223,8 @@ function(utils, events, params, selector, Embr, SC, $){
 
   function updateCanvasRes(){
     var scale = canvas_thumbed ? 1 : 1 / canvas_pixel_scale;
-    canvas.width = Math.floor(canvas.clientWidth * scale);
-    canvas.height = Math.floor(canvas.clientHeight * scale);
+    canvas_res[0] = canvas.width = Math.floor(canvas.clientWidth * scale);
+    canvas_res[1] = canvas.height = Math.floor(canvas.clientHeight * scale);
   }
 
   function layoutUI(animate){
@@ -447,7 +447,8 @@ function(utils, events, params, selector, Embr, SC, $){
   // GFX //
 
   var canvas = document.getElementById("gl-canvas")
-    , canvas_pixel_scale = 2;
+    , canvas_pixel_scale = 2
+    , canvas_res = new Float32Array(2);
   var gl, program, plane
     , eq_texture_left, eq_texture_right;
 
@@ -465,7 +466,7 @@ function(utils, events, params, selector, Embr, SC, $){
     "precision highp float;",
     "uniform sampler2D amp_left, amp_right;",
     "uniform float aspect, time, progress;",
-    "uniform vec2 mouse;",
+    "uniform vec2 mouse, resolution;",
     "varying vec2 texcoord;",
     "float ampLeft(float x){",
       "return texture2D(amp_left, vec2(x, 0.)).x;",
@@ -594,6 +595,7 @@ function(utils, events, params, selector, Embr, SC, $){
       amp_left: 0,
       amp_right: 1,
       aspect: canvas.width / canvas.height,
+      resolution: canvas_res,
       mouse: mouse_pos,
       time: (Date.now() - start_time) / 1000,
       progress: progress
