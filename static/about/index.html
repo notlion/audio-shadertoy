@@ -13,7 +13,7 @@
   </ul>
 </div>
 
-<div id="ref">
+<div id="about">
 
   <header>
     <h1>About</h1>
@@ -56,11 +56,24 @@
 
     <h4>Audio Amplitude (Left Channel) <code>(float) ampLeft(float f)</code></h4>
     <p>Amplitude of the specified frequency (f) of the left audio channel</p>
-    <pre class="code">// do something with the left channel</pre>
 
     <h4>Audio Amplitude (Right Channel) <code>(float) ampRight(float f)</code></h4>
     <p>Amplitude of the specified frequency (f) of the right audio channel</p>
-    <pre class="code">// do something with the right channel</pre>
+
+    <pre class="code">#define track http://soundcloud.com/chipdisko/usk-error-3003
+
+vec3 pixel(vec2 pos){
+  float amp_l = ampLeft(pos.x);
+  float amp_r = ampRight(1. - pos.x);
+
+  // Draw Frequency Spectrum
+  vec3 color = vec3(0.);
+  color.r = float(amp_l > pos.y) * (pos.y / amp_l);
+  color.b = float(amp_r > pos.y) * (pos.y / amp_r);
+  color.g = (color.r + color.b) * .5;
+
+  return color;
+}</pre>
   </section>
 
 
@@ -77,27 +90,58 @@
 
       <h4>Aspect Ratio <code>(float) aspect</code></h4>
       <p>The aspect ratio of the canvas.</p>
-      <pre class="code">// do something with the aspect ratio</pre>
+      <pre class="code">
+vec3 pixel(vec2 pos){
+  vec2 offset = vec2(pos - vec2(0.5));
+  vec2 corrected = offset * vec2(aspect, 1.);
+  float d = length(corrected);
+  float radius = d / .35;
+  return vec3(radius < 1.);
+}</pre>
+
 
       <h4>Time <code>(float) time</code></h4>
       <p>Seconds the shader has been running</p>
-      <pre class="code">// do something with time</pre>
 
       <h4>Progress <code>(float) progress</code></h4>
       <p>Percentage of track progress.</p>
-      <pre class="code">// progress something something</pre>
+      <pre class="code">// Radial Track Progress
+
+#define track http://soundcloud.com/umi-o/hyokkori
+#define smoothing .75
+#define pixel_scale 2
+
+vec3 pixel(vec2 pos) {
+  float amp_l = ampLeft(pos.x);
+  float amp_r = ampRight(1. - pos.x);
+
+  // Draw Progress
+  vec2 p = (pos - vec2(.5)) * vec2(aspect, 1.);
+  float r = length(p) / .05;
+  float t = (atan(p.x, p.y) + PI) / (PI * 2.);
+  return vec3(float(progress > t) * (t / progress) * r) + .07;
+}</pre>
+
 
       <h4>Mouse <code>(vec2) mouse</code></h4>
       <p>Mouse xy position</p>
-      <pre class="code">// mouse.x, mouse.y</pre>
+      <pre class="code">vec3 pixel(vec2 pos){
+  vec2 off1 = vec2(pos - mouse) * vec2(aspect, 1.);
+  vec2 off2 = vec2(pos - (vec2(1.) - mouse)) * vec2(aspect, 1.);
+
+  float r1 = length(off1) / .35;
+  float r2 = length(off2) / .35;
+
+  return vec3(r1 < 1. && r2 > 1. );
+}</pre>
 
       <h4>Amplitude Left <code>(sampler2D) amp_left</code></h4>
       <p>The amplitude spectrum texture of the left channel.</p>
-      <pre class="code">// do something with the amp_left</pre>
 
       <h4>Amplitude Right <code>(sampler2D) amp_right</code></h4>
       <p>The amplitude spectrum texture of the right channel.</p>
-      <pre class="code">// do something with the amp_right</pre>
+
+
   </section>
 
   <footer>
