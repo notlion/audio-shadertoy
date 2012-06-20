@@ -133,7 +133,8 @@ vec3 pixel(vec2 pos) {
 
       <h4>Mouse <code>(vec2) mouse</code></h4>
       <p>Mouse xy position</p>
-      <pre class="code">vec3 pixel(vec2 pos){
+      <pre class="code">
+vec3 pixel(vec2 pos){
   vec2 off1 = vec2(pos - mouse) * vec2(aspect, 1.);
   vec2 off2 = vec2(pos - (vec2(1.) - mouse)) * vec2(aspect, 1.);
 
