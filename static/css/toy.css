@@ -106,18 +106,18 @@ body {
   #code-text.error {
     color: #f00; }
 
-#code-ui {
+#ui-code {
   position: absolute;
   left: 12px;
   top: 12px;
   height: 30px; }
-  #code-ui > svg {
+  #ui-code > svg {
     float: left;
     margin-right: 3px;
     stroke: #fff;
     stroke-width: 2px;
     cursor: pointer; }
-    #code-ui > svg:not(:first-child) {
+    #ui-code > svg:not(:first-child) {
       -webkit-transition-property: opacity;
       -moz-transition-property: opacity;
       -ms-transition-property: opacity;
@@ -185,18 +185,33 @@ body {
   fill: #000;
   opacity: 0; }
   #code-save:hover, #code-popout:hover {
-    fill: #282; }
+    fill: #268; }
 
 #code-save-indicator.on {
   fill: #fff; }
 
 #code-popout:hover {
-  fill: #888; }
+  fill: #262; }
 
-#etc-ui {
+#ui-etc {
   position: absolute;
   right: 12px;
   top: 12px; }
+
+#ui-overlay {
+  position: absolute;
+  width: 60px;
+  height: 60px; }
+  #ui-overlay > svg {
+    float: left;
+    margin-right: 3px;
+    fill: rgba(0, 0, 0, 0.75);
+    stroke: #fff;
+    stroke-width: 3px;
+    stroke-linejoin: round;
+    cursor: pointer; }
+    #ui-overlay > svg:hover {
+      fill: #746; }
 
 #save-scrim {
   position: absolute;

@@ -73,7 +73,7 @@ body {
   }
 }
 
-#code-ui {
+#ui-code {
   position: absolute;
   left: 12px; top: 12px;
   height: 30px;
@@ -122,7 +122,7 @@ body {
   fill: #000;
   opacity: 0;
   &:hover {
-    fill: #282;
+    fill: #268;
   }
 }
 #code-save-indicator.on {
@@ -130,13 +130,30 @@ body {
 }
 #code-popout {
   &:hover {
-    fill: #888;
+    fill: #262;
   }
 }
 
-#etc-ui {
+#ui-etc {
   position: absolute;
   right: 12px; top: 12px;
+}
+
+#ui-overlay {
+  position: absolute;
+  width: 60px; height: 60px;
+  &>svg {
+    float: left;
+    margin-right: 3px;
+    fill: rgba(0, 0, 0, 0.75);
+    stroke: #fff;
+    stroke-width: 3px;
+    stroke-linejoin: round;
+    cursor: pointer;
+    &:hover {
+      fill: #746;
+    }
+  }
 }
 
 #save-scrim {

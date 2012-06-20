@@ -40,6 +40,8 @@ function(utils, events, params, selector, Embr, SC, $){
     , save_dialog_link = document.getElementById("save-dialog-link")
     , save_dialog_save = document.getElementById("save-dialog-save")
     , save_scrim = document.getElementById("save-scrim")
+    , ui_overlay = $("#ui-overlay")
+    , play_toggle = $("#play-toggle")
     , canvas_thumbed = false
     , canvas_thumb_size = 256;
 
@@ -139,12 +141,17 @@ function(utils, events, params, selector, Embr, SC, $){
       setCodePoppedOut(false);
     }
 
-    $("#code-ui > svg")
+    $("#ui-code > svg")
       .on("mouseover", function(){
         code_tooltip.text(this.getAttribute("title"));
       })
       .on("mouseout", function(){
         code_tooltip.text("");
+      });
+
+    play_toggle
+      .on("click", function(){
+        playCurrentSound();
       });
 
     function addCodeEventListeners(textarea){
@@ -225,12 +232,13 @@ function(utils, events, params, selector, Embr, SC, $){
       , canvas_off = canvas_sel.offset()
       , canvas_props
       , save_dialog_sel = $(save_dialog)
-      , duration = animate ? 250 : 0, ease = "ease-out", padding = 24;
+      , duration = animate ? 250 : 0, ease = "ease-out", padding = 24
+      , ww = window.innerWidth, wh = window.innerHeight;
 
     if(canvas_thumbed) {
       canvas_props = {
-        left: (window.innerWidth - canvas_thumb_size) / 2,
-        top: (window.innerHeight - canvas_thumb_size + save_dialog.offsetHeight + padding) / 2,
+        left: (ww - canvas_thumb_size) / 2,
+        top: (wh - canvas_thumb_size + save_dialog.offsetHeight + padding) / 2,
         width: canvas_thumb_size,
         height: canvas_thumb_size
       };
@@ -239,7 +247,7 @@ function(utils, events, params, selector, Embr, SC, $){
     }
     else {
       canvas_props = {
-        left: 0, top: 0, width: window.innerWidth, height: window.innerHeight
+        left: 0, top: 0, width: ww, height: wh
       };
       save_scrim.classList.add("shut");
     }
@@ -253,6 +261,15 @@ function(utils, events, params, selector, Embr, SC, $){
       if(!canvas_thumbed)
         save_dialog.classList.add("shut");
     });
+
+    ui_overlay.css({
+      left: (ww - ui_overlay.width()) / 2,
+      top: (wh - ui_overlay.height()) / 2
+    });
+  }
+
+  function setPlayVisible(visible){
+    ui_overlay.css("visibility", visible ? "visible" : "hidden");
   }
 
 
@@ -353,14 +370,15 @@ function(utils, events, params, selector, Embr, SC, $){
   // SOUNDCLOUD //
 
   var sc_url_prefix = "http://soundcloud.com/"
-    , sc_last_url_loaded, sc_last_url_played, sc_playing_track;
+    , sc_last_url_loaded, sc_last_url_played, sc_last_track, sc_playing_track;
 
   var soundManager
     , sm_playing_sound = null
     , sm_options = {
         useEQData: true,
-        autoPlay: true,
-        multiShot: false
+        autoPlay: false,
+        multiShot: false,
+        onfinish: onTrackFinish
       };
 
   var eq_mix = 0.25;
@@ -393,14 +411,28 @@ function(utils, events, params, selector, Embr, SC, $){
     });
   }
 
+  function playCurrentSound(){
+    if(sm_playing_sound){
+      sm_playing_sound.play(sm_options);
+      initTime();
+      setPlayVisible(false);
+    }
+  }
+
+  function onTrackFinish(){
+    if(sc_last_track)
+      playSoundCloudTrack(sc_last_track);
+  }
+
   function onSoundCloudStreamReady(sound){
     if(sm_playing_sound)
       sm_playing_sound.stop();
     sm_playing_sound = sound;
-    initTime();
+    setPlayVisible(true);
   }
 
   function playSoundCloudTrack(track){
+    sc_last_track = track;
     sc_playing_track = {
       "url":      track.permalink_url,
       "artist":   track.user.username,
