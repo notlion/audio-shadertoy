@@ -90,10 +90,12 @@ function($){
 
       if(shader.track.title) {
         html.push(
-          '<a href="', shader.track.url, '">',
+          '<span class="track"><a title="' + shader.track.artist, ' &mdash; ', shader.track.title + '" href="', shader.track.url, '">',
             shader.track.artist, ' &mdash; ', shader.track.title,
-          '</a>'
+          '</a></span>'
         );
+      } else {
+        html.push('<span class="track"></span>');
       }
 
       html.push('</li>');
