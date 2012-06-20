@@ -133,7 +133,9 @@ vec3 pixel(vec2 pos) {
 
       <h4>Mouse <code>(vec2) mouse</code></h4>
       <p>Mouse xy position</p>
-      <pre class="code">vec3 pixel(vec2 pos){
+      Example 1:
+      <pre class="code">
+vec3 pixel(vec2 pos){
   vec2 off1 = vec2(pos - mouse) * vec2(aspect, 1.);
   vec2 off2 = vec2(pos - (vec2(1.) - mouse)) * vec2(aspect, 1.);
 
@@ -142,6 +144,19 @@ vec3 pixel(vec2 pos) {
 
   return vec3(r1 < 1. && r2 > 1. );
 }</pre>
+
+      Example 2:
+      <pre class="code">
+vec3 pixel(vec2 pos) {
+  vec3 color = vec3(0.);
+  if (pos.y <= 100.0 && (pos.y / mouse.y * 100.) > 100.) {
+    color = vec3(1.);
+  }
+  if (pos.x <= 100.0 && (pos.x / mouse.x * 100.) > 100.) {
+    color = mix(color, vec3(0.5), 0.5);
+  }
+  return vec3(color);
+}}</pre>
 
       <h4>Amplitude Left <code>(sampler2D) amp_left</code></h4>
       <p>The amplitude spectrum texture of the left channel.</p>
