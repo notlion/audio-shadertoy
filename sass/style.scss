@@ -6,11 +6,12 @@ html, body {
 }
 
 body {
-  color: #fff;
+  color: #ddd;
   padding: 0;
   margin: 0;
   font-family: sans-serif;
   font-size: 14px;
+  line-height:1.5em;
   font-weight: bold;
 }
 
@@ -22,9 +23,72 @@ a {
   };
 }
 
+section {
+  margin:50px 0;
+}
+
+p {
+  margin:0.45em 0;
+  }
+
+
+header {
+  margin-bottom:20px;
+}
+footer {
+  margin-top:50px;
+  }
+
+ul, li {
+  list-style-type:none;
+  margin:0;
+  padding:0;
+}
+h1, h2, h3, h4, h5, h6 {
+text-shadow:rgba(0,25,255,1) 0px 0px 4px;
+}
+h1, h2, h3 {
+  color:#fff;
+  & a {
+    color:#59f;
+  }
+  & a:hover {
+    color:#59f;
+  }
+}
+h2 {
+  margin-bottom:30px;
+}
+h3 {
+  margin-bottom:30px;
+  }
+h4 {
+  text-align:left;
+  color:#999;
+  display:block;
+  margin-bottom:0;
+  margin-top:35px;
+}
+h4 code {
+  font-weight:normal;
+  color:#666;
+  font-size:14px;
+  display:inline-block;
+  margin-left:30px;
+}
+
+pre.code {
+  text-align: left;
+  border-left:5px solid #333;
+  padding:5px 20px;
+  background:#161616;
+}
+
+
 .ui-button {
   font-family: sans-serif;
   font-size: 14px;
+  line-height:24px;
   font-weight: bold;
   height: 24px;
   background-color: #000; color: #fff;

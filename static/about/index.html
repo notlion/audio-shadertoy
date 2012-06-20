@@ -1,0 +1,113 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>audioshader.net | about</title>
+  <link rel="stylesheet" href="../css/index.css">
+  <link rel="stylesheet" href="../css/about.css">
+</head>
+<body>
+<div id="nav">
+  <ul>
+    <li><a href="../toy/" class="ui-button vcenter"><span>Create</span></a></li>
+    <li><a href="../" class="ui-button vcenter"><span>Index</span></a></li>
+  </ul>
+</div>
+
+<div id="ref">
+
+  <header>
+    <h1>About</h1>
+    <p>
+      Created by: <a href="http://github.com/notlion/">@notlion</a> <a href="http://github.com/quilime/">@quilime</a> <a href="http://github.com/rezaali/">@rezaali</a>
+      <br />
+      Source on GitHub: <a href="http://github.com/audio-shadertoy/">Audio-ShaderToy</a>
+    </p>
+    <p>
+      Audioshader.net showcases user-contributed pixel shaders created with Audio-Shadertoy, a tool for coding WebGL shaders that respond to audio.
+      The editor component was created over one weekend during <a href="http://www.thecreatorsproject.com/arthackweekendsf">Art+Hack:SF</a>.
+    </p>
+  </header>
+
+
+  <br />
+  <h2>Reference</h2>
+
+  <section class="defines">
+      <h3>Defines</h3>
+
+      <h4>Audio Track <code>#define track &lt;soundcloud-url&gt;</code></h4>
+      <p>Define the audio source. Currently SoundCloud urls are supported.</p>
+      <pre class="code">#define track http://soundcloud.com/chipdisko/usk-error-3003</pre>
+
+      <h4>FFT Smoothing <code>#define smoothing &lt;float&gt;</code></h4>
+      <p>Define the FFT interpolation.</p>
+      <pre class="code">#define smoothing 0.98</pre>
+
+      <h4>Pixel Scale <code>#define pixel_scale &lt;int&gt;</code></h4>
+      <p>Define the pixel scale for the shader. 1 is native.</p>
+      <pre class="code">#define pixel_scale 2</pre>
+  </section>
+
+
+
+
+  <section>
+    <h3>Functions</h3>
+
+    <h4>Audio Amplitude (Left Channel) <code>(float) ampLeft(float f)</code></h4>
+    <p>Amplitude of the specified frequency (f) of the left audio channel</p>
+    <pre class="code">// do something with the left channel</pre>
+
+    <h4>Audio Amplitude (Right Channel) <code>(float) ampRight(float f)</code></h4>
+    <p>Amplitude of the specified frequency (f) of the right audio channel</p>
+    <pre class="code">// do something with the right channel</pre>
+  </section>
+
+
+
+
+  <section class="uniforms">
+      <h3>Variables</h3>
+
+      <h4>Pixel Position <code>(vec2) pos</code></h4>
+      <p>The position of the pixel. 0,0 is the bottom left, 1,1 top right.</p>
+      <pre class="code">vec3 pixel(vec2 pos) {
+  return vec3(pos, 1.);
+}</pre>
+
+      <h4>Aspect Ratio <code>(float) aspect</code></h4>
+      <p>The aspect ratio of the canvas.</p>
+      <pre class="code">// do something with the aspect ratio</pre>
+
+      <h4>Time <code>(float) time</code></h4>
+      <p>Seconds the shader has been running</p>
+      <pre class="code">// do something with time</pre>
+
+      <h4>Progress <code>(float) progress</code></h4>
+      <p>Percentage of track progress.</p>
+      <pre class="code">// progress something something</pre>
+
+      <h4>Mouse <code>(vec2) mouse</code></h4>
+      <p>Mouse xy position</p>
+      <pre class="code">// mouse.x, mouse.y</pre>
+
+      <h4>Amplitude Left <code>(sampler2D) amp_left</code></h4>
+      <p>The amplitude spectrum texture of the left channel.</p>
+      <pre class="code">// do something with the amp_left</pre>
+
+      <h4>Amplitude Right <code>(sampler2D) amp_right</code></h4>
+      <p>The amplitude spectrum texture of the right channel.</p>
+      <pre class="code">// do something with the amp_right</pre>
+  </section>
+
+  <footer>
+    <center>
+    <a href="../" class="ui-button vcenter"><span>Index</span></a>
+    </center>
+  </footer>
+
+</div>
+
+
+</body>
+</html>
