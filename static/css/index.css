@@ -43,7 +43,7 @@
         -o-transition-timing-function: ease-in;
         transition-timing-function: ease-in; }
         #shaders li .thumb img:hover {
-          box-shadow: rgba(255, 255, 220, 0.3) 0px 2px 30px; }
+          box-shadow: rgba(255, 255, 220, 0.25) 0px 2px 20px; }
     #shaders li .track {
       font-size: 12px; }
 
