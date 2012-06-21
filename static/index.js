@@ -35,7 +35,7 @@ function($){
   }
 
   function onWindowScroll() {
-    if ($(document).height() - window.pageYOffset - window.innerHeight <= 0 &&
+    if ($(document).height() - window.pageYOffset - window.innerHeight <= 1 &&
         !loading) {
       getMore();
     }
@@ -54,7 +54,7 @@ function($){
 
     loading = true;
 
-    if (count < limit + skip) {
+    if (count+limit < (limit + skip)) {
       $("#loader").hide();
       loading = false;
       return false;
@@ -90,10 +90,12 @@ function($){
 
       if(shader.track.title) {
         html.push(
-          '<a href="', shader.track.url, '">',
+          '<span class="track"><a title="' + shader.track.artist, ' &mdash; ', shader.track.title + '" href="', shader.track.url, '">',
             shader.track.artist, ' &mdash; ', shader.track.title,
-          '</a>'
+          '</a></span>'
         );
+      } else {
+        html.push('<span class="track"></span>');
       }
 
       html.push('</li>');

@@ -1,5 +1,5 @@
 html, body {
-  background: #202020;
+  background: #303030;
   width: 100%; }
 
 body {
@@ -35,7 +35,7 @@ ul, li {
   padding: 0; }
 
 h1, h2, h3, h4, h5, h6 {
-  text-shadow: #0019ff 0px 0px 4px; }
+  text-shadow: rgba(0, 45, 255, 0.6) 0px 0px 2px; }
 
 h1, h2, h3 {
   color: #fff; }

@@ -3,13 +3,13 @@
 <head>
   <title>audioshader.net | about</title>
   <link rel="stylesheet" href="../css/index.css">
-  <link rel="stylesheet" href="../css/about.css">
+  <link rel="stylesheet" href="../css/docs.css">
 </head>
 <body>
 <div id="nav">
   <ul>
     <li><a href="../toy/" class="ui-button vcenter"><span>Create</span></a></li>
-    <li><a href="../" class="ui-button vcenter"><span>Index</span></a></li>
+    <li><a href="../docs/" class="ui-button vcenter"><span>Docs</span></a></li>
   </ul>
 </div>
 
@@ -17,25 +17,25 @@
 
 
 
-
-  <header>
-    <h1>About</h1>
+  <section class="about">
+    <h2>About</h2>
+    <p>
+      Audioshader.net is a showcase of user-contributed pixel shaders created with Audio-Shadertoy, a tool for coding WebGL shaders that respond to audio.
+      The editor was created during <a href="http://www.thecreatorsproject.com/arthackweekendsf">Art+Hack:SF</a>.
+    </p>
     <p>
       (c) 2012 <a href="http://github.com/notlion/">@notlion</a> <a href="http://github.com/quilime/">@quilime</a> <a href="http://github.com/rezaali/">@rezaali</a>
       <br />
       Source on GitHub: <a href="http://github.com/audio-shadertoy/audio-shadertoy">Audio-ShaderToy</a>
     </p>
-<!--     <p>
-      Audioshader.net showcases user-contributed pixel shaders created with Audio-Shadertoy, a tool for coding WebGL shaders that respond to audio.
-      The editor component was created over one weekend during <a href="http://www.thecreatorsproject.com/arthackweekendsf">Art+Hack:SF</a>.
-    </p> -->
-  </header>
+
+  </section>
 
 
 
 
   <br />
-  <h2>Reference</h2>
+  <h2>API Reference</h2>
 
 
 
@@ -92,7 +92,8 @@ vec3 pixel(vec2 pos){
 
       <h4>Pixel Position <code>(vec2) pos</code></h4>
       <p>The position of the pixel. 0,0 is the bottom left, 1,1 top right.</p>
-      <pre class="code">vec3 pixel(vec2 pos) {
+      <pre class="code">vec3 pixel(vec2 pos){
+  // color each pixel based on its position
   return vec3(pos, 1.);
 }</pre>
 
@@ -100,6 +101,7 @@ vec3 pixel(vec2 pos){
       <p>The aspect ratio of the canvas.</p>
       <pre class="code">
 vec3 pixel(vec2 pos){
+  // draw a circle that stays symmetrical
   vec2 offset = vec2(pos - vec2(0.5));
   vec2 corrected = offset * vec2(aspect, 1.);
   float d = length(corrected);
@@ -113,9 +115,7 @@ vec3 pixel(vec2 pos){
 
       <h4>Progress <code>(float) progress</code></h4>
       <p>Percentage of track progress.</p>
-      <pre class="code">// Radial Track Progress
-
-#define track http://soundcloud.com/umi-o/hyokkori
+      <pre class="code">#define track http://soundcloud.com/umi-o/hyokkori
 #define smoothing .75
 #define pixel_scale 2
 
@@ -123,7 +123,7 @@ vec3 pixel(vec2 pos) {
   float amp_l = ampLeft(pos.x);
   float amp_r = ampRight(1. - pos.x);
 
-  // Draw Progress
+  // draw a radial progress bar
   vec2 p = (pos - vec2(.5)) * vec2(aspect, 1.);
   float r = length(p) / .05;
   float t = (atan(p.x, p.y) + PI) / (PI * 2.);
@@ -135,6 +135,7 @@ vec3 pixel(vec2 pos) {
       <p>Mouse xy position</p>
       <pre class="code">
 vec3 pixel(vec2 pos){
+  // draw two circles that respond to mouse input
   vec2 off1 = vec2(pos - mouse) * vec2(aspect, 1.);
   vec2 off2 = vec2(pos - (vec2(1.) - mouse)) * vec2(aspect, 1.);
 
@@ -142,6 +143,13 @@ vec3 pixel(vec2 pos){
   float r2 = length(off2) / .35;
 
   return vec3(r1 < 1. && r2 > 1. );
+}</pre>
+
+      <h4>Resolution <code>(vec2) resolution</code></h4>
+      <p>Shader Resolution</p>
+      <pre class="code">vec3 pixel(vec2 pos){
+  // color each pixel based on the resolution of the screen
+  return vec3(gl_FragCoord.xy / resolution, 0.);
 }</pre>
 
       <h4>Amplitude Left <code>(sampler2D) amp_left</code></h4>

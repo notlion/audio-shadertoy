@@ -7,8 +7,8 @@ body {
   left: 0;
   top: 0;
   width: 100%;
-  background-color: #033;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 12px; }
+  background-color: #181818;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 5px 12px; }
   #nav ul {
     margin: 8px 0 3px 0; }
     #nav ul li {
@@ -49,13 +49,10 @@ body {
         transition-timing-function: ease-in; }
         #shaders li .thumb img:hover {
           box-shadow: rgba(0, 255, 255, 0.4) 0px 2px 20px; }
-    #shaders li .artist {
+    #shaders li .track {
       font-weight: bold;
       font-size: 0.9em;
-      padding: 10px;
-      color: #666; }
-    #shaders li a:hover .artist {
-      color: #999; }
+      padding: 10px; }
 
 #loader {
   text-align: center; }
