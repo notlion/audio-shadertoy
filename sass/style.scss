@@ -93,13 +93,15 @@ pre.code {
   background-color: #000; color: #fff;
   padding: 0 10px 0 10px;
   margin: 1px;
-  border-radius: 15px;
+  border-radius: 30px;
   border: 2px solid #fff;
   cursor: pointer;
   &:hover {
     background-color: #239;
   }
+
 }
+
 
 .vcenter {
   display: table;

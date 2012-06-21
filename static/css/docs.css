@@ -1,14 +1,14 @@
-#about {
+#docs {
   text-align: left;
   max-width: 800px;
-  margin: 100px auto; }
+  margin: 0 0 0 140px; }
 
-#about p {
+#docs p {
   font-weight: normal;
   letter-spacing: 0.05em;
   text-align: left; }
 
-#about a {
+#docs a {
   text-decoration: underline; }
 
 h3 {

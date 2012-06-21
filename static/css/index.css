@@ -1,30 +1,25 @@
 @import url(style.css);
-body {
-  text-align: center; }
-
 #nav {
   position: fixed;
-  left: 0;
-  top: 0;
-  width: 100%;
-  background-color: #181818;
-  box-shadow: rgba(0, 0, 0, 0.4) 0px 5px 12px; }
+  left: 12px;
+  top: 3px; }
   #nav ul {
-    margin: 8px 0 3px 0; }
+    margin: 0; }
     #nav ul li {
-      display: inline-block; }
+      margin: 10px 0; }
 
 #shaders {
-  margin: 60px 0 40px 0;
+  margin: 0 0 40px 120px;
   padding: 0;
   line-height: 1.3em; }
   #shaders li {
+    float: left;
     display: inline-block;
     text-align: center;
-    margin: 20px;
-    width: 256px; }
+    margin: 0px 20px 30px 20px;
+    width: 256px;
+    height: 330px; }
     #shaders li .thumb {
-      margin: 0 auto;
       background: #000;
       margin-bottom: 20px; }
       #shaders li .thumb, #shaders li .thumb img {
@@ -48,11 +43,9 @@ body {
         -o-transition-timing-function: ease-in;
         transition-timing-function: ease-in; }
         #shaders li .thumb img:hover {
-          box-shadow: rgba(0, 255, 255, 0.4) 0px 2px 20px; }
+          box-shadow: rgba(255, 255, 220, 0.3) 0px 2px 30px; }
     #shaders li .track {
-      font-weight: bold;
-      font-size: 0.9em;
-      padding: 10px; }
+      font-size: 12px; }
 
 #loader {
   text-align: center; }

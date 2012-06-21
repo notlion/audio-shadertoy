@@ -2,33 +2,32 @@
 @import "style.css";
 
 body {
-  text-align:center;
+
 }
 
 #nav {
   position: fixed;
-  left: 0; top: 0;
-  width: 100%;
-  background-color: #181818;
-  box-shadow: rgba(0, 0, 0, 0.4) 0px 5px 12px;
-  & ul {
-    margin: 8px 0 3px 0;
+  left: 12px;
+  top: 3px;
+  & ul { margin: 0;
     & li {
-      display: inline-block;
+      margin: 10px 0;
     }
   }
 }
 
 #shaders {
-  margin: 60px 0 40px 0; padding: 0;
+  margin: 0 0 40px 120px;
+  padding: 0;
   line-height: 1.3em;
   & li {
+    float:left;
     display: inline-block;
     text-align: center;
-    margin: 20px;
+    margin: 0px 20px 30px 20px;
     width: 256px;
+    height:330px;
     & .thumb {
-      margin: 0 auto;
       background: #000;
       margin-bottom: 20px;
       &, img {
@@ -40,14 +39,12 @@ body {
         @include transition-duration(0.1s);
         @include transition-timing-function(ease-in);
         &:hover {
-          box-shadow: rgba(0, 255, 255, 0.4) 0px 2px 20px;
+          box-shadow: rgba(255, 255, 220, 0.30) 0px 2px 30px;
         }
       }
     }
     & .track {
-      font-weight:bold;
-      font-size:0.9em;
-      padding: 10px;
+      font-size:12px;
     }
   }
 }
