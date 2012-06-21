@@ -82,6 +82,15 @@ vec3 pixel(vec2 pos){
 
   return color;
 }</pre>
+
+    <h4>Random <code>(float) rand(float p)</code></h4>
+    <p>Value between 0 and 1 sampled from a position (p) in a noise field</p>
+    <h4>Random <code>(float) rand(vec2 p)</code></h4>
+    <p>Variant that takes a vec2 position (p)</p>
+
+    <pre class="code">vec3 pixel(vec2 pos) {
+  return vec3(rand(pos + time));
+}</pre>
   </section>
 
 
