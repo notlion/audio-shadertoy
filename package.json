@@ -8,7 +8,7 @@
   "scripts": {
     "start": "app.js"
   },
-  "version": "0.0.0-42",
+  "version": "0.0.0-43",
   "engines": {
     "node": "0.6.x"
   },
