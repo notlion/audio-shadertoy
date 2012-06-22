@@ -1,18 +1,96 @@
 html, body {
-  background: #444; }
+  background: #303030;
+  width: 100%;
+  margin: 0;
+  padding: 0; }
 
 body {
-  background: #202020;
-  color: #fff;
+  color: #ddd;
   padding: 0;
   margin: 0;
   font-family: sans-serif;
   font-size: 14px;
+  line-height: 1.5em;
   font-weight: bold; }
 
 a {
   color: #aaa;
   text-decoration: none; }
+  a:hover {
+    color: #fff; }
 
-a:hover {
+section {
+  margin: 50px 0; }
+
+p {
+  margin: 0.45em 0; }
+
+header {
+  margin-bottom: 20px; }
+
+footer {
+  margin: 50px 0; }
+
+ul, li {
+  list-style-type: none;
+  margin: 0;
+  padding: 0; }
+
+h1, h2, h3, h4, h5, h6 {
+  text-shadow: rgba(0, 45, 255, 0.6) 0px 0px 2px; }
+
+h1, h2, h3 {
   color: #fff; }
+  h1 a, h2 a, h3 a {
+    color: #59f; }
+  h1 a:hover, h2 a:hover, h3 a:hover {
+    color: #59f; }
+
+h2 {
+  margin-bottom: 30px; }
+
+h3 {
+  margin-bottom: 30px; }
+
+h4 {
+  text-align: left;
+  color: #999;
+  display: block;
+  margin-bottom: 0;
+  margin-top: 35px; }
+
+h4 code {
+  font-weight: normal;
+  color: #666;
+  font-size: 14px;
+  display: inline-block;
+  margin-left: 30px; }
+
+pre.code {
+  text-align: left;
+  border-left: 5px solid #333;
+  padding: 5px 20px;
+  background: #161616; }
+
+.ui-button {
+  font-family: sans-serif;
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: bold;
+  height: 24px;
+  background-color: #000;
+  color: #fff;
+  padding: 0 10px 0 10px;
+  margin: 1px;
+  border-radius: 30px;
+  border: 2px solid #fff;
+  cursor: pointer; }
+  .ui-button:hover {
+    background-color: #239; }
+
+.vcenter {
+  display: table; }
+  .vcenter > p {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center; }

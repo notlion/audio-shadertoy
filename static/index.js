@@ -15,10 +15,10 @@ function($){
 
   "use strict";
 
-  var loading = false,
-      limit = 10,
-      skip = 0,
-      count = limit;
+  var loading = false
+    , limit = 12
+    , skip = 0
+    , count = limit;
 
   function init() {
     getMore();
@@ -35,8 +35,8 @@ function($){
   }
 
   function onWindowScroll() {
-    if($(document).height() - window.pageYOffset - window.innerHeight <= 0 &&
-       !loading) {
+    if ($(document).height() - window.pageYOffset - window.innerHeight <= 1 &&
+        !loading) {
       getMore();
     }
   }
@@ -53,7 +53,7 @@ function($){
   function getShaders(params, callback) {
     loading = true;
 
-    if(count < limit + skip) {
+    if (count+limit < (limit + skip)) {
       $("#loader").hide();
       loading = false;
       return false;
@@ -77,29 +77,33 @@ function($){
   function appendShaderList(shadersArray) {
     var html = [];
 
-    for(var i = 0; i < shadersArray.length; i++) {
-
-      var shader = shadersArray[i];
-
-      html.push([
+    shadersArray.forEach(function(shader){
+      html.push(
         '<li>',
         '<div class="thumb">',
-        '<a href="toy/#s=' + shader.short_id + '">',
-        '<img src="img/' + shader.short_id + '">',
-        '</a>',
-        '</div>'].join(''));
+          '<a href="toy/#s=', shader.short_id, '">',
+            '<img src="img/', shader.short_id, '">',
+          '</a>',
+        '</div>'
+      );
 
-      if (shader.track.title) {
-        html.push([
-        '<a href="' + shader.track.url + '">',
-        shader.track.artist + ' &mdash; ' + shader.track.title,
-        '</a>'
-        ].join(''));
+      if(shader.track.title) {
+        html.push(
+          '<a title="', shader.track.artist, ' &mdash; ', shader.track.title, '" href="', shader.track.url, '">',
+          '<span class="track">', shader.track.title, '</span>',
+          '<br />',
+          '<span class="artist">', shader.track.artist, '<span>',
+
+          '</a>'
+        );
+      } else {
+        html.push('<span class="track"></span>');
       }
 
       html.push('</li>');
-    }
-    $("#shaders").append(html.join(''));
+    });
+
+    $("#shaders").append(html.join(""));
   }
 
   window.addEventListener("load", init);
