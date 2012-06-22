@@ -34,7 +34,6 @@ function(utils, events, params, selector, Embr, SC, $){
   "use strict";
 
   // UI //
-
   var code_text = document.getElementById("code-text")
     , save_dialog = document.getElementById("save-dialog")
     , save_dialog_link = document.getElementById("save-dialog-link")
@@ -45,49 +44,25 @@ function(utils, events, params, selector, Embr, SC, $){
     , canvas_thumbed = false
     , canvas_thumb_size = 256;
 
-  function initUI(){
-    var code = document.getElementById("code")
-      , code_toggle = document.getElementById("code-toggle")
-      , code_save = document.getElementById("code-save")
-      , code_save_indicator = document.getElementById("code-save-indicator")
-      , code_popout = document.getElementById("code-popout")
-      , code_tooltip = $("#code-tooltip > p")
-      , code_window = null
-      , popped_code_text = null
-      , code_open = false
-      , code_popped = false;
+  var code = document.getElementById("code")
+    , code_toggle = document.getElementById("code-toggle")
+    , code_save = document.getElementById("code-save")
+    , code_save_indicator = document.getElementById("code-save-indicator")
+    , code_popout = document.getElementById("code-popout")
+    , code_tooltip = $("#code-tooltip > p")
+    , code_window = null
+    , popped_code_text = null
+    , code_open = false
+    , code_popped = false;
 
-    function setCodeOpen(open){
-      if(open !== code_open){
-        code_open = open;
-        code_toggle.setAttribute("class", open ? "open" : "shut");
-        if(open){
-          code.style.visibility = "visible";
-          code_save.style.display = "block";
-          code_save.style.opacity = "1";
-          code_popout.style.display = "block";
-          code_popout.style.opacity = "1";
-          code.classList.remove("shut");
-          setCodePoppedOut(false);
-        }
-        else{
-          events.addTransitionEndListener(code, function(e){
-            code.style.visibility = "hidden";
-          }, true);
-          code.classList.add("shut");
-          events.addTransitionEndListener(code_save, function(e){
-            code_save.style.display = "none";
-          }, true);
-          code_save.style.opacity = "0";
-          events.addTransitionEndListener(code_popout, function(e){
-            code_popout.style.display = "none";
-          }, true);
-          code_popout.style.opacity = "0";
-        }
-      }
-    }
+  function initUI(){
+
     code_toggle.addEventListener("click", function(e){
       setCodeOpen(!code_open);
+    }, false);
+
+    code_popout.addEventListener("click", function(e){
+      setCodePoppedOut(!code_popped);
     }, false);
 
     function setCodeEdited(edited){
@@ -109,28 +84,6 @@ function(utils, events, params, selector, Embr, SC, $){
     }
     code_save.addEventListener("click", saveCode, false);
 
-    function setCodePoppedOut(popped){
-      if(popped !== code_popped){
-        code_popped = popped;
-        if(popped){ // Pop
-          var opts = "width=700,height=500,left=50,top=50," +
-                     "scrollbars=yes,menubar=no,location=no";
-          code_window = window.open("pop.html", "code-window", opts);
-          code_window.addEventListener("load", onCodeWindowLoad);
-          code_window.addEventListener("beforeunload", onCodeWindowUnload);
-        }
-        else{ // Unpop
-          if(code_window){
-            code_window.close();
-            code_window = null;
-          }
-        }
-        setCodeOpen(!popped);
-      }
-    }
-    code_popout.addEventListener("click", function(e){
-      setCodePoppedOut(!code_popped);
-    }, false);
     function onCodeWindowLoad(){
       popped_code_text = code_window.document.getElementById("code-text");
       popped_code_text.value = code_text.value;
@@ -216,9 +169,58 @@ function(utils, events, params, selector, Embr, SC, $){
       layoutUI();
     }, false);
 
-    // TODO: Set this via permalink
-    setCodeOpen(true);
+    setCodeOpen(false);
     setCodePoppedOut(false);
+  }
+
+  function setCodeOpen(open){
+    if(open !== code_open){
+      code_open = open;
+      code_toggle.setAttribute("class", open ? "open" : "shut");
+      if(open){
+        code.style.visibility = "visible";
+        code_save.style.display = "block";
+        code_save.style.opacity = "1";
+        code_popout.style.display = "block";
+        code_popout.style.opacity = "1";
+        code.classList.remove("shut");
+        setCodePoppedOut(false);
+      }
+      else{
+        events.addTransitionEndListener(code, function(e){
+          code.style.visibility = "hidden";
+        }, true);
+        code.classList.add("shut");
+        events.addTransitionEndListener(code_save, function(e){
+          code_save.style.display = "none";
+        }, true);
+        code_save.style.opacity = "0";
+        events.addTransitionEndListener(code_popout, function(e){
+          code_popout.style.display = "none";
+        }, true);
+        code_popout.style.opacity = "0";
+      }
+    }
+  }
+
+  function setCodePoppedOut(popped){
+    if(popped !== code_popped){
+      code_popped = popped;
+      if(popped){ // Pop
+        var opts = "width=700,height=500,left=50,top=50," +
+                   "scrollbars=yes,menubar=no,location=no";
+        code_window = window.open("pop.html", "code-window", opts);
+        code_window.addEventListener("load", onCodeWindowLoad);
+        code_window.addEventListener("beforeunload", onCodeWindowUnload);
+      }
+      else{ // Unpop
+        if(code_window){
+          code_window.close();
+          code_window = null;
+        }
+      }
+      setCodeOpen(!popped);
+    }
   }
 
   function updateCanvasRes(){
@@ -625,6 +627,7 @@ function(utils, events, params, selector, Embr, SC, $){
         params.lzmaDecompress(hex, function(src){
           code_text.value = src;
           tryCompile(code_text);
+          setCodeOpen(true);
         });
         hash_exists = true;
       },
@@ -646,6 +649,7 @@ function(utils, events, params, selector, Embr, SC, $){
 
     if(!hash_exists){
       tryCompile(code_text);
+      setCodeOpen(true);
     }
 
     utils.requestAnimationFrame(render);
