@@ -1,9 +1,7 @@
 @import "bourbon/bourbon";
 @import "style.css";
 
-body {
-
-}
+body { }
 
 #nav {
   position: fixed;
@@ -17,7 +15,7 @@ body {
 }
 
 #shaders {
-  margin: 0 0 40px 120px;
+  margin:12px 0 0 120px;
   padding: 0;
   line-height: 1.3em;
   & li {

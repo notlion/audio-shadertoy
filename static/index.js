@@ -16,7 +16,7 @@ function($){
   "use strict";
 
   var loading = false
-    , limit = 10
+    , limit = 12
     , skip = 0
     , count = limit;
 
