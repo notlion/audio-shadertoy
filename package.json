@@ -1,19 +1,15 @@
 {
-  "name": "audio-shadertoy",
-  "subdomain": "ast",
-  "domains": [
-    "audioshader.net",
-    "www.audioshader.net"
-  ],
   "scripts": {
     "start": "app.js"
   },
-  "version": "0.0.0-45",
+  "version": "0.0.0-47",
   "engines": {
     "node": "0.6.x"
   },
   "dependencies": {
     "mongoose": "2.5.x",
     "express": "2.5.x"
-  }
+  },
+  "name": "audio-shadertoy",
+  "subdomain": "audio-shadertoy"
 }
