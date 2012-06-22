@@ -9,10 +9,11 @@
       margin: 10px 0; }
 
 #shaders {
-  margin: 0 0 40px 120px;
+  margin: 12px 0 0 120px;
   padding: 0;
   line-height: 1.3em; }
   #shaders li {
+    font-size: 12px;
     float: left;
     display: inline-block;
     text-align: center;
@@ -45,7 +46,9 @@
         #shaders li .thumb img:hover {
           box-shadow: rgba(255, 255, 220, 0.25) 0px 2px 20px; }
     #shaders li .track {
-      font-size: 12px; }
+      color: #999; }
+    #shaders li .artist {
+      color: #555; }
 
 #loader {
   text-align: center; }

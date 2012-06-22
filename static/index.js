@@ -16,7 +16,7 @@ function($){
   "use strict";
 
   var loading = false
-    , limit = 10
+    , limit = 12
     , skip = 0
     , count = limit;
 
@@ -90,9 +90,12 @@ function($){
 
       if(shader.track.title) {
         html.push(
-          '<span class="track"><a title="' + shader.track.artist, ' &mdash; ', shader.track.title + '" href="', shader.track.url, '">',
-            shader.track.artist, ' &mdash; ', shader.track.title,
-          '</a></span>'
+          '<a title="', shader.track.artist, ' &mdash; ', shader.track.title, '" href="', shader.track.url, '">',
+          '<span class="track">', shader.track.title, '</span>',
+          '<br />',
+          '<span class="artist">', shader.track.artist, '<span>',
+
+          '</a>'
         );
       } else {
         html.push('<span class="track"></span>');

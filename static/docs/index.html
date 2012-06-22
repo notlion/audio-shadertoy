@@ -10,7 +10,6 @@
   <ul>
     <li><a href="../toy/" class="ui-button vcenter"><span>Create</span></a></li>
     <li><a href="../docs/" class="ui-button vcenter"><span>Docs</span></a></li>
-    <li><a href="../" class="ui-button vcenter"><span>&larr;</span></a></li>
   </ul>
 </div>
 
@@ -35,6 +34,9 @@
 </header>
 
 
+
+
+
   <section class="defines">
       <h3>Shader Defines</h3>
 
@@ -54,7 +56,9 @@
 
 
 
-  <section>
+
+
+  <section class="functions">
     <h3>Global Functions</h3>
 
     <h4>Audio Amplitude (Left Channel) <code>(float) ampLeft(float f)</code></h4>
@@ -113,7 +117,6 @@ vec3 pixel(vec2 pos){
   return vec3(radius < 1.);
 }</pre>
 
-
       <h4>Time <code>(float) time</code></h4>
       <p>Decimal number of seconds the shader has been running</p>
 
@@ -162,36 +165,25 @@ vec3 pixel(vec2 pos){
       <h4>Amplitude Right <code>(sampler2D) amp_right</code></h4>
       <p>Amplitude of the right audio channel as a sampler 2D texture.</p>
 
-
   </section>
 
 
   <section class="links">
     <h2>Links &amp; Suggested Reading</h2>
-
-    <p>
-      <a href="http://glsl.heroku.com/">GLSL Sandbox</a>, an online live-editor and gallery for fragment shaders.
-    </p>
-
-    <p>
-      <a href="http://www.iquilezles.org/apps/shadertoy/">Shader Toy</a>, by Inigo Quilez. An online shader editor.
-    </p>
-
-    <p>
-      <a href="http://www.khronos.org/files/webgl/webgl-reference-card-1_0.pdf">WebGL 1.0 API Quick Reference Card [PDF]</a>, a comprehensive WebGL and GLSL cheat-sheet.
-    </p>
-
-
+    <ul>
+      <li>
+        <a href="http://glsl.heroku.com/">GLSL Sandbox</a>, an online live-editor and gallery for fragment shaders.
+      </li>
+      <li>
+        <a href="http://www.iquilezles.org/apps/shadertoy/">Shader Toy</a>, by Inigo Quilez. An online shader editor.
+      </li>
+      <li>
+        <a href="http://www.khronos.org/files/webgl/webgl-reference-card-1_0.pdf">WebGL 1.0 API Quick Reference Card [PDF]</a>, a comprehensive WebGL and GLSL cheat-sheet.
+      </li>
+    </ul>
   </section>
 
 </div>
-
-  <footer>
-    <center>
-    <a href="../" class="ui-button vcenter"><span>Back</span></a>
-    </center>
-  </footer>
-
 
 
 </body>
