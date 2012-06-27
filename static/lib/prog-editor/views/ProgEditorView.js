@@ -2,11 +2,11 @@ define(function (require) {
 
   "use strict";
 
-  var Backbone             = require("backbone")
-    , _                    = require("underscore")
-    , ProgEditor           = require("src/models/ProgEditor")
-    , ProgEditorButton     = require("src/models/ProgEditorButton")
-    , ProgEditorButtonView = require("src/views/ProgEditorButtonView");
+  var Backbone = require("backbone")
+    , _        = require("underscore")
+
+    , ProgEditor           = require("../models/ProgEditor")
+    , ProgEditorButtonView = require("./ProgEditorButtonView");
 
 
   var init_template = [
@@ -45,15 +45,19 @@ define(function (require) {
           console.error(error);
         })
         .on("change:open", function (model, open) {
-          var d = 200, e = "ease";
+          var d = 200, e = "ease", vis = "visibility"
+            , container = view.$el.find(".code-container");
           view.$el.find(".toggle-open .rotate").animate({
             rotate: open ? "45deg" : "0"
           }, d, e);
-          view.$el.find(".code-container").animate({
+          container.animate({
             opacity: open ? 1 : 0
           }, d, e, function(){
-            $(this).css("visibility", open ? "visible" : "hidden");
+            if(!open)
+              container.css(vis, "hidden");
           });
+          if(open)
+            container.css(vis, "visible");
         });
 
       this.render();

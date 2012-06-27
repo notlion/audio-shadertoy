@@ -1,9 +1,12 @@
 define(function (require) {
 
+  "use strict";
+
   var Backbone       = require("backbone")
     , _              = require("underscore")
     , Embr           = require("embr")
-    , ProgEditorView = require("src/views/ProgEditorView");
+    , ProgEditorView = require("lib/prog-editor/views/ProgEditorView");
+
 
   var src_fragment_template = [
     "precision highp float;",

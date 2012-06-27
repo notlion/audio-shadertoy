@@ -1,10 +1,10 @@
-define([
-  "backbone",
-  "underscore"
-],
-function (Backbone, _) {
+define(function (require) {
 
   "use strict";
+
+  var Backbone = require("backbone")
+    , _        = require("underscore");
+
 
   var template = [
     '<svg title="<%= title %>"',

@@ -5,7 +5,8 @@ define(function (require) {
   var Backbone = require("backbone")
     , _        = require("underscore")
     , Embr     = require("embr")
-    , ProgEditorButton = require("src/models/ProgEditorButton");
+
+    , ProgEditorButton = require("./ProgEditorButton");
 
 
   var shader_outlet_re = /^[ \t]*#define[ \t]+([\w_]*)[ \t]+(\S+)/gm;
