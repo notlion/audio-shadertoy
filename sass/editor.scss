@@ -3,16 +3,19 @@
 #prog-editor {
   position: absolute;
   left: 30px; right: 50%; top: 30px; bottom: 30px;
-  padding: 20px 10px 10px 10px;
-  border-radius: 5px;
 
-  @include transition((background-color, opacity), 0.2s, ease-in);
+  & .code-container {
+    position: absolute;
+    left: 0; right: 0; top: 0; bottom: 0;
+    padding: 20px 10px 10px 10px;
+    border-radius: 5px;
 
-  &:hover {
-    @include transition-duration(0.1s);
-    @include transition-timing-function(ease-out);
-    @include box-shadow(inset rgba(0, 0, 0, 0.5) 0px 0px 6px);
-    background-color: rgba(24, 28, 22, 0.8);
+    &:hover {
+      @include transition-duration(0.1s);
+      @include transition-timing-function(ease-out);
+      @include box-shadow(inset rgba(0, 0, 0, 0.5) 0px 0px 6px);
+      background-color: rgba(24, 28, 22, 0.8);
+    }
   }
 
   & .ui {

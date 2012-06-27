@@ -1,16 +1,18 @@
-define([
-  "backbone",
-  "underscore",
-  "src/models/ProgEditor",
-  "src/models/ProgEditorButton",
-  "src/views/ProgEditorButtonView"
-],
-function (Backbone, _, ProgEditor, ProgEditorButton, ProgEditorButtonView) {
+define(function (require) {
 
   "use strict";
 
+  var Backbone             = require("backbone")
+    , _                    = require("underscore")
+    , ProgEditor           = require("src/models/ProgEditor")
+    , ProgEditorButton     = require("src/models/ProgEditorButton")
+    , ProgEditorButtonView = require("src/views/ProgEditorButtonView");
+
+
   var init_template = [
-    '<textarea class="code" spellcheck="false"></textarea>',
+    '<div class="code-container" style="visibility:hidden;opacity:0">',
+      '<textarea class="code" spellcheck="false"></textarea>',
+    '</div>',
     '<div class="ui"></div>'
   ].join("");
 
@@ -20,16 +22,19 @@ function (Backbone, _, ProgEditor, ProgEditorButton, ProgEditorButtonView) {
     id: "prog-editor",
 
     events: {
-      "click .toggle-open": "toggleOpen"
+      "click .toggle-open": "toggleOpen",
+      "keydown .code":      "keyDown",
+      "keyup .code":        "keyUp"
     },
 
     initialize: function () {
       var view = this;
 
-      this.$el.html(_.template(init_template));
+      if(!this.model)
+        this.model = new ProgEditor();
 
-      this.model = new ProgEditor()
-        .on("change:src_fragment", this.render, this)
+      this.model
+        .on("change:src_fragment", this.updateCode, this)
         .on("change:compiled", function (model, compiled) {
           if(compiled)
             view.$el.removeClass("error");
@@ -40,61 +45,47 @@ function (Backbone, _, ProgEditor, ProgEditorButton, ProgEditorButtonView) {
           console.error(error);
         })
         .on("change:open", function (model, open) {
-          toggle_open.$el.animate({
-            transform: open ? "rotate(45deg)" : ""
-          }, 2, "ease-in");
+          var d = 200, e = "ease";
+          view.$el.find(".toggle-open .rotate").animate({
+            rotate: open ? "45deg" : "0"
+          }, d, e);
+          view.$el.find(".code-container").animate({
+            opacity: open ? 1 : 0
+          }, d, e, function(){
+            $(this).css("visibility", open ? "visible" : "hidden");
+          });
         });
 
-      var toggle_open = new ProgEditorButton({
-        name: "toggle-open",
-        title: "Toggle Code Open",
-        icon: '<path d="M -7,0 L 7,0 M 0,-7 L 0,7"/>'
-      });
-
-      var ui = this.$el.find("div.ui");
-
-      this.buttons = new Backbone.Collection()
-        .on("add", function (model) {
-          ui.append(new ProgEditorButtonView({ model: model }).render().el);
-        })
-        .on("remove", function (model) {
-          ui.remove(model.el);
-        })
-        .add(toggle_open);
-
-      function onKeyDown (e) {
-        e.stopPropagation();
-
-        if(e.keyCode == 9) { // Tab
-          e.preventDefault();
-
-          var start = this.selectionStart
-            , end   = this.selectionEnd;
-
-          this.value = this.value.substring(0, start) + "  " +
-                       this.value.substring(end, this.value.length);
-
-          this.selectionStart = this.selectionEnd = start + 2;
-
-          this.focus();
-        }
-      }
-
-      function onKeyUp (e) {
-        e.stopPropagation();
-
-        if((e.keyCode >= 16 && e.keyCode <= 45) ||
-           (e.keyCode >= 91 && e.keyCode <= 93))
-          return;
-
-        view.model.set("src_fragment", this.value);
-      }
-
-      this.$el.find("textarea.code")
-        .on("keydown", onKeyDown)
-        .on("keyup", onKeyUp);
-
       this.render();
+    },
+
+    keyDown: function (e) {
+      e.stopPropagation();
+
+      if(e.keyCode == 9) { // Tab
+        e.preventDefault();
+
+        var ta    = e.target
+          , start = ta.selectionStart
+          , end   = ta.selectionEnd;
+
+        ta.value = ta.value.substring(0, start) + "  " +
+                   ta.value.substring(end, ta.value.length);
+
+        ta.selectionStart = ta.selectionEnd = start + 2;
+
+        ta.focus();
+      }
+    },
+
+    keyUp: function (e) {
+      e.stopPropagation();
+
+      if((e.keyCode >= 16 && e.keyCode <= 45) ||
+         (e.keyCode >= 91 && e.keyCode <= 93))
+        return;
+
+      this.model.set("src_fragment", e.target.value);
     },
 
     toggleOpen: function () {
@@ -102,7 +93,6 @@ function (Backbone, _, ProgEditor, ProgEditorButton, ProgEditorButtonView) {
     },
 
     setOpen: function (open) {
-      console.log(open)
       this.model.set("open", open);
     },
 
@@ -110,9 +100,17 @@ function (Backbone, _, ProgEditor, ProgEditorButton, ProgEditorButtonView) {
       return this.program.program;
     },
 
-    render: function () {
-      this.$el.find("textarea.code").text(this.model.get("src_fragment"));
+    updateCode: function () {
+      this.$el.find(".code").text(this.model.get("src_fragment"));
       return this;
+    },
+
+    render: function () {
+      this.$el.html(_.template(init_template));
+      this.model.buttons.each(function (b) {
+        this.append(new ProgEditorButtonView({ model: b }).render().el)
+      }, this.$el.find(".ui"));
+      this.updateCode();
     }
 
   });

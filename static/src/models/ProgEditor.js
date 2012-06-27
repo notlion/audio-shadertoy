@@ -1,15 +1,12 @@
-define([
-  "backbone",
-  "underscore",
-  "embr"
-],
-function (Backbone, _, Embr) {
+define(function (require) {
 
   "use strict";
 
-  var src_fragment_prefix = [
-    "precision highp float;\n"
-  ].join("/n");
+  var Backbone = require("backbone")
+    , _        = require("underscore")
+    , Embr     = require("embr")
+    , ProgEditorButton = require("src/models/ProgEditorButton");
+
 
   var shader_outlet_re = /^[ \t]*#define[ \t]+([\w_]*)[ \t]+(\S+)/gm;
 
@@ -22,23 +19,31 @@ function (Backbone, _, Embr) {
     return defines;
   }
 
-  var Program = Backbone.Model.extend({
+  var ProgEditor = Backbone.Model.extend({
 
     defaults: {
       open: false,
       src_vertex: "",
-      src_fragment: ""
+      src_fragment: "",
+      src_fragment_template: ""
     },
 
     initialize: function () {
+      this.buttons = new ProgEditorButton.Collection([
+        {
+          name: "toggle-open",
+          title: "Toggle Code Open",
+          icon: '<path d="M -7,0 L 7,0 M 0,-7 L 0,7"/>'
+        },
+      ]);
       this.program = new Embr.Program();
       this.on("change:src_vertex change:src_fragment", this.compile, this);
-      this.compile();
     },
 
-    compile: function () {
+    compile: _.debounce(function () {
       var vs = this.get("src_vertex")
-        , fs = this.get("src_fragment");
+        , fs = this.get("src_fragment")
+        , ft = this.get("src_fragment_template");
 
       if(vs && fs) {
         _.each(extractShaderDefines(fs), function (value, name) {
@@ -47,8 +52,11 @@ function (Backbone, _, Embr) {
           this.set("define_" + name, value);
         }, this);
 
+        if(ft)
+          fs = _.template(ft, this.attributes);
+
         try {
-          this.program.compile(vs, src_fragment_prefix + fs);
+          this.program.compile(vs, fs);
           this.program.link();
 
           this.set("compiled", true);
@@ -58,10 +66,10 @@ function (Backbone, _, Embr) {
           this.set("compiled", false);
         }
       }
-    }
+    }, 200)
 
   });
 
-  return Program;
+  return ProgEditor;
 
 });

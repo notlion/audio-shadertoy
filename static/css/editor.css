@@ -3,46 +3,32 @@
   left: 30px;
   right: 50%;
   top: 30px;
-  bottom: 30px;
-  padding: 20px 10px 10px 10px;
-  border-radius: 5px;
-  -webkit-transition-property: background-color, opacity;
-  -moz-transition-property: background-color, opacity;
-  -ms-transition-property: background-color, opacity;
-  -o-transition-property: background-color, opacity;
-  transition-property: background-color, opacity;
-  -webkit-transition-duration: 0.2s;
-  -moz-transition-duration: 0.2s;
-  -ms-transition-duration: 0.2s;
-  -o-transition-duration: 0.2s;
-  transition-duration: 0.2s;
-  -webkit-transition-timing-function: ease-in;
-  -moz-transition-timing-function: ease-in;
-  -ms-transition-timing-function: ease-in;
-  -o-transition-timing-function: ease-in;
-  transition-timing-function: ease-in;
-  -webkit-transition-delay: 0;
-  -moz-transition-delay: 0;
-  -ms-transition-delay: 0;
-  -o-transition-delay: 0;
-  transition-delay: 0; }
-  #prog-editor:hover {
-    -webkit-transition-duration: 0.1s;
-    -moz-transition-duration: 0.1s;
-    -ms-transition-duration: 0.1s;
-    -o-transition-duration: 0.1s;
-    transition-duration: 0.1s;
-    -webkit-transition-timing-function: ease-out;
-    -moz-transition-timing-function: ease-out;
-    -ms-transition-timing-function: ease-out;
-    -o-transition-timing-function: ease-out;
-    transition-timing-function: ease-out;
-    -webkit-box-shadow: inset rgba(0, 0, 0, 0.5) 0px 0px 6px;
-    -moz-box-shadow: inset rgba(0, 0, 0, 0.5) 0px 0px 6px;
-    -ms-box-shadow: inset rgba(0, 0, 0, 0.5) 0px 0px 6px;
-    -o-box-shadow: inset rgba(0, 0, 0, 0.5) 0px 0px 6px;
-    box-shadow: inset rgba(0, 0, 0, 0.5) 0px 0px 6px;
-    background-color: rgba(24, 28, 22, 0.8); }
+  bottom: 30px; }
+  #prog-editor .code-container {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    padding: 20px 10px 10px 10px;
+    border-radius: 5px; }
+    #prog-editor .code-container:hover {
+      -webkit-transition-duration: 0.1s;
+      -moz-transition-duration: 0.1s;
+      -ms-transition-duration: 0.1s;
+      -o-transition-duration: 0.1s;
+      transition-duration: 0.1s;
+      -webkit-transition-timing-function: ease-out;
+      -moz-transition-timing-function: ease-out;
+      -ms-transition-timing-function: ease-out;
+      -o-transition-timing-function: ease-out;
+      transition-timing-function: ease-out;
+      -webkit-box-shadow: inset rgba(0, 0, 0, 0.5) 0px 0px 6px;
+      -moz-box-shadow: inset rgba(0, 0, 0, 0.5) 0px 0px 6px;
+      -ms-box-shadow: inset rgba(0, 0, 0, 0.5) 0px 0px 6px;
+      -o-box-shadow: inset rgba(0, 0, 0, 0.5) 0px 0px 6px;
+      box-shadow: inset rgba(0, 0, 0, 0.5) 0px 0px 6px;
+      background-color: rgba(24, 28, 22, 0.8); }
   #prog-editor .ui {
     position: absolute;
     left: -18px;

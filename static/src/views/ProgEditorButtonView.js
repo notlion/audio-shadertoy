@@ -11,8 +11,10 @@ function (Backbone, _) {
          'width="<%= size %>" height="<%= size %>"',
          'version="1.2" xmlns="http://www.w3.org/2000/svg">',
       '<g transform="translate(<%= size / 2 %>,<%= size / 2 %>)">',
-        '<circle cx="0" cy="0" r="<%= radius %>"/>',
-        '<%= icon %>',
+        '<g class="rotate">',
+          '<circle cx="0" cy="0" r="<%= radius %>"/>',
+          '<%= icon %>',
+        '</g>',
       '</g>',
     '</svg>'
   ].join("");
