@@ -44,28 +44,33 @@ define(function (require) {
     compile: _.debounce(function () {
       var vs = this.get("src_vertex")
         , fs = this.get("src_fragment")
+        , vt = this.get("src_vertex_template")
         , ft = this.get("src_fragment_template");
 
       if(vs && fs) {
         _.each(extractShaderDefines(fs), function (value, name) {
-          if(!_.isNumber(value))
+          if(_.isNumber(value))
             value = +value;
           this.set("define_" + name, value);
         }, this);
 
+        if(vt)
+          vs = _.template(vt, this.attributes);
         if(ft)
           fs = _.template(ft, this.attributes);
 
         try {
           this.program.compile(vs, fs);
           this.program.link();
-
-          this.set("compiled", true);
         }
         catch(err) {
           this.set("error", err.toString());
           this.set("compiled", false);
+          return;
         }
+
+        this.set("compiled", true);
+        this.trigger("compile", this.program);
       }
     }, 200)
 

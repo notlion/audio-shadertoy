@@ -30,6 +30,6 @@ requirejs.config({
     "soundcloud":   "http://connect.soundcloud.com/sdk"
   }
 });
-require([ "src/views/ToyView" ], function (ToyView) {
-  window.toy = new ToyView();
+require([ "src/models/Toy", "src/views/ToyView" ], function (Toy, ToyView) {
+  window.toyview = new ToyView({ model: window.toy = new Toy() });
 });
